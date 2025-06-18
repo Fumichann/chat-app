@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>チャットアプリ</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>一回きりのチャット</h1>
+  <form method="POST">
+    <textarea name="message" placeholder="メッセージを入力..."></textarea>
+    <br>
+    <button type="submit">送信</button>
+  </form>
+
+  {% if ai_message %}
+    <div class="response">
+      <strong>AIからの返信:</strong>
+      <p>{{ ai_message }}</p>
+    </div>
+  {% endif %}
+</body>
+</html>
