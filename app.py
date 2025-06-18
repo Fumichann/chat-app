@@ -9,7 +9,7 @@ def index():
     if request.method == "POST":
         user_message = request.form["message"]
         # OpenAIに送る（仮：あとでちゃんと書く）
-        ai_message = "これはAIからの返信です（ここをあとでChatGPTに）"
+        ai_message = "これはAIからの返信です（ここをあとでChatGPTなどに）"
     return render_template("index.html", ai_message=ai_message)
 
 if __name__ == "__main__":
