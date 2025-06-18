@@ -1,4 +1,3 @@
-
 # Pythonの公式イメージ（3.11）を使う
 FROM python:3.11
 
