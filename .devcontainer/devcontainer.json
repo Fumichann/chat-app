@@ -1,0 +1,10 @@
+{
+  "name": "Chat App Dev",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  "workspaceFolder": "/app",
+  "forwardPorts": [5000]
+}
+
+
