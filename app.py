@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request
 import google.generativeai as genai # インポートを変更
 import os
@@ -33,6 +34,3 @@ def index():
             print(f"エラーが発生しました: {e}")
             
     return render_template("index.html", ai_message=ai_message)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
