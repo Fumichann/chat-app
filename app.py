@@ -1,3 +1,2 @@
-git add .
-git commit -m "初回コミット"
-git push origin main
+git branch -M main
+git push -u origin main
