@@ -32,7 +32,7 @@ def index():
             ai_message = f"エラーが発生しました: {e}" # API呼び出しで発生する可能性のあるエラーを処理します
             print(f"エラーが発生しました: {e}")
             
-    return render_templates("index.html", ai_message=ai_message)
+    return render_template("index.html", ai_message=ai_message)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
