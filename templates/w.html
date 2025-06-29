@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>A画面</title>
+  <link rel="stylesheet" href="main.css"> <!-- 共通CSSがあれば -->
+</head>
+<body>
+  <h1>A画面</h1>
+  <form method="POST">
+    <textarea name="message" placeholder="メッセージを入力..."></textarea>
+    <br>
+    <button type="submit">送信</button>
+  </form>
+  <p><a href="index.html">← 戻る</a></p>
+
+  {% if ai_message %}
+    <div class="response">
+      <strong>AIからの返信:</strong>
+      <p>{{ ai_message }}</p>
+    </div>
+  {% endif %}
+</body>
+</html>
