@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>設定・遊び方・クレジット</title>
+  <link rel="stylesheet" href="setting.css">
+</head>
+<body>
+    <p><a href="index.html">← 戻る</a></p>
+  <div class="tab-container">
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="settings-tab">設定</button>
+      <button class="tab-btn" data-tab="howto-tab">遊び方</button>
+      <button class="tab-btn" data-tab="credits-tab">クレジット</button>
+    </div>
+
+    <div class="tab-content" id="settings-tab">
+      <h2>設定</h2>
+
+      <div class="setting-item">
+        <label for="bgm-volume">BGM 音量</label>
+        <input type="range" id="bgm-volume" min="0" max="1" step="0.01" value="0.5">
+      </div>
+
+      <div class="setting-item">
+        <label for="se-volume">SE 音量</label>
+        <input type="range" id="se-volume" min="0" max="1" step="0.01" value="0.5">
+      </div>
+
+      <div class="setting-item">
+        <label for="bgm-select">BGM 選択</label>
+        <select id="bgm-select">
+          <option value="bgm1.mp3">穏やかな曲</option>
+          <option value="bgm2.mp3">バトル曲</option>
+          <option value="bgm3.mp3">神秘的な曲</option>
+        </select>
+      </div>
+
+      <button onclick="saveSettings()">保存</button>
+    </div>
+
+    <div class="tab-content" id="howto-tab" style="display: none;">
+      <h2>遊び方</h2>
+      <p>ゲームの操作方法や目的をここに書きます。</p>
+      <ul>
+        <li>↑←↓→キーでキャラ移動</li>
+        <li>スペースキーで攻撃</li>
+        <li>敵を倒してスコアを稼ごう</li>
+      </ul>
+    </div>
+
+    <div class="tab-content" id="credits-tab" style="display: none;">
+      <h2>クレジット</h2>
+      <p>制作：みゆ（プログラム・デザイン）</p>
+      <p>音楽素材：魔王魂、DOVA-SYNDROME</p>
+      <p>使用ライブラリ：Flask, HTML/CSS/JavaScript</p>
+      <p>Special Thanks：サポートしてくれた全ての人たち</p>
+    </div>
+  </div>
+
+  <audio id="bgm" loop autoplay></audio>
+  <audio id="se" src="{{ url_for('static', filename='audio/se.mp3') }}"></audio>
+
+  <script src="setting.js"></script>
+</body>
+</html>

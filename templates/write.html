@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>A画面</title>
-  <link rel="stylesheet" href="main.css"> <!-- 共通CSSがあれば -->
+  <link rel="stylesheet" href="../static/css/style.css">
 </head>
+
 <body>
   <h1>A画面</h1>
   <form method="POST">
@@ -13,6 +14,13 @@
     <button type="submit">送信</button>
   </form>
   <p><a href="index.html">← 戻る</a></p>
+
+  <h1>一回きりのチャット</h1>
+  <form method="POST">
+    <textarea name="message" placeholder="メッセージを入力..."></textarea>
+    <br>
+    <button type="submit">送信</button>
+  </form>
 
   {% if ai_message %}
     <div class="response">
