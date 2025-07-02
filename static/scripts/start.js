@@ -6,6 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // クリックで index.html に遷移
   document.addEventListener("click", () => {
-    window.location.href = "index.html";
+    window.location.href = "/index";
   }, { once: true });
 });

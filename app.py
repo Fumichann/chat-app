@@ -12,7 +12,15 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
+def start():
+    return render_template("start.html")
+
+@app.route("/index")
 def index():
+    return render_template("index.html")
+
+@app.route("/write", methods=["GET", "POST"])
+def write():
     ai_message = None
     if request.method == "POST":
         user_message = request.form["message"]
@@ -32,7 +40,8 @@ def index():
             ai_message = f"エラーが発生しました: {e}" # API呼び出しで発生する可能性のあるエラーを処理します
             print(f"エラーが発生しました: {e}")
             
-    return render_template("index.html", ai_message=ai_message)
+    return render_template("write.html", ai_message=ai_message)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
