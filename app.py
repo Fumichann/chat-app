@@ -19,6 +19,10 @@ def start():
 def index():
     return render_template("index.html")
 
+@app.route("/setting")
+def setting():
+    return render_template("setting.html")
+
 @app.route("/write", methods=["GET", "POST"])
 def write():
     ai_message = None
