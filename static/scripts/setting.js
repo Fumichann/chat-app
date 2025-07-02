@@ -73,3 +73,19 @@ tabButtons.forEach(btn => {
     });
   });
 });
+
+
+// ===== 履歴保存設定の読み書き =====
+document.addEventListener("DOMContentLoaded", () => {
+  const saveToggle = document.getElementById("saveToggle");
+
+  // 初期表示で localStorage の値を反映
+  const savedSetting = localStorage.getItem("saveHistory");
+  saveToggle.checked = savedSetting === "true";
+
+  // 状態が変わったときに保存
+  saveToggle.addEventListener("change", () => {
+    localStorage.setItem("saveHistory", saveToggle.checked);
+    console.log("履歴保存設定:", saveToggle.checked);
+  });
+});
