@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 import google.generativeai as genai # インポートを変更
 import os
 from dotenv import load_dotenv
-
+from flask import jsonify
 
 load_dotenv()
 
@@ -51,9 +51,6 @@ def write():
             print(f"エラーが発生しました: {e}")
             
     return render_template("write.html", ai_message=ai_message)
-
-from flask import jsonify  # すでに import 済みなら追加不要
-
 
 @app.route("/api/reply", methods=["POST"])
 def api_reply():
