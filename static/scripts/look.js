@@ -1,21 +1,16 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("history-container");
-  const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+window.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('history-container');
+  const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
 
-  if (history.length === 0) {
-    container.innerHTML = "<p>履歴はありません。</p>";
+  if (logs.length === 0) {
+    container.innerHTML = '<p>履歴はありません。</p>';
     return;
   }
 
-  history.forEach(entry => {
-    const block = document.createElement("div");
-    block.classList.add("history-entry");
-    block.innerHTML = `
-      <p><strong>${entry.date}</strong></p>
-      <p><strong>あなた：</strong>${entry.user}</p>
-      <p><strong>AI：</strong>${entry.ai}</p>
-      <hr>
-    `;
-    container.appendChild(block);
+  logs.forEach(msg => {
+    const entry = document.createElement('div');
+    entry.className = 'message';
+    entry.innerHTML = `<strong>${msg.role === 'user' ? 'あなた' : 'AI'}:</strong> ${msg.text}`;
+    container.appendChild(entry);
   });
 });

@@ -3,6 +3,7 @@ import google.generativeai as genai # インポートを変更
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # Gemini APIキーを設定します
@@ -22,6 +23,11 @@ def index():
 @app.route("/setting")
 def setting():
     return render_template("setting.html")
+
+@app.route("/look")
+def look():
+    return render_template("look.html")
+
 
 @app.route("/write", methods=["GET", "POST"])
 def write():
@@ -45,6 +51,25 @@ def write():
             print(f"エラーが発生しました: {e}")
             
     return render_template("write.html", ai_message=ai_message)
+
+from flask import jsonify  # すでに import 済みなら追加不要
+
+
+@app.route("/api/reply", methods=["POST"])
+def api_reply():
+    data = request.get_json()
+    user_message = data.get("message", "")
+
+    try:
+        # Gemini モデルで返答を生成
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        response = model.generate_content(user_message)
+        ai_message = response.text
+    except Exception as e:
+        ai_message = f"エラーが発生しました: {e}"
+        print(f"エラーが発生しました: {e}")
+
+    return jsonify({"reply": ai_message})
 
 
 if __name__ == "__main__":

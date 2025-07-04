@@ -53,3 +53,10 @@ textarea {
 .link-button:hover {
   background-color: #eee;
 }
+
+/* === look.html 専用スタイル === */
+.message {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  margin-bottom: 5px;
+}
