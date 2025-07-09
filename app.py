@@ -6,8 +6,7 @@ from flask import jsonify
 
 load_dotenv()
 
-# Gemini APIキーを設定します
-# .env ファイルに GEMINI_API_KEY=YOUR_API_KEY があることを確認してください
+# .env ファイルに GEMINI_API_KEY=YOUR_API_KEY 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
@@ -36,18 +35,12 @@ def write():
         user_message = request.form["message"]
         
         try:
-            # Generative モデルを初期化します ('gemini-pro-vision'などのマルチモーダルモデルも選択できます)
             model = genai.GenerativeModel('gemini-2.0-flash-exp') 
-            
-            # Gemini APIを呼び出します
             response = model.generate_content(user_message)
-            
-            # レスポンスからコンテンツを抽出します
-            # Geminiのレスポンス構造はOpenAIとは異なります
             ai_message = response.text 
             
         except Exception as e:
-            ai_message = f"エラーが発生しました: {e}" # API呼び出しで発生する可能性のあるエラーを処理します
+            ai_message = f"エラーが発生しました: {e}" 
             print(f"エラーが発生しました: {e}")
             
     return render_template("write.html", ai_message=ai_message)
@@ -62,6 +55,7 @@ def api_reply():
         model = genai.GenerativeModel('gemini-2.0-flash-exp')
         response = model.generate_content(user_message)
         ai_message = response.text
+        
     except Exception as e:
         ai_message = f"エラーが発生しました: {e}"
         print(f"エラーが発生しました: {e}")
