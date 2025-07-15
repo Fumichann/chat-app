@@ -1,0 +1,46 @@
+#main-screen{
+  display: none;
+}
+
+
+.link-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.link-button {
+  background-color: #fff;
+  color: #0066cc;
+  padding: 20px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.link-button:hover {
+  background-color: #eee;
+}
+
+#main-screen{
+  display: none;
+}
+
+.link-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.link-button {
+  background-color: #fff;
+  color: #0066cc;
+  padding: 20px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.link-button:hover {
+  background-color: #eee;
+}
