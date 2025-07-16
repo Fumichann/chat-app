@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 状態が変わったときに保存
   saveToggle.addEventListener("change", () => {
-    localStorage.setItem("saveHistory", saveToggle);
+    localStorage.setItem("saveHistory", saveToggle.checked);
     console.log("チェックボックスが変更されました！");
     console.log("履歴保存設定:", saveToggle.checked);
   });
