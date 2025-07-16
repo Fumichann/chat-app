@@ -36,7 +36,6 @@
         </select>
       </div>
 
-      <button onclick="saveSettings()">保存</button>
     </div>
 
     <div class="tab-content" id="howto-tab" style="display: none;">
@@ -61,12 +60,14 @@
   <audio id="bgm" loop autoplay></audio>
   <audio id="se" src="{{ url_for('static', filename='audio/se.mp3') }}"></audio>
 
-  <script src="setting.js"></script>
 
   <label>
     <input type="checkbox" id="saveToggle">
     履歴を保存する
   </label>
+
+  <script src="/static/scripts/setting.js"></script>
+
 
 
 </body>

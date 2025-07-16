@@ -85,7 +85,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 状態が変わったときに保存
   saveToggle.addEventListener("change", () => {
-    localStorage.setItem("saveHistory", saveToggle.checked);
+    localStorage.setItem("saveHistory", saveToggle);
+    console.log("チェックボックスが変更されました！");
     console.log("履歴保存設定:", saveToggle.checked);
   });
 });
+
+// ===== saveSettings() が必要なら定義する =====
+function saveSettings() {
+  const saveToggle = document.getElementById("saveToggle");
+  localStorage.setItem("saveHistory", saveToggle.checked);
+  console.log("saveSettings 関数が呼ばれました");
+  console.log("履歴保存設定:", saveToggle.checked);
+}
+
