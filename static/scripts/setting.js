@@ -3,6 +3,8 @@ const se = document.getElementById('se');
 const bgmSlider = document.getElementById('bgm-volume');
 const seSlider = document.getElementById('se-volume');
 const bgmSelect = document.getElementById('bgm-select');
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
 
 const bgmFolder = '/static/audio/';
 
@@ -97,5 +99,37 @@ function saveSettings() {
   localStorage.setItem("saveHistory", saveToggle.checked);
   console.log("saveSettings 関数が呼ばれました");
   console.log("履歴保存設定:", saveToggle.checked);
+}
+
+// ===== 履歴削除ボタンの処理 =====
+clearHistoryBtn.addEventListener("click", () => {
+  showCustomConfirm("本当に履歴を燃やしますか？", () => {
+    localStorage.removeItem("chatHistory");
+    showCustomAlert("履歴を燃やしました");
+    console.log("chatHistory が削除されました。");
+  });
+});
+
+
+function showCustomAlert(message) {
+  const alertBox = document.getElementById("customAlert");
+  alertBox.textContent = message;
+  alertBox.style.display = "block";
+
+  // 再表示アニメーションのためにリセット
+  alertBox.style.animation = "none";
+  alertBox.offsetHeight; // 再描画を強制
+  alertBox.style.animation = "";
+
+  // アニメーション終了後に非表示
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 3000);
+}
+
+function showCustomConfirm(message, onConfirm) {
+  if (window.confirm(message)) {
+    onConfirm();
+  }
 }
 
