@@ -37,5 +37,12 @@
 <script src="../static/scripts/write.js"></script>
 
 
+{% if request.form.get("message") and ai_message %}
+<div id="history-data"
+     data-user="{{ request.form.get('message') | e }}"
+     data-ai="{{ ai_message | e }}"></div>
+{% endif %}
+
+
 </body>
 </html>

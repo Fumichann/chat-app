@@ -1,8 +1,20 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
   const aiReplyContainer = document.getElementById('aiReplyContainer');
+
+  const dataElem = document.getElementById('history-data');
+  if (dataElem) {
+    const userMessage = dataElem.dataset.user;
+    const aiMessage = dataElem.dataset.ai;
+    const saveSetting = localStorage.getItem("saveHistory");
+    if (saveSetting === "true" && userMessage && aiMessage) {
+      const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+      history.push({ user: userMessage, ai: aiMessage });
+      localStorage.setItem("chatHistory", JSON.stringify(history));
+      console.log("履歴を保存しました（初回ロード時）");
+    }
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -42,8 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function saveMessage(role, text) {
-    const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    logs.push({ role, text });
-    localStorage.setItem('chatHistory', JSON.stringify(logs));
-  }
+  const saveSetting = localStorage.getItem("saveHistory");
+  if (saveSetting !== "true") return;  // 保存OFFなら保存しない
+
+  const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+  logs.push({ role, text });
+  localStorage.setItem('chatHistory', JSON.stringify(logs));
+}
+
 });
