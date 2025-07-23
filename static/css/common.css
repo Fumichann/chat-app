@@ -22,6 +22,11 @@ textarea {
   padding: 1em;
 }
 
+.haikei{
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
 .screen {
   position: fixed;
   inset: 0;

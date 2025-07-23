@@ -2,13 +2,12 @@
     position: fixed;
     inset: 0;
     z-index: 1;
-    background-color: rgb(5, 5, 59);
-
     display: flex;
     justify-content: center;  /* 横中央 */
     align-items: center;      /* 縦中央 */
     height: 100vh;            /* 画面高さいっぱい */
     width: 100vw;             /* 画面幅いっぱい */
+    background-image: url(../image/startback.png);
 }
 
 .logobox{
@@ -16,6 +15,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 3.5rem;
   opacity: 1;
   inset: 0;
 }
