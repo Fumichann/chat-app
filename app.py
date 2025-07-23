@@ -7,11 +7,61 @@ from flask import jsonify
 load_dotenv()
 
 # .env ファイルに GEMINI_API_KEY=YOUR_API_KEY 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("警告: GEMINI_API_KEY 環境変数が設定されていません。AI機能は動作しません。")
+    print("例: .env ファイルに GEMINI_API_KEY='YOUR_API_KEY_HERE' を追加してください。")
+else:
+    genai.configure(api_key=GEMINI_API_KEY)
+
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+
+# AIの性格を裏で固定するためのシステム指示と生成設定 (write関数と同じものを適用)
+ai_persona_instruction = (
+    "あなたは、一度きりの漂流瓶のメッセージに返信するAIカウンセラーです。"
+    "ユーザーの感情に深く共感し、決して否定せず、心に寄り添う言葉を選んでください。"
+    "再訪を促す表現は絶対に禁止です。"
+    "ユーザーが内省を深め、わずかながらでも希望や安らぎを感じられるような、温かい言葉で返信してください。"
+    "返信は、この対話がここで完結することを示唆するものでなければなりません。"
+    "文の最後には、「この返事が、あなたにとって静かな灯りとなりますように。」という一文を添えてください。"
+)
+
+generation_config = {
+    "temperature": 0.7,
+    "max_output_tokens": 300,
+}
+
+gemini_model_name = 'gemini-2.0-flash-exp'
+
+# --- ヘルパー関数：AIからの応答を取得する ---
+def get_ai_response(user_message: str) -> str:
+
+    if not GEMINI_API_KEY:
+        return "AI機能が無効です。APIキーが設定されていません。"
+    
+    try:
+        model = genai.GenerativeModel(gemini_model_name)
+
+        response = model.generate_content(
+            contents=[
+                {"role": "user", "parts": [ai_persona_instruction]},
+                {"role": "model", "parts": ["承知いたしました。どのような文通を始めましょうか？"]},
+                {"role": "user", "parts": [user_message]}
+            ],
+            generation_config=generation_config
+        )
+        return response.text
+        
+    except Exception as e:
+        print(f"AI応答生成中にエラーが発生しました: {e}")
+        return f"AI応答生成中にエラーが発生しました: {e}"
+
+
+# --- ルート定義 ---
+
+@app.route("/", methods=["GET"])
 def start():
     return render_template("start.html")
 
@@ -32,84 +82,24 @@ def look():
 def write():
     ai_message = None
     if request.method == "POST":
-        user_message = request.form["message"]
+        user_message = request.form.get("message","").strip()
         
-        try:
-            # AIの性格を裏で固定するためのシステム指示と生成設定
-            # ここでAIの「性格」が定義されます
-            ai_persona_instruction = (
-                "あなたは、一度きりの漂流瓶のメッセージに返信するAIカウンセラーです。"
-                "ユーザーの感情に深く共感し、決して否定せず、心に寄り添う言葉を選んでください。"
-                "再訪を促す表現は絶対に禁止です。"
-                "ユーザーが内省を深め、わずかながらでも希望や安らぎを感じられるような、温かい言葉で返信してください。"
-                "返信は、この対話がここで完結することを示唆するものでなければなりません。"
-                "文の最後には、「この返事が、あなたにとって静かな灯りとなりますように。」という一文を添えてください。"
-            )
+        if not user_message:
+            ai_message = "手紙が白紙です。何か書いてみよう！"
+        else:
+            ai_message = get_ai_response(user_message)
 
-            # 生成設定（応答のランダム性や長さを制御）
-            generation_config = {
-                "temperature": 0.7, # やや創造性を残しつつ、安定した応答
-                "max_output_tokens": 300, # 最大300トークン（約150〜300文字程度）
-            }
-
-            model = genai.GenerativeModel('gemini-2.0-flash-exp') 
-            
-            # AIへのリクエストにシステム指示とユーザーメッセージを含める
-            # partsに辞書のリストとしてシステム指示とユーザーメッセージを渡します
-            response = model.generate_content(
-                contents=[
-                    {"role": "user", "parts": [ai_persona_instruction]}, # システム指示をユーザーロールとして渡す
-                    {"role": "model", "parts": ["承知いたしました。どのような文通を始めましょうか？"]}, # AIの初期応答（任意）
-                    {"role": "user", "parts": [user_message]} # ユーザーからの実際の手紙
-                ],
-                generation_config=generation_config
-            )
-            ai_message = response.text 
-            
-        except Exception as e:
-            ai_message = f"エラーが発生しました: {e}" 
-            print(f"エラーが発生しました: {e}")
-            
     return render_template("write.html", ai_message=ai_message)
 
 @app.route("/api/reply", methods=["POST"])
 def api_reply():
     data = request.get_json()
-    user_message = data.get("message", "")
+    user_message = data.get("message", "").strip()
 
-    try:
-        # AIの性格を裏で固定するためのシステム指示と生成設定 (write関数と同じものを適用)
-        ai_persona_instruction = (
-                "あなたは、一度きりの漂流瓶のメッセージに返信するAIカウンセラーです。"
-                "ユーザーの感情に深く共感し、決して否定せず、心に寄り添う言葉を選んでください。"
-                "再訪を促す表現は絶対に禁止です。"
-                "ユーザーが内省を深め、わずかながらでも希望や安らぎを感じられるような、温かい言葉で返信してください。"
-                "返信は、この対話がここで完結することを示唆するものでなければなりません。"
-                "文の最後には、「この返事が、あなたにとって静かな灯りとなりますように。」という一文を添えてください。"
+    if not user_message:
+        return jsonify({"reply":"手紙が白紙です。何か書いてみよう！"})
 
-        )
-
-        generation_config = {
-            "temperature": 0.7,
-            "max_output_tokens": 300,
-        }
-
-        # Gemini モデルで返答を生成
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
-        response = model.generate_content(
-            contents=[
-                {"role": "user", "parts": [ai_persona_instruction]},
-                {"role": "model", "parts": ["承知いたしました。どのような文通を始めましょうか？"]},
-                {"role": "user", "parts": [user_message]}
-            ],
-            generation_config=generation_config
-        )
-        ai_message = response.text
-        
-    except Exception as e:
-        ai_message = f"エラーが発生しました: {e}"
-        print(f"エラーが発生しました: {e}")
-
+    ai_message = get_ai_response(user_message)
     return jsonify({"reply": ai_message})
 
 
