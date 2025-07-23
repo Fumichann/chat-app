@@ -1,5 +1,29 @@
-.message {
-  border-bottom: 1px solid #ddd;
-  padding: 8px;
-  margin-bottom: 5px;
+/* 履歴全体のスタイル */
+#history-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+/* 各履歴項目の枠 */
+.historyItem {
+  background-color: #f9f9f9;
+  border-left: 4px solid #007BFF;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 日時行のスタイル */
+.historyItem p:first-child {
+  color: #555;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+/* 発言の表示スタイル */
+.historyItem p {
+  margin: 4px 0;
+  white-space: pre-wrap;  /* 改行を保持 */
 }

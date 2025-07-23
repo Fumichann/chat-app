@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveSetting = localStorage.getItem("saveHistory");
     if (saveSetting === "true" && userMessage && aiMessage) {
       const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
-      history.push({ user: userMessage, ai: aiMessage });
+      const now = new Date();
+      history.push({
+        user: userMessage,
+        ai: aiMessage,
+        date: now.toISOString()
+      });
       localStorage.setItem("chatHistory", JSON.stringify(history));
       console.log("履歴を保存しました（初回ロード時）");
     }
@@ -20,9 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const text = userMsg.value.trim();
     if (!text) return;
-
-    // ユーザーメッセージをlocalStorageに保存
-    saveMessage('user', text);
 
     try {
       const res = await fetch('/api/reply', {
@@ -35,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
 
-      // AIの返答をlocalStorageに保存
-      saveMessage('ai', data.reply);
+      // ユーザーとAIのメッセージを一括で保存（1セット）
+      saveChatHistory(text, data.reply);
 
       // 画面にAI返信を表示
       aiReplyContainer.innerHTML = `
@@ -53,13 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
     userMsg.value = '';
   });
 
-  function saveMessage(role, text) {
-  const saveSetting = localStorage.getItem("saveHistory");
-  if (saveSetting !== "true") return;  // 保存OFFなら保存しない
+  function saveChatHistory(userText, aiText) {
+    const saveSetting = localStorage.getItem("saveHistory");
+    if (saveSetting !== "true") return;
 
-  const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-  logs.push({ role, text });
-  localStorage.setItem('chatHistory', JSON.stringify(logs));
-}
-
+    const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    const now = new Date();
+    logs.push({
+      user: userText,
+      ai: aiText,
+      date: now.toISOString()
+    });
+    localStorage.setItem('chatHistory', JSON.stringify(logs));
+  }
 });
