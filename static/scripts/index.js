@@ -52,7 +52,7 @@ tutorial.addEventListener('click', () => {
         });
       }, 2000); // チュートリアルフェードアウト時間に合わせる
     }}, 1400);
-  }, 500); // テキスト切り替えまでのフェードアウト時間(CSSと合わせる)
+  }, 1000); // テキスト切り替えまでのフェードアウト時間(CSSと合わせる)
 });
 
 // メイン画面のボタンにクリックイベントを追加
@@ -60,7 +60,7 @@ document.querySelectorAll(".link-button").forEach(button => {
   button.addEventListener("click", function (event) {
     event.stopPropagation(); // 背景のクリックイベントを無効にする
     const url = this.dataset.link;
-    window.location.href = url;
+      window.location.href = url;
     });
   });
 });
