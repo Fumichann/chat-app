@@ -5,19 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>チャットアプリ</title>
 
+  <link rel="stylesheet" href="../static/common.css">
   <link rel="stylesheet" href="../static/style.css">
 
 </head>
 <body>
+    <!-- フェードオーバーレイ -->
+  <div id="fade-overlay"></div>
 
-   <div id="main-screen" class="screen">
+  <div id="tutorial" class="screen">
+    <div id="tutorial-text"></div>
+  </div>
+
+   <div id="main-screen" class="screen hidden">
         <div class="link-buttons">
             <button class="link-button" data-link="/write">手紙を書く</button>
             <button class="link-button" data-link="/look">手紙を見る</button>
             <button class="link-button" data-link="/setting">設定</button>
         </div>
     </div>
-
  
 </body>
 <script src="../static/scripts/index.js"></script>

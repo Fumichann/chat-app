@@ -1,32 +1,39 @@
-#main-screen{
-  display: none;
+#fade-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #001E30;
+  opacity: 1;
+  transition: opacity 2s ease;
+  z-index: 100;
+  pointer-events: none;
 }
 
+#tutorial{
+  opacity: 1;
+  transition: opacity 2s ease;
+  flex-direction: column;
+  z-index: 10;
+  height: 100vh;
+  color: #fff;
+}
 
-.link-buttons {
+#tutorial-text{
+  color: #fff;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  max-width: 600px;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+#main-screen{
   display: flex;
-  gap: 20px;
-  margin-top: 30px;
+  opacity: 0;
+  transition: opacity 2s ease;
 }
 
-.link-button {
-  background-color: #fff;
-  color: #0066cc;
-  padding: 20px 30px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.link-button:hover {
-  background-color: #eee;
-}
-
-#main-screen{
-  display: none;
-}
-
-.link-buttons {
+#link-buttons {
   display: flex;
   gap: 20px;
   margin-top: 30px;

@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ocean</title>
     
-    <link rel="stylesheet" href="common.css">
-    <link rel="stylesheet" href="start.css">
+    <link rel="stylesheet" href="../static/common.css">
+    <link rel="stylesheet" href="../static/start.css">
     
 </head>
 <body>
-    <div id="start-screen" class="screen">
-        <img src="../static/image/logo.png" alt="">
+    <div id="start-screen">
+        <div class="logobox">
+         <img id="logo" src="../static/image/logo.png" alt="">
+         <h1 id="start-text">-  s t a r t  -</h1>
+        </div>
     </div> 
+
+    <!-- フェードオーバーレイ -->
+  <div id="fade-overlay" ></div>
     
 </body>
 <script src="../static/scripts/start.js"></script>
