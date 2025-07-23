@@ -50,9 +50,11 @@ tutorial.addEventListener('click', () => {
         requestAnimationFrame(() => {
           main.style.opacity = 1;
         });
-      }, 2000); // チュートリアルフェードアウト時間に合わせる
-    }}, 1400);
-  }, 500); // テキスト切り替えまでのフェードアウト時間(CSSと合わせる)
+      }, 1800); // チュートリアルフェードアウト
+    }}, 400); // 文字切り替え前の待機時間
+  }, 600); // テキスト切り替えまでのフェードアウト
+   // localhostに保存
+  localStorage.setItem('hasSeenTutorial', 'true');
 });
 
 // メイン画面のボタンにクリックイベントを追加
@@ -60,9 +62,23 @@ document.querySelectorAll(".link-button").forEach(button => {
   button.addEventListener("click", function (event) {
     event.stopPropagation(); // 背景のクリックイベントを無効にする
     const url = this.dataset.link;
-    window.location.href = url;
+      window.location.href = url;
     });
   });
+});
+
+// localstorageでチュートリアル制限
+document.addEventListener('DOMContentLoaded', () => {
+  const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+  const tutorial = document.getElementById('tutorial');
+  const main = document.getElementById('main-screen');
+
+  if (hasSeenTutorial === 'true') {
+    tutorial.classList.add('hidden');
+    main.classList.remove('hidden');
+    main.style.opacity = 1;
+    return;
+  }
 });
 
 

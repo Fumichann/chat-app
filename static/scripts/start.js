@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. フェード完了後に遷移
       setTimeout(() => {
         window.location.href = "/index";
-      }, 5000); // フェード時間と合わせる
+      }, 2000); // フェード時間と合わせる
     });
   }, { once: true });
 
