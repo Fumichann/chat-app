@@ -27,3 +27,27 @@
   margin: 4px 0;
   white-space: pre-wrap;  /* 改行を保持 */
 }
+
+.historyItem {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  position: relative;
+}
+
+.historyItem button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #3c8dbc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.historyItem button:hover {
+  background-color: #367fa9;
+}
