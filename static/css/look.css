@@ -5,14 +5,15 @@
   padding: 10px;
 }
 
-/* 各履歴項目の枠 */
 .historyItem {
-  background-color: #f9f9f9;
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
   border-left: 4px solid #007BFF;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 /* 日時行のスタイル */
@@ -25,19 +26,10 @@
 /* 発言の表示スタイル */
 .historyItem p {
   margin: 4px 0;
-  white-space: pre-wrap;  /* 改行を保持 */
+  white-space: pre-wrap;
 }
 
-.historyItem {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin-bottom: 16px;
-  background-color: #fdfdfd;
-  border-radius: 10px;
-  position: relative;
-}
-
-.historyItem button {
+.historyItem button.saveItemBtn { 
   margin-top: 8px;
   padding: 6px 12px;
   font-size: 14px;
@@ -48,6 +40,63 @@
   cursor: pointer;
 }
 
-.historyItem button:hover {
+.historyItem button.saveItemBtn:hover {
   background-color: #367fa9;
+}
+
+html,body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* --- プレビュー用のスタイル --- */
+#preview-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7); /* 半透明の黒い背景 */
+  /* 中央寄せのためにflexboxを使用 */
+  display: flex; /* JavaScriptで表示する際にflexに設定される */
+  justify-content: center; /* 水平方向の中央揃え */
+  align-items: center; /* 垂直方向の中央揃え */
+  flex-direction: column; /* 要素を縦に並べる */
+}
+
+#preview-modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#preview-image {
+  max-width: 100%; /* 親要素の幅に合わせて最大幅100% */
+  height: auto; /* アスペクト比を保持 */
+  border: 1px solid #ccc; /* プレビュー画像のボーダー */
+  margin-bottom: 15px; /* 下マージン */
+}
+
+#preview-actions button {
+  padding: 10px 20px; /* 内側の余白 */
+  margin: 0 10px; /* ボタン間のマージン */
+  cursor: pointer; /* カーソルをポインターに */
+}
+
+#preview-actions {
+  display: flex;
+  justify-content: center; /* ボタン群を水平方向で中央揃え */
+  width: 100%;
 }

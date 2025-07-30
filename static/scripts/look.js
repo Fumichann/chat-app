@@ -2,6 +2,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('history-container');
   const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
 
+  const previewModal = document.getElementById('preview-modal');
+  const previewImage = document.getElementById('preview-image');
+  const downloadConfirmBtn = document.getElementById('download-confirm-btn');
+  const previewCloseBtn = document.getElementById('preview-close-btn');
+
+  let currentCanvas = null;
+  let currentFileName = '';
+
   if (logs.length === 0) {
     container.innerHTML = '<p>履歴はありません。</p>';
     return;
@@ -43,17 +51,44 @@ window.addEventListener('DOMContentLoaded', () => {
     saveBtn.addEventListener('click', () => {
       saveBtn.style.display = 'none';
       html2canvas(wrapper).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `chat_item_${index + 1}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        currentCanvas = canvas;
+        currentFileName = `chat_item_${index + 1}.png`;
+
+        previewImage.src = canvas.toDataURL('image/png');
+        previewModal.style.display = 'flex';
       }).finally(() => {
-        saveBtn.style.display = 'block'; 
+        saveBtn.style.display = 'block';
       });
     });
 
     wrapper.appendChild(content);
     wrapper.appendChild(saveBtn);
     container.appendChild(wrapper);
+  });
+
+  downloadConfirmBtn.addEventListener('click', () => {
+    if (currentCanvas) {
+      const link = document.createElement('a');
+      link.download = currentFileName;
+      link.href = currentCanvas.toDataURL('image/png');
+      link.click();
+    }
+    previewModal.style.display = 'none';
+    currentCanvas = null;
+    currentFileName = '';
+  });
+
+  previewCloseBtn.addEventListener('click', () => {
+    previewModal.style.display = 'none';
+    currentCanvas = null;
+    currentFileName = '';
+  });
+
+  previewModal.addEventListener('click', (event) => {
+    if (event.target === previewModal) {
+      previewModal.style.display = 'none';
+      currentCanvas = null;
+      currentFileName = '';
+    }
   });
 });
