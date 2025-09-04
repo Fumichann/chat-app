@@ -29,11 +29,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const content = document.createElement('div');
     content.classList.add('historyContent');
 
-    if (entry.user !== undefined && entry.ai !== undefined) {
+    if (entry.ai !== undefined) {
       const date = entry.date || '不明';
       content.innerHTML = `
         <p><strong>日時:</strong> ${formatDate(date)}</p>
-        <p><strong>あなた:</strong> ${entry.user}</p>
         <p><strong>AI:</strong> ${entry.ai}</p>
       `;
     } else if (entry.role && entry.text) {

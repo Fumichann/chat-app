@@ -3,6 +3,10 @@
   max-width: 800px;
   margin: 20px auto;
   padding: 10px;
+  max-height: 80vh;   
+  overflow-y: auto;   
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .historyItem {
@@ -48,7 +52,8 @@ html,body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-y: hidden;   
+  overflow-x: hidden;
 }
 
 /* --- プレビュー用のスタイル --- */

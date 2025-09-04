@@ -5,14 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const dataElem = document.getElementById('history-data');
   if (dataElem) {
-    const userMessage = dataElem.dataset.user;
     const aiMessage = dataElem.dataset.ai;
     const saveSetting = localStorage.getItem("saveHistory");
-    if (saveSetting === "true" && userMessage && aiMessage) {
+    if (saveSetting === "true" && aiMessage) {
       const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
       const now = new Date();
       history.push({
-        user: userMessage,
         ai: aiMessage,
         date: now.toISOString()
       });
@@ -37,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
 
-      // ユーザーとAIのメッセージを一括で保存（1セット）
-      saveChatHistory(text, data.reply);
+      // ユーザーの手紙は保存せず、AIの返答だけ保存
+      saveChatHistory(data.reply);
 
       // 画面にAI返信を表示
       aiReplyContainer.innerHTML = `
@@ -55,14 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
     userMsg.value = '';
   });
 
-  function saveChatHistory(userText, aiText) {
+  function saveChatHistory(aiText) {
     const saveSetting = localStorage.getItem("saveHistory");
     if (saveSetting !== "true") return;
 
     const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
     const now = new Date();
     logs.push({
-      user: userText,
       ai: aiText,
       date: now.toISOString()
     });
