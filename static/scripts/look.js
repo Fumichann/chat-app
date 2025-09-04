@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let currentFileName = '';
 
   if (logs.length === 0) {
-    container.innerHTML = '<p>履歴はありません。</p>';
+    container.innerHTML = '<p>届いた漂流瓶はありません。</p>';
     return;
   }
 
