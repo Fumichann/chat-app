@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 画面にAI返信を表示
       aiReplyContainer.innerHTML = `
         <div class="response">
-          <strong>AIからの返信:</strong>
+          <strong>届いた漂流瓶</strong>
           <p>${data.reply}</p>
         </div>
       `;

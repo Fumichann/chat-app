@@ -14,12 +14,12 @@
   <form method="POST" id="msgForm">
     <textarea id="userMsg" name="message" placeholder="漂流瓶に入れる手紙を書こう" required></textarea>
     <br>
-    <button type="submit">送信</button>
+    <button type="submit">海に投げる</button>
   </form>
 
   {% if ai_message %}
     <div class="response">
-      <strong>AIからの返信:</strong>
+      <strong>届いた漂流瓶</strong>
       <p>{{ ai_message }}</p>
     </div>
   {% endif %}
