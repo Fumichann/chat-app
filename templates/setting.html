@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>設定・遊び方・クレジット</title>
-  <link rel="stylesheet" href="setting.css">
+  <link rel="stylesheet" href="../static/css/setting.css">
 </head>
 <body>
     <p><a href="/index">← 戻る</a></p>
@@ -61,19 +61,27 @@
   <audio id="se" src="{{ url_for('static', filename='audio/se.mp3') }}"></audio>
 
 
-  <label>
-    <input type="checkbox" id="saveToggle">
-    履歴を保存する
-  </label>
+  <!-- 履歴保存・削除を中央に -->
+    <div class="history-settings">
+      <label>
+        <input type="checkbox" id="saveToggle">
+        履歴を保存する
+      </label>
+      <button id="clearHistoryBtn">履歴を削除する</button>
+    </div>
 
-  <!-- 追加：履歴削除ボタン -->
-  <div class="setting-item">
-    <button id="clearHistoryBtn">履歴を削除する</button>
+  <!-- 削除確認／通知用モーダル -->
+  <div id="deleteConfirmModal" class="modal hidden">
+    <div class="modal-content">
+      <p id="modalMessage">本当に履歴を削除しますか？</p>
+      <div class="modal-buttons">
+        <button id="confirmDelete">はい</button>
+        <button id="cancelDelete">キャンセル</button>
+      </div>
+    </div>
   </div>
 
-  <div id="customAlert" class="hidden">通知メッセージ</div>
-
   <script src="/static/scripts/setting.js"></script>
-  
+
 </body>
 </html>

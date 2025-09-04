@@ -3,7 +3,6 @@ const se = document.getElementById('se');
 const bgmSlider = document.getElementById('bgm-volume');
 const seSlider = document.getElementById('se-volume');
 const bgmSelect = document.getElementById('bgm-select');
-const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
 
 const bgmFolder = '/static/audio/';
@@ -77,59 +76,31 @@ tabButtons.forEach(btn => {
 });
 
 
-// ===== 履歴保存設定の読み書き =====
-document.addEventListener("DOMContentLoaded", () => {
+// 履歴保存設定
+  const clearHistoryBtn = document.getElementById("clearHistoryBtn");
   const saveToggle = document.getElementById("saveToggle");
-
-  // 初期表示で localStorage の値を反映
-  const savedSetting = localStorage.getItem("saveHistory");
-  saveToggle.checked = savedSetting === "true";
-
-  // 状態が変わったときに保存
+  saveToggle.checked = localStorage.getItem("saveHistory") === "true";
   saveToggle.addEventListener("change", () => {
     localStorage.setItem("saveHistory", saveToggle.checked);
-    console.log("チェックボックスが変更されました！");
-    console.log("履歴保存設定:", saveToggle.checked);
   });
-});
 
-// ===== saveSettings() が必要なら定義する =====
-function saveSettings() {
-  const saveToggle = document.getElementById("saveToggle");
-  localStorage.setItem("saveHistory", saveToggle.checked);
-  console.log("saveSettings 関数が呼ばれました");
-  console.log("履歴保存設定:", saveToggle.checked);
-}
+  // ===== 履歴削除モーダル =====
+  const modal = document.getElementById('deleteConfirmModal');
+  const modalMessage = document.getElementById('modalMessage');
+  const confirmBtn = document.getElementById('confirmDelete');
+  const cancelBtn = document.getElementById('cancelDelete');
 
-// ===== 履歴削除ボタンの処理 =====
-clearHistoryBtn.addEventListener("click", () => {
-  showCustomConfirm("本当に履歴を燃やしますか？", () => {
+  clearHistoryBtn.addEventListener('click', () => {
+    modalMessage.textContent = "本当に履歴を削除しますか？";
+    confirmBtn.style.display = cancelBtn.style.display = "inline-block";
+    modal.classList.remove('hidden');
+  });
+
+  confirmBtn.addEventListener('click', () => {
     localStorage.removeItem("chatHistory");
-    showCustomAlert("履歴を燃やしました");
-    console.log("chatHistory が削除されました。");
+    modalMessage.textContent = "履歴を削除しました";
+    confirmBtn.style.display = cancelBtn.style.display = "none";
+    setTimeout(() => modal.classList.add('hidden'), 3000);
   });
-});
 
-
-function showCustomAlert(message) {
-  const alertBox = document.getElementById("customAlert");
-  alertBox.textContent = message;
-  alertBox.style.display = "block";
-
-  // 再表示アニメーションのためにリセット
-  alertBox.style.animation = "none";
-  alertBox.offsetHeight; // 再描画を強制
-  alertBox.style.animation = "";
-
-  // アニメーション終了後に非表示
-  setTimeout(() => {
-    alertBox.style.display = "none";
-  }, 3000);
-}
-
-function showCustomConfirm(message, onConfirm) {
-  if (window.confirm(message)) {
-    onConfirm();
-  }
-}
-
+  cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
