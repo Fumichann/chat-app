@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = userMsg.value.trim();
     if (!text) return;
 
+    // フォーム非表示
+    userMsg.style.display = 'none';
+    form.querySelector('button[type="submit"]').style.display = 'none';
+
+  // 送信中表示
     aiReplyContainer.innerHTML = `<p class="sending"></p>`;
 
     try {

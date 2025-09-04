@@ -71,8 +71,8 @@ button[type="submit"]:hover {
   color: #666;
   font-style: italic;
   text-align: center;
-  margin: 10px 0;
-  font-size: 1.1em;
+  margin: 20px 0;
+  font-size: 1.2em;
 }
 
 @keyframes blinkDots {
