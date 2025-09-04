@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = userMsg.value.trim();
     if (!text) return;
 
+    aiReplyContainer.innerHTML = `<p class="sending"></p>`;
+
     try {
       const res = await fetch('/api/reply', {
         method: 'POST',
