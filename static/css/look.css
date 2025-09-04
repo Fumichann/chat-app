@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+h1 {
+  text-align: center;
+}
+
+
 .historyItem {
   background-color: #fdfdfd;
   border: 1px solid #ccc;
@@ -66,8 +71,6 @@ html,body {
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.7); /* 半透明の黒い背景 */
-  /* 中央寄せのためにflexboxを使用 */
-  display: flex; /* JavaScriptで表示する際にflexに設定される */
   justify-content: center; /* 水平方向の中央揃え */
   align-items: center; /* 垂直方向の中央揃え */
   flex-direction: column; /* 要素を縦に並べる */

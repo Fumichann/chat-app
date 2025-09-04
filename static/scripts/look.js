@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.toLocaleTimeString()}`;
   }
 
-  logs.forEach((entry, index) => {
+  logs.slice().reverse().forEach((entry, index) => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('historyItem');
 
