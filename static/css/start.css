@@ -7,7 +7,27 @@
     align-items: center;      /* 縦中央 */
     height: 100vh;            /* 画面高さいっぱい */
     width: 100vw;             /* 画面幅いっぱい */
-    background-image: url(../image/startback.png);
+}
+
+.haikei{
+  background-image: url(../image/haikei/start.JPG) ;
+  background-color: #000000;
+  z-index: -1;
+}
+
+#awa-l{
+  position: absolute;
+  left: 0;
+  width: 15vw;
+  height: auto;
+  z-index: 1;
+}
+#awa-r{
+  position: absolute;
+  right: 0;
+  width: 20vw;
+  height: auto;
+  z-index: 1;
 }
 
 .logobox{
@@ -15,32 +35,59 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 3.5rem;
-  opacity: 1;
+  margin: 4rem;
   inset: 0;
+  position: relative; /* absoluteの基準 */
+  z-index: 10;
+}
+
+#bottle {
+  position: fixed;  /* flexに影響されず重なる */
+  z-index: 9;
+  pointer-events: none; /* 必要ならクリックを透過 */
 }
 
 #logo{
-  width: 100%;
-  min-width: 300px;
+  display: block;
+  width: 60vw;
   height: auto;
-  margin: 2rem 0;
+  min-width: 280px;
+  margin-top: 2rem;
+  margin-bottom: 1.5vw;
 }
 
 #start-text{
+  font-weight: bold;
   text-align: center;
-  font-size: 300%;
-  width: 100%;
+  font-size:3vw;
   color: #006D95;
   margin: 0;
 }
 
-#fade-overlay {
+.fade {
   position: fixed;
-  inset: 0;
-  background-color: #001E30;
-  opacity: 0;
-  transition: opacity 2s ease;
+  left: 0;
+  width: 100vw;
+  height: 0;             /* 最初は非表示 */
+  background: #000000;
   z-index: 100;
-  pointer-events: none;
+  transition: height 2.5s ease-out;
+}
+
+.fade#top {
+  top: 0;
+  height: 12%;
+}
+
+.fade#bottom {
+  bottom: 0;
+  height: 12%;
+}
+
+/* 閉じる状態 */
+.close .fade#top {
+  height: 50vh;   /* 上から中央まで */
+}
+.close .fade#bottom {
+  height: 50vh;   /* 下から中央まで */
 }

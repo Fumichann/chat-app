@@ -2,23 +2,29 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ocean</title>
-    
     <link rel="stylesheet" href="../static/css/common.css">
     <link rel="stylesheet" href="../static/css/start.css">
-    
 </head>
-<body>
-    <div id="start-screen" class="haikei">
+<body class="haikei">
+        <img id="bottle" src="../static/image/start/bottle.png">
+        
+    <div id="start-screen">
         <div class="logobox">
-         <img id="logo" src="../static/image/logo.png" alt="">
-         <h1 id="start-text">-  s t a r t  -</h1>
+            <img id="logo" src="../static/image/start/logo.png" alt="">
+            <p id="start-text">-  s t a r t  -</p>
         </div>
-    </div> 
 
+        <img id="awa-l" src="../static/image/start/awa-l.webp">
+        <img id="awa-r" src="../static/image/start/awa-r.webp">
+        
+    </div> 
+    
     <!-- フェードオーバーレイ -->
-  <div id="fade-overlay" ></div>
+     <div class="fade" id="top"></div>
+     <div class="fade" id="bottom"></div>
+  <!--<div id="fade-overlay" ></div>-->
     
 </body>
 <script src="../static/scripts/start.js"></script>
