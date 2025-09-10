@@ -65,9 +65,9 @@ def get_ai_response(user_message: str) -> str:
 def start():
     return render_template("start.html")
 
-@app.route("/index")
+@app.route("/main")
 def index():
-    return render_template("index.html")
+    return render_template("main.html")
 
 @app.route("/setting")
 def setting():
