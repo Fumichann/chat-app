@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateBottleFadeUp(2500, distance);
 
     setTimeout(() => {
-        window.location.href = "main.html";
+        window.location.href = "/main";
       }, 2900); // フェード時間と合わせる
 
     });

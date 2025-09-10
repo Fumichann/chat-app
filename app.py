@@ -66,7 +66,7 @@ def start():
     return render_template("start.html")
 
 @app.route("/main")
-def index():
+def main():
     return render_template("main.html")
 
 @app.route("/setting")
