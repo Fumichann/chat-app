@@ -1,14 +1,18 @@
 # Pythonの公式イメージ（3.11）を使う
-FROM python:3.11
+FROM python:3.11-slim
 
-# コンテナ内の作業ディレクトリを /app に設定
+# 作業ディレクトリを /app に設定
 WORKDIR /app
 
-# 今のプロジェクトの中身をすべてコンテナにコピー
-COPY . .
-
-# 必要なライブラリ（FlaskやOpenAIなど）をインストール
+# 依存関係だけ先にコピーしてインストール
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# アプリ（app.py）を起動するコマンド
+# プロジェクト全体をコピー
+COPY . .
+
+# .envを環境変数に読み込めるようにする（開発用）
+ENV PYTHONUNBUFFERED=1
+
+# アプリを起動するコマンド（開発用）
 CMD ["python", "app.py"]

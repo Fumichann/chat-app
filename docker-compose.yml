@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: drift_bottle_app
+    ports:
+      - "5000:5000"   # localhost:5000でアクセス
+    volumes:
+      - .:/app        # ローカルコードをマウント
+      - ./static:/app/static
+      - ./templates:/app/templates
+      - ./.env:/app/.env
+    environment:
+      - FLASK_ENV=development
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - FLASK_DEBUG=${FLASK_DEBUG}
