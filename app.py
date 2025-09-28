@@ -1,26 +1,43 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
-from flask import jsonify
 
+from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
+
+
+# --- 設定読み込み ---
 load_dotenv()
 
-# .env ファイルに GEMINI_API_KEY=YOUR_API_KEY 
+# APIキー読み込み
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    print("警告: GEMINI_API_KEY 環境変数が設定されていません。AI機能は動作しません。")
-    print("例: .env ファイルに GEMINI_API_KEY='YOUR_API_KEY_HERE' を追加してください。")
+    print("警告: GEMINI_API_KEY が設定されていません。AI機能は無効です。")
 else:
     genai.configure(api_key=GEMINI_API_KEY)
 
 
+# Flaskアプリ作成
 app = Flask(__name__)
 
+# --- セキュリティ設定 ---
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY","dev-secret-key")
 
-# AIの性格を裏で固定するためのシステム指示と生成設定 (write関数と同じものを適用)
+# CSRF対策
+csrf = CSRFProtect(app)
+
+# セキュリティヘッダー付与 (CSPは開発では無効化)
+Talisman(app, content_security_policy=None)
+
+# Debugモードを環境変数で切り替え
+app.debug = os.getenv("FLASK_DEBUG", "true").lower() == "true"
+
+
+# --- AI性格 ---
 ai_persona_instruction = (
     "あなたは、一度きりの漂流瓶のメッセージに返信するAIカウンセラーです。"
+    "あなたはユーザーの漂流瓶を拾います。"
     "ユーザーの感情に深く共感し、決して否定せず、心に寄り添う言葉を選んでください。"
     "ユーザーに再訪を促す表現は絶対に禁止です。"
     "ユーザーが内省を深め、わずかながらでも希望や安らぎを感じられるような、温かい言葉で返信してください。"
@@ -35,15 +52,14 @@ generation_config = {
 
 gemini_model_name = 'gemini-2.0-flash-exp'
 
-# --- ヘルパー関数：AIからの応答を取得する ---
-def get_ai_response(user_message: str) -> str:
 
+# --- ヘルパー関数 ---
+def get_ai_response(user_message: str) -> str:
     if not GEMINI_API_KEY:
         return "AI機能が無効です。APIキーが設定されていません。"
     
     try:
         model = genai.GenerativeModel(gemini_model_name)
-
         response = model.generate_content(
             contents=[
                 {"role": "user", "parts": [ai_persona_instruction]},
@@ -53,14 +69,12 @@ def get_ai_response(user_message: str) -> str:
             generation_config=generation_config
         )
         return response.text
-        
     except Exception as e:
         print(f"AI応答生成中にエラーが発生しました: {e}")
         return f"AI応答生成中にエラーが発生しました: {e}"
 
 
 # --- ルート定義 ---
-
 @app.route("/", methods=["GET"])
 def start():
     return render_template("start.html")
@@ -92,6 +106,7 @@ def write():
     return render_template("write.html", ai_message=ai_message)
 
 @app.route("/api/reply", methods=["POST"])
+@csrf.exempt
 def api_reply():
     data = request.get_json()
     user_message = data.get("message", "").strip()

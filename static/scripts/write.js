@@ -27,8 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // フォーム非表示
     userMsg.style.display = 'none';
     form.querySelector('button[type="submit"]').style.display = 'none';
-
-  // 送信中表示
     aiReplyContainer.innerHTML = `<p class="sending"></p>`;
 
     try {
@@ -61,14 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function saveChatHistory(aiText) {
-    const saveSetting = localStorage.getItem("saveHistory");
-    if (saveSetting !== "true") return;
+    if (localStorage.getItem("saveHistory") !== "true") return;
 
     const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    const now = new Date();
     logs.push({
       ai: aiText,
-      date: now.toISOString()
+      date: new Date().toISOString()
     });
     localStorage.setItem('chatHistory', JSON.stringify(logs));
   }

@@ -19,7 +19,17 @@ window.addEventListener('DOMContentLoaded', () => {
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     if (isNaN(date)) return '不明';
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.toLocaleTimeString()}`;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'})}`;
+  }
+
+  // 安全に要素を作成する関数
+  function createParagraph(label, text) {
+    const p = document.createElement('p');
+    const strong = document.createElement('strong');
+    strong.textContent = label;
+    p.appendChild(strong);
+    p.appendChild(document.createTextNode(` ${text}`));
+    return p;
   }
 
   logs.slice().reverse().forEach((entry, index) => {
@@ -29,33 +39,37 @@ window.addEventListener('DOMContentLoaded', () => {
     const content = document.createElement('div');
     content.classList.add('historyContent');
 
+    const date = entry.date || '不明';
+
     if (entry.ai !== undefined) {
-      const date = entry.date || '不明';
-      content.innerHTML = `
-        <p><strong>日時:</strong> ${formatDate(date)}</p>
-        <p><strong>AI:</strong> ${entry.ai}</p>
-      `;
+      content.appendChild(createParagraph('日時:',formatDate(date)));
+      content.appendChild(createParagraph('AI:', entry.ai));
     } else if (entry.role && entry.text) {
-      const date = entry.date || '不明';
-      content.innerHTML = `
-        <p><strong>${entry.role === 'user' ? 'あなた' : 'AI'}:</strong> ${entry.text}</p>
-        <p style="font-size: 0.8em; color: gray;"><strong>日時:</strong> ${formatDate(date)}</p>
-      `;
+      content.appendChild(createParagraph(entry.role === 'user' ? 'あなた:' : 'AI:', entry.text));
+
+      const dateP = document.createElement('p');
+      dateP.style.fontSize = '0.8em';
+      dateP.style.color = 'gray';
+      dateP.appendChild(document.createElement('strong')).textContent = '日時:';
+      dateP.appendChild(document.createTextNode(` ${formatDate(date)}`));
+      content.appendChild(dateP);
     }
 
     const saveBtn = document.createElement('button');
     saveBtn.textContent = '画像として保存';
     saveBtn.classList.add('saveItemBtn');
 
-    saveBtn.addEventListener('click', () => {
+    saveBtn.addEventListener('click',() =>{
+      saveBtn.disabled = true;
       saveBtn.style.display = 'none';
+
       html2canvas(wrapper).then(canvas => {
         currentCanvas = canvas;
         currentFileName = `chat_item_${index + 1}.png`;
-
         previewImage.src = canvas.toDataURL('image/png');
         previewModal.style.display = 'flex';
       }).finally(() => {
+        saveBtn.disabled = false;
         saveBtn.style.display = 'block';
       });
     });

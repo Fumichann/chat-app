@@ -12,29 +12,29 @@
 
   <h1>漂流瓶を送る</h1>
   <form method="POST" id="msgForm">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <textarea id="userMsg" name="message" placeholder="漂流瓶に入れる手紙を書こう" required></textarea>
     <br>
     <button type="submit">海に投げる</button>
   </form>
 
-  {% if ai_message %}
-    <div class="response">
-      <strong>届いた漂流瓶</strong>
-      <p>{{ ai_message }}</p>
-    </div>
+  
+  <div id="aiReplyContainer">
+    {% if ai_message %}
+      <div class="response">
+        <strong>届いた漂流瓶</strong>
+        <p>{{ ai_message }}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if request.form.get("message") and ai_message %}
+    <div id="history-data"
+         data-user="{{ request.form.get('message') | e }}"
+         data-ai="{{ ai_message | e }}"
+         style="display: none;"></div>
   {% endif %}
 
-
-<div id="aiReplyContainer"></div>
-<script src="../static/scripts/write.js"></script>
-
-
-{% if request.form.get("message") and ai_message %}
-<div id="history-data"
-     data-user="{{ request.form.get('message') | e }}"
-     data-ai="{{ ai_message | e }}"></div>
-{% endif %}
-
-
+  <script src="../static/scripts/write.js"></script>
 </body>
 </html>
