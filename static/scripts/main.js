@@ -1,84 +1,207 @@
-document.addEventListener('DOMContentLoaded',() =>{
-  const fade = document.getElementById('fade-overlay');
-  const main = document.getElementById('main-screen');
-  const tutorial = document.getElementById('tutorial');
-  const tutorialText = document.getElementById('tutorial-text');
+document.addEventListener('DOMContentLoaded', () => {
 
-  // 1 フェードアウト処理
+const fade = document.getElementById('fade-overlay');
+const haikei = document.querySelector('.haikei')
+const maeoki = document.getElementById('maeoki');
+const maeokiText = document.getElementById('maeoki-text');
+const textImage = document.getElementById('text-img')
+const tutorial = document.getElementById('tutorial')
+const tutorialImage = document.getElementById('tutorial-img');
+const main = document.getElementById('main-screen');
+
+maeoki.addEventListener("click", () => {
+  console.log("maeoki clicked!");
+});
+
+// localstorageでチュートリアル制限
+window.onload = function() {
+  const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+
+  if (hasSeenTutorial === 'true') {
+    // maeoki と tutorial を完全にスキップ
+    maeoki.remove();
+    tutorial.remove();
+    switchToMainBackground();
+    fadeOut(fade, 2, 0.7, () => {
+    showMainScreen();
+    });
+  } else {
+    // 初回はmaeokiを出す
+    maeoki.style.opacity = 1;
+    maeoki.classList.remove("hidden");
+    showMaeoki();
+    fadeOut(fade, 2, 1, () => {
+    });
+  }
+};
+
+// フェードイン　duration=フェードにかかる時間　delay=フェードを始める待機時間
+function fadeIn(element, duration = 0, delay = 0, callback) {
+  element.classList.remove("hidden");
+  element.style.opacity = 0;
+  element.style.transition = `opacity ${duration}s ease`;
+
   setTimeout(() => {
     requestAnimationFrame(() => {
-      fade.style.opacity = 0;
+      element.style.opacity = 1;
 
-      // 完全に透明になったら非表示にする
+      if (callback) {
         setTimeout(() => {
-          fade.classList.add("hidden");
-        }, 2000); // フェードアウト時間
+          requestAnimationFrame(callback);
+        }, duration * 1000);
+      }
     });
-  }, 1000); // 黒い状態を保つ時間
+  }, delay * 1000);
+}
 
-// チュートリアルテキスト
-const tutorialTexts = [
-  "ここは誰もいない海、あなた以外誰もいない",
-  "でも海の向こうには誰かいるかもしれない",
-  "つながりを求めるのも、ひとりを楽しむのもあなたの自由",
+// フェードアウト　duration=フェードにかかる時間　delay=フェードを始める待機時間
+function fadeOut(element, duration = 0, delay = 0, callback) {
+  element.classList.remove("hidden"); // 表示状態にする
+  element.style.opacity = 1;
+  element.style.transition = `opacity ${duration}s ease-out`;
+
+  setTimeout(() => {
+    requestAnimationFrame(() => {
+      element.style.opacity = 0;
+
+      setTimeout(() => {
+        element.classList.add("hidden"); // 完全に透明になったら非表示
+        if (callback) requestAnimationFrame(callback);
+      }, duration * 1000);
+    });
+  }, delay * 1000);
+}
+
+// 背景画像切り替え
+function switchToMainBackground(){
+  haikei.classList.remove('maeoki');
+  haikei.classList.add('main');
+};
+
+// ---------------- 前置き ----------------
+// まえおきテキスト
+const maeokiTexts = [
+  "ここは誰もいない海、<wbr>あなた以外誰もいない",
+  "でも海の向こうには<wbr>誰かいるかもしれない"                                                                                            ,
+  "つながりを求めるのも、<wbr>ひとりを楽しむのもあなたの自由",
   "さぁ、あなただけの海へ"
 ];
 
 let currentIndex = 0;
-tutorialText.textContent = tutorialTexts[currentIndex];
+maeokiText.innerHTML = maeokiTexts[currentIndex];
 
-tutorial.addEventListener('click', () => {
-  tutorialText.style.opacity = 0;
+let MAnimating = false; // フェード中クリックを無効化
 
-  setTimeout(() => {
+maeoki.addEventListener('click', showMaeoki);
+function showMaeoki() {
+  if (MAnimating) return; // フェード中は無視
+
+  if (currentIndex < maeokiTexts.length) {
+    MAnimating = true;
+
+    // テキスト切り替え
+    maeokiText.style.opacity = 0;
+
     setTimeout(() => {
+      maeokiText.innerHTML = maeokiTexts[currentIndex];
+      maeokiText.style.opacity = 1;
       currentIndex++;
-      
-      if (currentIndex < tutorialTexts.length) {
-        // テキスト切り替え
-        tutorialText.textContent = tutorialTexts[currentIndex];
-        tutorialText.style.opacity = 1;
-      } else {
-        // 全文表示終了後、フェードアウト
-        tutorial.style.opacity = 0;
 
-        setTimeout(() => {
-          tutorial.classList.add("hidden");
+      // アニメーション終了後にクリックを再び有効化
+      setTimeout(() => { MAnimating = false; }, 500);
+    }, 900);
 
-        // メイン画面表示
-        main.classList.remove("hidden");
-        requestAnimationFrame(() => {
-          main.style.opacity = 1;
-        });
-      }, 1800); // チュートリアルフェードアウト
-    }}, 400); // 文字切り替え前の待機時間
-  }, 600); // テキスト切り替えまでのフェードアウト
-   // localhostに保存
-  localStorage.setItem('hasSeenTutorial', 'true');
-});
+  } else {
+    // 最後
+    maeokiText.style.opacity = 0;
+    textImage.style.opacity = 0;
 
-// メイン画面のボタンにクリックイベントを追加
-document.querySelectorAll(".link-button").forEach(button => {
-  button.addEventListener("click", function (event) {
-    event.stopPropagation(); // 背景のクリックイベントを無効にする
-    const url = this.dataset.link;
-      window.location.href = url;
+    // 黒幕フェードイン
+    setTimeout(() => {
+      fadeIn(fade, 2.5, 1.5, () => {
+        maeoki.style.opacity = 0;
+        maeoki.remove();
+        MAnimating = false;
+        showhaikei();
+      });
+    }, 800);
+  }
+}
+
+// ------------------ 背景見せ ----------------
+function showhaikei() {
+  switchToMainBackground();
+  fadeOut(fade, 2.5, 1.3, () => {
+    setTimeout(() => {
+      showTutorial(); // 初回だけここに来る
+    }, 1000);
+  });
+}
+
+// ---------------- チュートリアル ---------------
+const tutorialImages = [
+  "../static/image/tutorial/kkri.png",
+  "../static/image/tutorial/kkri2.png",
+  "../static/image/tutorial/kkri3.png"
+]; // 何枚でも追加可能
+
+let imageIndex = 0;
+tutorialImage.src = tutorialImages[imageIndex];
+
+let TAnimating = false; // フェード中クリックを無効化
+
+tutorial.addEventListener('click', showTutorial);
+function showTutorial() {
+  if (TAnimating) return;
+
+  if (imageIndex < tutorialImages.length) {
+    TAnimating = true;
+    tutorial.classList.remove("hidden");
+    tutorial.style.opacity = 1;
+
+    // 画像切り替え
+    tutorialImage.style.opacity = 0;
+    setTimeout(() => {
+      tutorialImage.src = tutorialImages[imageIndex];
+      tutorialImage.style.opacity = 1;
+      imageIndex++;
+
+      // アニメーション終了後にクリックを再び有効化
+      setTimeout(() => { TAnimating = false; }, 500);
+    },900);
+
+  } else {
+    // 最後
+    tutorialImage.style.opacity = 0;
+    localStorage.setItem('hasSeenTutorial', 'true');
+
+    setTimeout(() => {
+      tutorial.remove();
+      showMainScreen();
+    },900);
+  }
+}
+
+// ---------------- メイン ----------------
+main.addEventListener('click', showMainScreen);
+function showMainScreen() {
+  setTimeout(() => {
+  main.classList.remove("hidden");
+  requestAnimationFrame(() => {
+    main.style.opacity = 1;
+
+    // メイン画面が出たときにリンクボタンのイベントを登録
+    document.querySelectorAll(".link-button").forEach(button => {
+      console.log("showMainScreen 実行 at", new Error().stack);
+      console.log("found button:", button);
+      button.addEventListener("click", function (event) {
+        event.stopPropagation(); // 背景のクリックイベントを無効化
+        const url = this.dataset.link;
+        console.log("clicked:", url);
+        window.location.href = url;
+      });
     });
   });
+  },1300); //メイン出すまでの間
+}
 });
-
-// localstorageでチュートリアル制限
-document.addEventListener('DOMContentLoaded', () => {
-  const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
-  const tutorial = document.getElementById('tutorial');
-  const main = document.getElementById('main-screen');
-
-  if (hasSeenTutorial === 'true') {
-    tutorial.classList.add('hidden');
-    main.classList.remove('hidden');
-    main.style.opacity = 1;
-    return;
-  }
-});
-
-

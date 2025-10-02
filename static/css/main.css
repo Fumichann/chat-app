@@ -1,36 +1,91 @@
 #fade-overlay {
   position: fixed;
   inset: 0;
-  background-color: #001E30;
+  background-color: #000000;
+  /*background-color: aqua;*/
   opacity: 1;
-  transition: opacity 2s ease;
+  transition: opacity 3s ease;
   z-index: 100;
   pointer-events: none;
 }
+#fade-overlay.hidden {
+  display: none; /* クリックも透過させるなら display:none がベスト */
+}
 
-#tutorial{
-  opacity: 1;
+.haikei.maeoki{
   transition: opacity 2s ease;
-  flex-direction: column;
-  z-index: 10;
-  height: 100vh;
-  color: #fff;
+  position: fixed;
+  max-width: 1050px;
+  background-image: url("../image/haikei/road.webp");
+  z-index: 2;
 }
 
-#tutorial-text{
-  color: #fff;
-  text-align: center;
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  max-width: 600px;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-
-#main-screen{
-  display: flex;
+#maeoki{
   opacity: 0;
   transition: opacity 2s ease;
+  flex-direction: column;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;  /* 横中央 */
+  align-items: center;      /* 縦中央 */
+  height: 100vh;            /* 画面高さいっぱい */
+  width: 100vw;             /* 画面幅いっぱい */
+  z-index: 50;
+}
+
+#maeoki-text{
+  color: #fff;
+  text-align: center;
+  font-size: 1.7rem;
+  margin: 0 8vw 3vw;
+  height: 10vh;
+  opacity: 0;
+  transition: opacity 1.3s ease-in;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#text-img{
+  width: 5vw;
+  min-width: 45px;
+  transition: opacity 1.3s ease-in;
+}
+
+.haikei.main{
+  transition: opacity 2s ease;
+  position: fixed;
+  background-image: url("../image/haikei/kari.PNG");
+  z-index: -1;
+}
+
+#tutorial{
+  z-index: 90;
+  opacity: 0;
+  width: 100vw;
+  height: 100vh;
+}
+#tutorial-img{
+  opacity: 1;
+  width: 90vw;
+  height: auto;
+  transition: opacity 1s ease;
+}
+
+#main-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;  /* 横中央 */
+  align-items: center;      /* 縦中央 */
+  height: 100vh;            /* 画面高さいっぱい */
+  width: 100vw;             /* 画面幅いっぱい */
+  transition: opacity 1s ease;
+  opacity: 0;
 }
 
 #link-buttons {
