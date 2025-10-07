@@ -92,6 +92,9 @@ def setting():
 def look():
     return render_template("look.html")
 
+@app.route("/bgm")
+def bgm():
+    return app.send_static_file("bgm.html")
 
 @app.route("/write", methods=["GET", "POST"])
 def write():

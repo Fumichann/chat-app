@@ -7,6 +7,7 @@
 </head>
 <body>
     <p><a href="/main">← 戻る</a></p>
+
   <div class="tab-container">
     <div class="tab-buttons">
       <button class="tab-btn active" data-tab="settings-tab">設定</button>
@@ -16,7 +17,6 @@
 
     <div class="tab-content" id="settings-tab">
       <h2>設定</h2>
-
       <div class="setting-item">
         <label for="bgm-volume">BGM 音量</label>
         <input type="range" id="bgm-volume" min="0" max="1" step="0.01" value="0.5">
@@ -35,7 +35,6 @@
           <option value="bgm3.mp3">神秘的な曲</option>
         </select>
       </div>
-
     </div>
 
     <div class="tab-content" id="howto-tab" style="display: none;">
@@ -57,9 +56,7 @@
     </div>
   </div>
 
-  <audio id="bgm" loop autoplay></audio>
-  <audio id="se" src="{{ url_for('static', filename='audio/se.mp3') }}"></audio>
-
+  <audio id="se" src="/static/audio/se.mp3"></audio>
 
   <!-- 履歴保存・削除を中央に -->
     <div class="history-settings">
@@ -81,7 +78,42 @@
     </div>
   </div>
 
+  <script>
+    const bgmFrame = document.getElementById('bgm-frame');
+    let bgmAudio;
+
+    // iframe 読み込み後に取得
+    bgmFrame.addEventListener('load', () => {
+      bgmAudio = bgmFrame.contentWindow.document.getElementById('bgm');
+
+      // 初回ユーザー操作で再生開始（iOS/Chrome 対策）
+      const startAudio = () => {
+        bgmAudio.play().catch(() => {});
+        document.body.removeEventListener('click', startAudio);
+        document.body.removeEventListener('touchstart', startAudio);
+      };
+      document.body.addEventListener('click', startAudio);
+      document.body.addEventListener('touchstart', startAudio);
+    });
+  </script>
+
   <script src="/static/scripts/setting.js"></script>
 
+  <script>
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.tab;
+        tabContents.forEach(content => {
+          content.style.display = content.id === target ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+<!-- 🎵 BGM用iframe（非表示） -->
+<iframe src="/bgm" style="display:none;" id="bgm-frame"></iframe>
 </body>
 </html>

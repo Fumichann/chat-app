@@ -1,68 +1,52 @@
-const bgm = document.getElementById('bgm');
+// === BGM・SE 設定 ===
+const bgmFrame = document.getElementById('bgm-frame');
 const se = document.getElementById('se');
 const bgmSlider = document.getElementById('bgm-volume');
 const seSlider = document.getElementById('se-volume');
 const bgmSelect = document.getElementById('bgm-select');
-
-
 const bgmFolder = '/static/audio/';
 
-function saveSettings() {
-  localStorage.setItem('bgmVolume', bgmSlider.value);
-  localStorage.setItem('seVolume', seSlider.value);
-  localStorage.setItem('selectedBGM', bgmSelect.value);
-  
-}
+window.addEventListener('DOMContentLoaded', () => {
+  const savedBGMVol = parseFloat(localStorage.getItem('bgmVolume')) || 0.5;
+  const savedSEVol = parseFloat(localStorage.getItem('seVolume')) || 0.5;
+  const savedBGMFile = localStorage.getItem('selectedBGM') || 'bgm1.mp3';
 
-window.addEventListener('load', () => {
-  const savedBGM = localStorage.getItem('bgmVolume');
-  const savedSE = localStorage.getItem('seVolume');
-  const savedBGMFile = localStorage.getItem('selectedBGM');
+  bgmSlider.value = savedBGMVol;
+  seSlider.value = savedSEVol;
+  bgmSelect.value = savedBGMFile;
+  se.volume = savedSEVol;
 
-  if (savedBGM !== null) {
-    bgmSlider.value = savedBGM;
-    bgm.volume = savedBGM;
-  }
-  if (savedSE !== null) {
-    seSlider.value = savedSE;
-    se.volume = savedSE;
-  }
-  if (savedBGMFile) {
-    bgmSelect.value = savedBGMFile;
-    bgm.src = bgmFolder + savedBGMFile;
-    bgm.load();
-    bgm.play();
-  } else {
-    const defaultBGM = 'bgm1.mp3';
-    bgm.src = bgmFolder + defaultBGM;
-    bgmSelect.value = defaultBGM;
-    bgm.load();
-    bgm.play();
-  }
+  // iframeが読み込まれたらBGM要素を取得
+  bgmFrame.addEventListener('load', () => {
+    bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: savedBGMVol }, '*');
+    bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + savedBGMFile }, '*');
+  });
 });
 
-bgmSlider.addEventListener('input', () => {
-  bgm.volume = bgmSlider.value;
-});
-
+// === SE 音量 ===
 seSlider.addEventListener('input', () => {
-  se.volume = seSlider.value;
+  const vol = parseFloat(seSlider.value);
+  se.volume = vol;
   se.currentTime = 0;
   se.play();
+  localStorage.setItem('seVolume', vol);
 });
 
+// === BGM 音量 ===
+bgmSlider.addEventListener('input', () => {
+  const vol = parseFloat(bgmSlider.value);
+  localStorage.setItem('bgmVolume', vol);
+  bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: vol }, '*');
+});
+
+// === BGM切り替え ===
 bgmSelect.addEventListener('change', () => {
   const selectedBGM = bgmSelect.value;
-  bgm.src = bgmFolder + selectedBGM;
-  bgm.load();
-  bgm.play();
   localStorage.setItem('selectedBGM', selectedBGM);
+  bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + selectedBGM }, '*');
 });
 
 // タブ切り替え
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-
 tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     tabButtons.forEach(b => b.classList.remove('active'));

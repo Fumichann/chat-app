@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>BGM Player</title>
+</head>
+<body>
+  <audio id="bgm" loop autoplay></audio>
+
+  <script>
+    const audio = document.getElementById("bgm");
+    const savedVolume = parseFloat(localStorage.getItem("bgmVolume")) || 0.5;
+    const savedFile = localStorage.getItem("selectedBGM") || "bgm1.mp3";
+    audio.volume = savedVolume;
+    audio.src = `/static/audio/${savedFile}`;
+
+    // iOS対策（ユーザー操作で再生許可）
+    const startAudio = () => {
+      audio.play().catch(()=>{});
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('touchstart', startAudio);
+    };
+    document.addEventListener('click', startAudio);
+    document.addEventListener('touchstart', startAudio);
+
+    // 設定ページからの命令を受け取る
+    window.addEventListener("message",(event) => {
+      const data = event.data;
+      if (data.type === "setVolume"){
+        audio.volume = data.value;
+      }else if (data.type === "setMusic"){
+        audio.src = data.value;
+        audio.play().catch(()=>{});
+      }
+    });
+  </script>
+</body>
+</html>
