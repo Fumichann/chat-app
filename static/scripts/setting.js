@@ -1,12 +1,12 @@
-// === BGM・SE 設定 ===
-const bgmFrame = document.getElementById('bgm-frame');
-const se = document.getElementById('se');
-const bgmSlider = document.getElementById('bgm-volume');
-const seSlider = document.getElementById('se-volume');
-const bgmSelect = document.getElementById('bgm-select');
-const bgmFolder = '/static/audio/';
-
 window.addEventListener('DOMContentLoaded', () => {
+  // === BGM・SE 設定 ===
+  const bgmFrame = document.getElementById('bgm-frame');
+  const se = document.getElementById('se');
+  const bgmSlider = document.getElementById('bgm-volume');
+  const seSlider = document.getElementById('se-volume');
+  const bgmSelect = document.getElementById('bgm-select');
+  const bgmFolder = '/static/audio/';
+
   const savedBGMVol = parseFloat(localStorage.getItem('bgmVolume')) || 0.5;
   const savedSEVol = parseFloat(localStorage.getItem('seVolume')) || 0.5;
   const savedBGMFile = localStorage.getItem('selectedBGM') || 'bgm1.mp3';
@@ -17,63 +17,73 @@ window.addEventListener('DOMContentLoaded', () => {
   se.volume = savedSEVol;
 
   // iframeが読み込まれたらBGM要素を取得
-  bgmFrame.addEventListener('load', () => {
-    bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: savedBGMVol }, '*');
-    bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + savedBGMFile }, '*');
-  });
-});
+  if (bgmFrame){
+    bgmFrame.addEventListener('load', () => {
+      bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: savedBGMVol }, '*');
+      bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + savedBGMFile }, '*');
+    });
+  }
 
-// === SE 音量 ===
-seSlider.addEventListener('input', () => {
-  const vol = parseFloat(seSlider.value);
-  se.volume = vol;
-  se.currentTime = 0;
-  se.play();
-  localStorage.setItem('seVolume', vol);
-});
+  // === SE 音量 ===
+  seSlider.addEventListener('input', () => {
+    const vol = parseFloat(seSlider.value);
+    se.volume = vol;
+    se.currentTime = 0;
+    se.play();
+    localStorage.setItem('seVolume', vol);
+  });
 
 // === BGM 音量 ===
-bgmSlider.addEventListener('input', () => {
-  const vol = parseFloat(bgmSlider.value);
-  localStorage.setItem('bgmVolume', vol);
-  bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: vol }, '*');
-});
+  bgmSlider.addEventListener('input', () => {
+    const vol = parseFloat(bgmSlider.value);
+    localStorage.setItem('bgmVolume', vol);
+    if (bgmFrame && bgmFrame.contentWindow) {
+      bgmFrame.contentWindow.postMessage({ type: 'setVolume', value: vol }, '*');
+    }
+  });
+
 
 // === BGM切り替え ===
-bgmSelect.addEventListener('change', () => {
-  const selectedBGM = bgmSelect.value;
-  localStorage.setItem('selectedBGM', selectedBGM);
-  bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + selectedBGM }, '*');
-});
+  bgmSelect.addEventListener('change', () => {
+    const selectedBGM = bgmSelect.value;
+    localStorage.setItem('selectedBGM', selectedBGM);
+    if (bgmFrame && bgmFrame.contentWindow) {
+      bgmFrame.contentWindow.postMessage({ type: 'setMusic', value: bgmFolder + selectedBGM }, '*');
+    }
+  });
 
-// タブ切り替え
-tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+ // === タブ切り替え ===
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-    const target = btn.dataset.tab;
-    tabContents.forEach(content => {
-      content.style.display = content.id === target ? 'block' : 'none';
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const target = btn.dataset.tab;
+      tabContents.forEach(content => {
+        content.style.display = content.id === target ? 'block' : 'none';
+      });
     });
   });
-});
 
 
-// 履歴保存設定
+// ===== 履歴保存設定 =====
   const clearHistoryBtn = document.getElementById("clearHistoryBtn");
   const saveToggle = document.getElementById("saveToggle");
-  saveToggle.checked = localStorage.getItem("saveHistory") === "true";
-  saveToggle.addEventListener("change", () => {
-    localStorage.setItem("saveHistory", saveToggle.checked);
-  });
-
-  // ===== 履歴削除モーダル =====
   const modal = document.getElementById('deleteConfirmModal');
   const modalMessage = document.getElementById('modalMessage');
   const confirmBtn = document.getElementById('confirmDelete');
   const cancelBtn = document.getElementById('cancelDelete');
 
+// ===== チェックボックスの状態復元 =====
+  saveToggle.checked = localStorage.getItem("saveHistory") === "true";
+  saveToggle.addEventListener("change", () => {
+    localStorage.setItem("saveHistory", saveToggle.checked);
+  });
+
+// ===== 履歴削除モーダル =====
   clearHistoryBtn.addEventListener('click', () => {
     modalMessage.textContent = "本当に履歴を削除しますか？";
     confirmBtn.style.display = cancelBtn.style.display = "inline-block";
@@ -88,23 +98,25 @@ tabButtons.forEach(btn => {
   });
 
   cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+});
 
+// === Howler.jsの共通BGM ===
   if (!window.sharedBGM) {
-  window.sharedBGM = new Howl({
-    src: ["/static/audio/bgm1.mp3"],
-    loop: true,
-    volume: localStorage.getItem("bgmVolume") 
-      ? parseFloat(localStorage.getItem("bgmVolume")) 
-      : 0.5
-  });
-  window.sharedBGM.play();
-} else {
-  console.log("既存のBGMを継続再生中");
-}
+    window.sharedBGM = new Howl({
+      src: ["/static/audio/bgm1.mp3"],
+      loop: true,
+      volume: localStorage.getItem("bgmVolume") 
+        ? parseFloat(localStorage.getItem("bgmVolume")) 
+        : 0.5
+    });
+    window.sharedBGM.play();
+  } else {
+    console.log("既存のBGMを継続再生中");
+  }
 
 // 音量変更を反映
-window.addEventListener("storage", (event) => {
-  if (event.key === "bgmVolume") {
-    window.sharedBGM.volume(parseFloat(event.newValue));
-  }
-});
+  window.addEventListener("storage", (event) => {
+    if (event.key === "bgmVolume") {
+      window.sharedBGM.volume(parseFloat(event.newValue));
+    }
+  });
