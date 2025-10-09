@@ -12,7 +12,6 @@
 <body>
   <p><a href="/main">← 戻る</a></p>
 
-
   <h1>漂流瓶を送る</h1>
   <form method="POST" id="msgForm">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -20,7 +19,6 @@
     <br>
     <button type="submit">海に投げる</button>
   </form>
-
   
   <div id="aiReplyContainer">
     {% if ai_message %}
