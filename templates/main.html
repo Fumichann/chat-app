@@ -6,33 +6,38 @@
   <title>漂流瓶</title>
   <link rel="stylesheet" href="../static/css/common.css">
   <link rel="stylesheet" href="../static/css/main.css">
+
+  <!-- 🔹 Howler.js & Barba.js 読み込み -->
+   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  <script src="https://unpkg.com/@barba/core"></script>
 </head>
-<body>
-  <!-- フェードオーバーレイ -->
-<div id="fade-overlay"></div>
 
-<div class="haikei maeoki"></div>
+<body data-barba="wrapper">
+  <div data-barba="container" data-barba-namespace="main">
+    <!-- フェードオーバーレイ -->
+    <div id="fade-overlay"></div>
 
-<div id="maeoki" class="hidden">
-  <div id="maeoki-text"></div>
-  <img id="text-img" src="../static/image/messe.webp">
-</div>
+    <div class="haikei maeoki"></div>
 
-<div id="tutorial" class="hidden">
-  <img id="tutorial-img" src="../static/image/tutorial/kkri.png">
-</div>
-
-<div id="main-screen" class="screen hidden">
-    <div id="link-buttons">
-      <button class="link-button" data-link="/write">手紙を書く</button>
-      <button class="link-button" data-link="/look">手紙を見る</button>
-      <button class="link-button" data-link="/setting">設定</button>
+    <div id="maeoki" class="hidden">
+      <div id="maeoki-text"></div>
+      <img id="text-img" src="../static/image/messe.webp">
     </div>
-</div>
+
+    <div id="tutorial" class="hidden">
+      <img id="tutorial-img" src="../static/image/tutorial/kkri.png">
+    </div>
+
+    <div id="main-screen" class="screen hidden">
+      <div id="link-buttons">
+        <button class="link-button" data-link="/write">手紙を書く</button>
+        <button class="link-button" data-link="/look">手紙を見る</button>
+        <button class="link-button" data-link="/setting">設定</button>
+      </div>
+    </div>
+  </div>
     
   <script src="../static/scripts/main.js"></script>
-
-<!-- BGM用iframe（非表示） -->
-<iframe src="/bgm" style="display:none;" id="bgm-frame"></iframe>
 </body>
 </html>

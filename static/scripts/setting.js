@@ -88,3 +88,23 @@ tabButtons.forEach(btn => {
   });
 
   cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+  if (!window.sharedBGM) {
+  window.sharedBGM = new Howl({
+    src: ["/static/audio/bgm1.mp3"],
+    loop: true,
+    volume: localStorage.getItem("bgmVolume") 
+      ? parseFloat(localStorage.getItem("bgmVolume")) 
+      : 0.5
+  });
+  window.sharedBGM.play();
+} else {
+  console.log("既存のBGMを継続再生中");
+}
+
+// 音量変更を反映
+window.addEventListener("storage", (event) => {
+  if (event.key === "bgmVolume") {
+    window.sharedBGM.volume(parseFloat(event.newValue));
+  }
+});

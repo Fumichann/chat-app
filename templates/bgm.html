@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>BGM</title>
+</head>
+<body>
+  <!-- BGMプレイヤー -->
+  <audio id="bgm" autoplay loop></audio>
+
+  <script>
+    const audio = document.getElementById('bgm');
+
+    // 保存済み設定を反映
+    const savedVolume = parseFloat(localStorage.getItem('bgmVolume')) || 0.5;
+    const savedMusic = localStorage.getItem('selectedBGM') || 'bgm1.mp3';
+    audio.volume = savedVolume;
+    audio.src = `/static/audio/${savedMusic}`;
+    audio.play().catch(() => {});
+
+    // 親ウィンドウからのメッセージを受信（音量・曲変更）
+    window.addEventListener('message', (event) => {
+      const data = event.data;
+      if (!data || typeof data !== 'object') return;
+
+      if (data.type === 'setVolume') {
+        audio.volume = data.value;
+      }
+      if (data.type === 'setMusic') {
+        audio.src = data.value;
+        audio.play().catch(() => {});
+      }
+    });
+
+    // iOS・Chrome対策（初回クリックで再生許可）
+    const enablePlay = () => {
+      audio.play().catch(() => {});
+      document.removeEventListener('click', enablePlay);
+      document.removeEventListener('touchstart', enablePlay);
+    };
+    document.addEventListener('click', enablePlay);
+    document.addEventListener('touchstart', enablePlay);
+  </script>
+</body>
+</html>
