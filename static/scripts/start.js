@@ -3,6 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const bottle = document.getElementById('bottle');
   let closed = false;
 
+// 🫧 効果音（泡の音）設定
+  const bubbleSound = new Howl({
+    src: ["/static/audio/deep bubbles.mp3"],
+    volume: 0.7,
+    loop: true, // 🔁 フェード中ずっとループ再生
+  });
+
+
   function updateBottlePosition() {
     const rect = logo.getBoundingClientRect(); // logo の位置とサイズ
     bottle.style.top = rect.top + 'px';
@@ -44,20 +52,32 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(frame);
   }
 
+  
+  // --- クリックイベント ---
   document.addEventListener("click", () => {
-    
     if (closed) return;
     closed = true;
+
+    //泡音スタート（ループON）
+    bubbleSound.play();
+
     setTimeout(() => {
-  document.body.classList.add('close');
-}, 300); // 1秒後にフェード開始
+      document.body.classList.add('close');
+    }, 300); // 1秒後にフェード開始
 
     const distance = window.innerWidth * 0.03; // 画面の3%分上に移動
     animateBottleFadeUp(2500, distance);
 
+    //3.5秒後くらいから音をゆっくりフェードアウト（2秒かけて）
     setTimeout(() => {
-        window.location.href = "/main";
-      }, 2900); // フェード時間と合わせる
+      bubbleSound.fade(0.2, 0, 2000);
+    }, 3500);
 
-    });
-  }, { once: true });
+    setTimeout(() => {
+      bubbleSound.stop(); // フェード終わりで静かに停止
+      window.location.href = "/main";
+    }, 5000); // フェード時間と合わせる
+  },
+  { once: true }
+);
+});
