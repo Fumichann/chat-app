@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //3.5秒後くらいから音をゆっくりフェードアウト（2秒かけて）
     setTimeout(() => {
-      bubbleSound.fade(0.2, 0, 2000);
+      bubbleSound.fade(0.1, 0, 3000);
     }, 3500);
 
     setTimeout(() => {

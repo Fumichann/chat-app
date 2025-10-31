@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+//デバッグ用：毎回前置きを表示（確認が終わったら削除！）
+localStorage.removeItem('hasSeenTutorial');
+
 const fade = document.getElementById('fade-overlay');
 const haikei = document.querySelector('.haikei')
 const maeoki = document.getElementById('maeoki');
@@ -12,6 +15,36 @@ const main = document.getElementById('main-screen');
 maeoki.addEventListener("click", () => {
   console.log("maeoki clicked!");
 });
+
+// 前置き中の効果音
+let maeokiBGM;
+
+function startMaeokiBGM() {
+  if (!maeokiBGM) {
+    maeokiBGM = new Howl({
+      src: ["/static/audio/deep bubbles.mp3"],
+      loop: true,
+      volume: 0,
+    });
+    maeokiBGM.play();
+  //ゆっくりフェードイン（4秒かけて 0 → 0.）
+    maeokiBGM.fade(0, 0.4, 4000);
+    
+    console.log("Maeoki BGM started");
+  }
+}
+
+function stopMaeokiBGM() {
+  if (maeokiBGM) {
+    // ゆっくり2秒かけてフェードアウト
+    maeokiBGM.fade(maeokiBGM.volume(), 0, 2000);
+    setTimeout(() => {
+      maeokiBGM.stop();
+      maeokiBGM = null;
+      console.log("Maeoki BGM stopped");
+    }, 2000);
+  }
+}
 
 // localstorageでチュートリアル制限
 window.onload = function() {
@@ -29,6 +62,10 @@ window.onload = function() {
     // 初回はmaeokiを出す
     maeoki.style.opacity = 1;
     maeoki.classList.remove("hidden");
+
+    // 🎵 前置き音スタート
+    startMaeokiBGM();
+
     showMaeoki();
     fadeOut(fade, 2, 1, () => {
     });
@@ -101,6 +138,7 @@ function showMaeoki() {
 
     // テキスト切り替え
     maeokiText.style.opacity = 0;
+    maeokiText.style.transition = "opacity 2s ease"; // フェード速度をゆっくりに
 
     setTimeout(() => {
       maeokiText.innerHTML = maeokiTexts[currentIndex];
@@ -108,13 +146,16 @@ function showMaeoki() {
       currentIndex++;
 
       // アニメーション終了後にクリックを再び有効化
-      setTimeout(() => { MAnimating = false; }, 500);
-    }, 900);
+      setTimeout(() => { MAnimating = false; }, 2000);
+    }, 1500);
 
   } else {
     // 最後
     maeokiText.style.opacity = 0;
     textImage.style.opacity = 0;
+
+    // 🎵 前置きBGMフェードアウト
+    stopMaeokiBGM();
 
     // 黒幕フェードイン
     setTimeout(() => {
