@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 //デバッグ用：毎回前置きを表示（確認が終わったら削除！）
-localStorage.removeItem('hasSeenTutorial');
+//localStorage.removeItem('hasSeenTutorial');
 
 const fade = document.getElementById('fade-overlay');
 const haikei = document.querySelector('.haikei')
@@ -16,34 +16,68 @@ maeoki.addEventListener("click", () => {
   console.log("maeoki clicked!");
 });
 
-// 前置き中の効果音
+//  (Howler.js)用のBGM変数
 let maeokiBGM;
+let mainBGM;
 
+//前置きBGMの再生
 function startMaeokiBGM() {
   if (!maeokiBGM) {
     maeokiBGM = new Howl({
-      src: ["/static/audio/deep bubbles.mp3"],
-      loop: true,
+      src: ["/static/audio/deep bubble.mp3"],
+      loop: true,//ループ再生
       volume: 0,
     });
     maeokiBGM.play();
-  //ゆっくりフェードイン（4秒かけて 0 → 0.）
+    //ゆっくりフェードイン（4秒かけて）
     maeokiBGM.fade(0, 0.4, 4000);
     
     console.log("Maeoki BGM started");
   }
 }
 
+//前置きBGMの停止
 function stopMaeokiBGM() {
   if (maeokiBGM) {
-    // ゆっくり2秒かけてフェードアウト
-    maeokiBGM.fade(maeokiBGM.volume(), 0, 2000);
+    // ゆっくりフェードアウト（4.5秒かけて）
+    maeokiBGM.fade(maeokiBGM.volume(), 0, 4500);
     setTimeout(() => {
       maeokiBGM.stop();
       maeokiBGM = null;
       console.log("Maeoki BGM stopped");
-    }, 2000);
+    }, 4600);
   }
+}
+
+//メインBGMの再生
+function startMainBGM() {
+    if (!mainBGM) {
+        mainBGM = new Howl({
+            src: ["/static/audio/main beach2.mp3"],
+            loop: true, // ループ再生
+            volume: 0,
+        });
+        mainBGM.play();
+        // ゆっくりフェードイン（4秒かけて）
+        mainBGM.fade(0, 0.4, 4000); 
+        console.log("Main BGM started");
+    }
+}
+
+// メインBGMの停止
+function stopMainBGM(callback) {
+    if (mainBGM) {
+        mainBGM.fade(mainBGM.volume(), 0, 2000);
+        setTimeout(() => {
+            mainBGM.stop();
+            mainBGM = null;
+            console.log("Main BGM stopped");
+            //BGM停止後にコールバックを実行
+            if(callback){
+              callback();
+            }
+        }, 2000);
+    }
 }
 
 // localstorageでチュートリアル制限
@@ -54,7 +88,10 @@ window.onload = function() {
     // maeoki と tutorial を完全にスキップ
     maeoki.remove();
     tutorial.remove();
+    //メインBGMの再生開始
+    startMainBGM();
     switchToMainBackground();
+
     fadeOut(fade, 2, 0.7, () => {
     showMainScreen();
     });
@@ -63,7 +100,7 @@ window.onload = function() {
     maeoki.style.opacity = 1;
     maeoki.classList.remove("hidden");
 
-    // 🎵 前置き音スタート
+    // 前置きBGMの再生開始
     startMaeokiBGM();
 
     showMaeoki();
@@ -138,7 +175,7 @@ function showMaeoki() {
 
     // テキスト切り替え
     maeokiText.style.opacity = 0;
-    maeokiText.style.transition = "opacity 2s ease"; // フェード速度をゆっくりに
+    maeokiText.style.transition = "opacity 1.5s ease"; // フェード速度をゆっくりに
 
     setTimeout(() => {
       maeokiText.innerHTML = maeokiTexts[currentIndex];
@@ -146,7 +183,7 @@ function showMaeoki() {
       currentIndex++;
 
       // アニメーション終了後にクリックを再び有効化
-      setTimeout(() => { MAnimating = false; }, 2000);
+      setTimeout(() => { MAnimating = false; }, 600);//クリック可能になるまでの速さ（0.6秒）
     }, 1500);
 
   } else {
@@ -172,6 +209,10 @@ function showMaeoki() {
 // ------------------ 背景見せ ----------------
 function showhaikei() {
   switchToMainBackground();
+
+  // メインBGMの再生開始
+  startMainBGM();
+
   fadeOut(fade, 2.5, 1.3, () => {
     setTimeout(() => {
       showTutorial(); // 初回だけここに来る
@@ -231,6 +272,9 @@ function showMainScreen() {
   requestAnimationFrame(() => {
     main.style.opacity = 1;
 
+    //メインBGMの再生開始
+    startMainBGM();
+
     // メイン画面が出たときにリンクボタンのイベントを登録
     document.querySelectorAll(".link-button").forEach(button => {
       console.log("showMainScreen 実行 at", new Error().stack);
@@ -239,10 +283,20 @@ function showMainScreen() {
         event.stopPropagation(); // 背景のクリックイベントを無効化
         const url = this.dataset.link;
         console.log("clicked:", url);
-        window.location.href = url;
+
+        // ページ遷移処理を関数として定義
+        const navigate = () => {
+          window.location.href = url;
+        };
+        // stopMainBGM()を呼び出し、完了後に navigate 関数を実行させる
+        // 修正した stopMainBGM 関数
+        stopMainBGM(navigate);
+
+        // BGMが再生されていない場合は、stopMainBGM 内で navigate が即座に実行される
+        
       });
     });
   });
-  },1300); //メイン出すまでの間
+  },1500); //メイン出すまでの間
 }
 });
