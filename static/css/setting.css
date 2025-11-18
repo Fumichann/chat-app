@@ -1,62 +1,249 @@
-.history-settings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  gap: 12px;
-}
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+  }
 
-/* モーダル */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
+  .haikei{
+  background-image: url(/static/image/haikei/kari.PNG);
+  }
+
+  /* 本全体のラッパー */
+  #book-wrapper {
+    position: relative;
+    margin: auto;
+    flex-shrink: 0; /* ← これ重要：画面が小さくても縮まない */
+  }
+
+  /* 背表紙（見開き1枚） */
+  #cover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1600px;    /* flipbookと同じ幅 */
+    height: 1200px;   /* flipbookと同じ高さ */
+    object-fit: contain;
+    z-index: 1;    /* 背表紙を前面に */
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+  }
+
+  /* turn.js本体 */
+  #flipbook {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1600px;   /* 背表紙と同じサイズ */
+    height: 1200px;
+    z-index: 10;
+    cursor: pointer;
+    pointer-events: none;
+  }
+
+  .page {
+    position: relative;
+    overflow: hidden;
+    width: 800px;    /* 見開きの片側 */
+    height: 900px;
+    z-index: 20;
+  }
+
+  .page-inner {
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+  .page-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .overlay {
+  position: absolute;
+  top: 72%;
+  left: 51%;
+  width: 100%;
+  max-width: 1600px;
+  height: 700px;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(var(--overlay-scale, 1));
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  z-index: 10;
 }
 
-.modal.hidden { display: none; }
-
-.modal-content {
-  background-color: white;
-  padding: 24px 32px;
-  border-radius: 10px;
-  text-align: center;
-  min-width: 300px;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.modal-buttons {
-  margin-top: 20px;
+.overlay-inner {
+  width: 88%;
+  height: 65%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: start;
+  transform: none;
 }
 
-.modal-buttons button {
-  padding: 8px 20px;
-  border-radius: 6px;
-  border: none;
+.page-text {
+  transform: translateY(-50%);
+  width: 45%;
+  font-size: 32px;
+  color: #222;
+  text-align: left;
+}
+
+.page-text.left {
+  left: 5%;
+  text-align: left;
+}
+
+.page-text.right {
+  right: 5%;
+  text-align: left;
+}
+
+.music-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index: 999;
+  gap: 1em;
+  padding-bottom: 0.5em;
+}
+
+.dots {
+  position: relative;
+  display: flex;
+  gap: 0.3em;
   cursor: pointer;
-  font-size: 1em;
 }
 
-#confirmDelete {
-  background-color: #e74c3c;
-  color: white;
+.dots span {
+  width: 0.6em;
+  height: 0.6em;
+  background: #efcf85;
+  transition: background 0.2s;
 }
-#confirmDelete:hover { background-color: #c0392b; }
 
-#cancelDelete {
-  background-color: #ccc;
+.dots span.active {
+  background: #77ccf9;
 }
-#cancelDelete:hover { background-color: #999; }
+
+.mute-btn {
+  width: 1.5em;
+  height: 1.5em;
+  cursor: pointer;
+}
+
+#save{
+  margin-top: 1em;
+}
+#local{
+  display: flex;
+  align-items: center;
+
+}
+#local-btn{
+  width: 1.5em;
+  height: 1.5em;
+  cursor: pointer;
+}
+
+#delete {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 10px;
+}
+#delete-btn {
+  width: 1.7em;
+  height: 1.7em;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+#back {
+  position: absolute;
+  display: inline-block;
+  overflow: visible; /* ← はみ出しを許可 */
+  left: 2%;
+  top: 120%;
+  margin-top: 1.5em;
+  cursor: pointer;
+}
+
+#back label {
+  position: relative;
+  z-index: 1;
+  padding: 1em 0.3em;
+  font-size: 1.4em;
+}
+
+/* 背景画像を label の後ろに出す */
+#back::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -32%;
+  width: 170%;
+  height: 170%;
+  background: url(/static/image/settei/back.PNG) no-repeat center / contain;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+#next{
+  position: absolute;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: end;
+  right: 0;
+  margin-left: auto;
+  margin-top: 1.6em;
+  transform: rotate(-10deg);
+  cursor: pointer;
+}
+#next-btn {
+  width: 2.8em;
+  height: 1.4em;
+  transition: transform 0.2s;
+  background-size: cover;
+}
+
+#previous{
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: start;
+  margin-top: 3em;
+  transform: rotate(-10deg);
+  cursor: pointer;
+}
+#prev-btn {
+  width: 2.8em;
+  height: 1.4em;
+  transition: transform 0.2s;
+}
+
+
+.book-text{
+  position: absolute;
+  top: 39%;
+  left: 9%;
+  margin: 0;
+  transform: translateY(-50%);
+  width: 90%;
+  font-size: 32px;
+  color: #222;
+  text-align: left;
+}

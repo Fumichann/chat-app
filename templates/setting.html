@@ -3,82 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <title>設定・遊び方・クレジット</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
   <link rel="stylesheet" href="../static/css/setting.css">
 </head>
-<body>
-    <p><a href="/main">← 戻る</a></p>
+<body class="haikei">
 
-  <div class="tab-container">
-    <div class="tab-buttons">
-      <button class="tab-btn active" data-tab="settings-tab">設定</button>
-      <button class="tab-btn" data-tab="howto-tab">遊び方</button>
-      <button class="tab-btn" data-tab="credits-tab">クレジット</button>
-    </div>
+<div id="book-wrapper">
+  <!-- 背表紙 -->
+  <img id="cover" src="/static/image/settei/aa.PNG" alt="背表紙">
 
-    <div class="tab-content" id="settings-tab">
-      <h2>設定</h2>
+  <div class="overlay">
+    <div class="overlay-inner">
+      <div id="1" class="page-text left">
+        <h2>設定</h2>
+        <div class="music-container">
+          <label for="bgm-volume">BGM 音量</label>
+          <img class="mute-btn" id="bgm-mute" src="/static/image/settei/mute1.PNG" >
+          <div class="dots bgm" id="bgm-dots"></div>
+          <audio id="bgm-audio" src="/static/audio/波.mp3" loop autoplay></audio>
+        </div>
 
-      <div class="setting-item">
-        <label for="bgm-volume">BGM 音量</label>
-        <input type="range" id="bgm-volume" min="0" max="1" step="0.01" value="0.5">
+        <div class="music-container">
+          <label for="se-volume">SE 音量　</label>
+          <img class="mute-btn" id="se-mute" src="/static/image/settei/mute3.PNG" >
+          <div class="dots bgm" id="se-dots"></div>
+          <audio id="se-audio" src="/static/audio/波.mp3" loop autoplay></audio>
+        </div>
+
+        <div id="save">
+          <div id="local">
+            <img  id="local-btn" src="/static/image/settei/check1.PNG">
+            <label for="">手紙を保存する</label>
+          </div>
+          <p>遊び方に説明あり</p>
+          <p>チェックを外している間の手紙は保存されないよ</p>
+        </div>
+
+        <div id="delete">
+          <label for="delete-btn">全ての手紙とお別れする</label>
+          <img id="delete-btn" src="/static/image/settei/gomi1.PNG">
+        </div>
+
+        <div id="next">
+          <label>次のページ！</label>
+          <img id="next-btn" src="/static/image/settei/next.PNG">
+        </div>
+
+        <div id="back">
+          <label>本を閉じる</label>
+        </div>
       </div>
+      
 
-      <div class="setting-item">
-        <label for="se-volume">SE 音量</label>
-        <input type="range" id="se-volume" min="0" max="1" step="0.01" value="0.5">
-      </div>
+      <div id="4" class="page-text right">
+        <h2>遊び方</h2>
 
-      <div class="setting-item">
-        <label for="bgm-select">BGM 選択</label>
-        <select id="bgm-select">
-          <option value="bgm1.mp3">穏やかな曲</option>
-          <option value="bgm2.mp3">バトル曲</option>
-          <option value="bgm3.mp3">神秘的な曲</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="tab-content" id="howto-tab" style="display: none;">
-      <h2>遊び方</h2>
-      <p>ゲームの操作方法や目的をここに書きます。</p>
-      <ul>
-        <li>↑←↓→キーでキャラ移動</li>
-        <li>スペースキーで攻撃</li>
-        <li>敵を倒してスコアを稼ごう</li>
-      </ul>
-    </div>
-
-    <div class="tab-content" id="credits-tab" style="display: none;">
-      <h2>クレジット</h2>
-      <p>制作：みゆ（プログラム・デザイン）</p>
-      <p>音楽素材：魔王魂、DOVA-SYNDROME</p>
-      <p>使用ライブラリ：Flask, HTML/CSS/JavaScript</p>
-      <p>Special Thanks：サポートしてくれた全ての人たち</p>
-    </div>
-  </div>
-
-  <audio id="se" src="/static/audio/se.mp3"></audio>
-
-  <!-- 履歴保存・削除を中央に -->
-    <div class="history-settings">
-      <label>
-        <input type="checkbox" id="saveToggle">
-        履歴を保存する
-      </label>
-      <button id="clearHistoryBtn">履歴を削除する</button>
-    </div>
-
-  <!-- 削除確認／通知用モーダル -->
-  <div id="deleteConfirmModal" class="modal hidden">
-    <div class="modal-content">
-      <p id="modalMessage">本当に履歴を削除しますか？</p>
-      <div class="modal-buttons">
-        <button id="confirmDelete">はい</button>
-        <button id="cancelDelete">キャンセル</button>
+        <div id="previous">
+          <label>前のページ！</label>
+          <img id="prev-btn" src="/static/image/settei/prev.PNG">
+        </div>
       </div>
     </div>
   </div>
 
-  <script src="/static/scripts/setting.js"></script>
+  <!-- ページ -->
+  <div id="flipbook">
+    <div class="page">
+      <div class="page-inner">
+        <img src="/static/image/settei/333.PNG" alt="2ページ">
+        <div class="book-text">
+          <h2>クレジット</h2>
+          <p>制作：みゆ（目に見えるところ）</p>
+          <p>　　　ふみか（目に見えないところ）</p>
+          <p>音楽素材：魔王魂、DOVA-SYNDROME</p>
+          <p>フォント：</p>
+          <p>開発環境：Flask,HTML/CSS/JavaScript</p>
+          <p>Special Thanks：これを見ているみんな</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-inner">
+      <img src="/static/image/settei/222.PNG" alt="3ページ">
+        <div class="book-text">
+          <h2>遊び方</h2>
+          <p>
+            いろいろ
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/scripts/setting.js"></script>
 </body>
+
 </html>
