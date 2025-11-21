@@ -1,7 +1,12 @@
 window.dispatchEvent(new Event('resize'));
 
 // ストレージ種別読み込み（初回は local）
-let storageType = localStorage.getItem('volume-storage-type') || 'local';
+let storageType = localStorage.getItem('volume-storage-type') ;
+
+// ストレージ種別読み込み（初回は local）
+if (!localStorage.getItem('volume-storage-type')) {
+  localStorage.setItem('volume-storage-type', 'local');
+}
 
 // 実際の保存・読み込みで使う関数
 function getStorage() {

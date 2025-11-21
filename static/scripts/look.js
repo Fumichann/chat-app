@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  //ローカルかセッションかの取得
+  //ローカルかセッション
   function getStorage() {
     return (storageType === 'local') ? localStorage : sessionStorage;
   }
