@@ -80,6 +80,18 @@ function stopMainBGM(callback) {
     }
 }
 
+// 手紙を書くボタンと設定ボタン用の効果音
+const soundClickA = new Howl({
+  src: ["/static/audio/beach walk.mp3"],
+  volume: 0.5 
+});
+
+// 手紙を見るボタン用の効果音
+const soundClickB = new Howl({
+  src: ["/static/audio/click_b.mp3"],
+  volume: 0.5 
+});
+
 // localstorageでチュートリアル制限
 window.onload = function() {
   const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
@@ -283,6 +295,13 @@ function showMainScreen() {
         event.stopPropagation(); // 背景のクリックイベントを無効化
         const url = this.dataset.link;
         console.log("clicked:", url);
+        
+        // data-link の値でボタンを判別
+        if (url === '/look') {
+          soundClickB.play(); 
+        } else {
+          soundClickA.play();
+        }
 
         // ページ遷移処理を関数として定義
         const navigate = () => {
