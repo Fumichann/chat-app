@@ -3,18 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const userMsg = document.getElementById('userMsg');
   const aiReplyContainer = document.getElementById('aiReplyContainer');
 
+  //ローカルかセッションかの取得
+  function getStorage() {
+    return (storageType === 'local') ? localStorage : sessionStorage;
+  }
+
   const dataElem = document.getElementById('history-data');
   if (dataElem) {
     const aiMessage = dataElem.dataset.ai;
-    const saveSetting = localStorage.getItem("saveHistory");
+    const saveSetting = getStorage().getItem("saveHistory");
     if (saveSetting === "true" && aiMessage) {
-      const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+      const history = JSON.parse(getStorage().getItem("chatHistory") || "[]");
       const now = new Date();
       history.push({
         ai: aiMessage,
         date: now.toISOString()
       });
-      localStorage.setItem("chatHistory", JSON.stringify(history));
+      getStorage().setItem("chatHistory", JSON.stringify(history));
       console.log("履歴を保存しました（初回ロード時）");
     }
   }
@@ -59,14 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function saveChatHistory(aiText) {
-    if (localStorage.getItem("saveHistory") !== "true") return;
+    if (getStorage().getItem("saveHistory") !== "true") return;
 
-    const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    const logs = JSON.parse(getStorage().getItem('chatHistory') || '[]');
     logs.push({
       ai: aiText,
       date: new Date().toISOString()
     });
-    localStorage.setItem('chatHistory', JSON.stringify(logs));
+    getStorage().setItem('chatHistory', JSON.stringify(logs));
   }
 });
 

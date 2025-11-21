@@ -155,37 +155,35 @@ setupVolume('se-audio', 'se-dots', 'se-mute');
 
 //--------- SAVE -----------------------
 
-const localBtn = document.getElementById('local-btn');
-
-// ストレージタイプ保存用
-localStorage.setItem('volume-storage', 'local'); // または 'session'
-
-let storageType = localStorage; // デフォルトは localStorage
-
-// 切り替えボタン
+// ボタン取得
 const storageBtn = document.getElementById('local-btn');
 
-const savedStorage = localStorage.getItem('volume-storage-type');
-if (savedStorage) {
-  storageType = savedStorage;
-  storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
-}
-  console.log("現在",storageType)
+// 保存されたストレージタイプを読む（local / session）
+let storageType = localStorage.getItem('volume-storage-type') || 'local';
 
+// アイコン反映
+storageBtn.src = (storageType === 'local') ? 'check1.PNG' : 'check2.PNG';
+
+console.log("現在のストレージタイプ:", storageType);
+
+// イベントリスナー
 storageBtn.addEventListener('click', () => {
-  if (storageType === 'local') {
-    storageType = 'session';
-    storageBtn.src = '/static/image/settei/check2.PNG'; // ON/OFF切替
-    console.log("今セッション")
-  } else {
-    storageType = 'local';
-    storageBtn.src = '/static/image/settei/check1.PNG';
-    console.log("今ローカル")
-  }
-  // 現在のストレージタイプを保存
+  // 切り替え
+  storageType = (storageType === 'local') ? 'session' : 'local';
+
+  // アイコン更新
+  storageBtn.src = (storageType === 'local') ? 'check1.PNG' : 'check2.PNG';
+
+  // 保存
   localStorage.setItem('volume-storage-type', storageType);
 
-  });
+  console.log("切り替え後:", storageType);
+});
+
+// 実際の保存・読み込みで使う関数
+function getStorage() {
+  return (storageType === 'local') ? localStorage : sessionStorage;
+}
 
   //---------delete------------------------------
 

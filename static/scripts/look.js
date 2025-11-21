@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('history-container');
-  const logs = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+  const logs = JSON.parse(getStorage().getItem('chatHistory') || '[]');
 
   const previewModal = document.getElementById('preview-modal');
   const previewImage = document.getElementById('preview-image');
@@ -14,6 +14,12 @@ window.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = '<p>届いた漂流瓶はありません。</p>';
     return;
   }
+
+  //ローカルかセッションかの取得
+  function getStorage() {
+    return (storageType === 'local') ? localStorage : sessionStorage;
+  }
+
 
   // 日時フォーマット関数
   function formatDate(dateStr) {
