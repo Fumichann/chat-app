@@ -1,5 +1,12 @@
 window.dispatchEvent(new Event('resize'));
-console.log("JS 読み込まれてるぞ");
+
+// ストレージ種別読み込み（初回は local）
+let storageType = localStorage.getItem('volume-storage-type') || 'local';
+
+// 実際の保存・読み込みで使う関数
+function getStorage() {
+  return (storageType === 'local') ? localStorage : sessionStorage;
+}
 
 $(function() {
   const $flipbook = $('#flipbook');
@@ -98,7 +105,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
   let muted = false;
   
   // 保存された音量を読み込む（無ければ1）
-  let currentVolume = parseFloat(localStorage.getItem(audioId)) || 1;
+  let currentVolume = parseFloat(getStorage().getItem(audioId)) || 1;
   audio.volume = currentVolume;
 
   // ドット生成
@@ -128,7 +135,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
     audio.volume = ratio;
     muted = ratio === 0; // 0ならミュート扱い
     updateDots(ratio);
-    localStorage.setItem(audioId, ratio);
+    getStorage().setItem(audioId, ratio);
   });
 
   // ミュートボタン
@@ -143,7 +150,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
       muteBtn.src = (audioId.includes('bgm')) ? '/static/image/settei/mute1.PNG' : '/static/image/settei/mute3.PNG';
     }
     updateDots(audio.volume);
-    localStorage.setItem(audioId, audio.volume);
+    getStorage().setItem(audioId, audio.volume);
   });
 }
 
@@ -158,11 +165,8 @@ setupVolume('se-audio', 'se-dots', 'se-mute');
 // ボタン取得
 const storageBtn = document.getElementById('local-btn');
 
-// 保存されたストレージタイプを読む（local / session）
-let storageType = localStorage.getItem('volume-storage-type') || 'local';
-
 // アイコン反映
-storageBtn.src = (storageType === 'local') ? 'check1.PNG' : 'check2.PNG';
+storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
 
 console.log("現在のストレージタイプ:", storageType);
 
@@ -172,24 +176,19 @@ storageBtn.addEventListener('click', () => {
   storageType = (storageType === 'local') ? 'session' : 'local';
 
   // アイコン更新
-  storageBtn.src = (storageType === 'local') ? 'check1.PNG' : 'check2.PNG';
+  storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
 
   // 保存
-  localStorage.setItem('volume-storage-type', storageType);
+  getStorage().setItem('volume-storage-type', storageType);
 
   console.log("切り替え後:", storageType);
 });
-
-// 実際の保存・読み込みで使う関数
-function getStorage() {
-  return (storageType === 'local') ? localStorage : sessionStorage;
-}
 
   //---------delete------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
   // 保存されてる手紙データ確認
-  const storedLetter = localStorage.getItem('letters');
+  const storedLetter = getStorage().getItem('letters');
   const deleteBtn = document.getElementById('delete-btn');
 
   // データが無い場合 → 最初から gomi2.PNG にしておく
@@ -201,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 削除ボタンの動作
   deleteBtn.addEventListener('click', () => {
-    const storedLetter = localStorage.getItem('letters');
+    const storedLetter = getStorage().getItem('letters');
 
     if (!storedLetter || storedLetter === '[]') {
       alert('手紙はありません。');
@@ -211,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmDelete = confirm('保存した手紙を削除しますか？');
     if (!confirmDelete) return;
 
-    localStorage.removeItem('letters');
+    getStorage().removeItem('letters');
     deleteBtn.src = '/static/image/settei/gomi2.PNG';
     alert('保存した手紙を削除しました。');
   });
