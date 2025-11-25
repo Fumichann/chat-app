@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
   const aiReplyContainer = document.getElementById('aiReplyContainer');
+  const storageType = 'local'; 
 
   //ローカルかセッションかの取得
   function getStorage() {
@@ -26,24 +27,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const text = userMsg.value.trim();
-    if (!text) return;
+    const userMessage = userMsg.value.trim();
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (!userMessage) {
+      aiReplyContainer.innerHTML = '<p style="color:red;">メッセージを入力してください。</p>';
+      return;
+    }
+    
+    // --- 1. ボタンの無効化とローディング表示 ---
+    let originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = '海に投げる (送信中...)';
 
     // フォーム非表示
     userMsg.style.display = 'none';
-    form.querySelector('button[type="submit"]').style.display = 'none';
+    submitButton.style.display = 'none';
     aiReplyContainer.innerHTML = `<p class="sending"></p>`;
 
     try {
-      const res = await fetch('/api/reply', {
+      const response = await fetch('/api/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: userMessage }),
       });
 
-      if (!res.ok) throw new Error('通信エラー: ' + res.status);
+      if (!response.ok){
+        const errorText = await response.text();
+        throw new Error(`通信エラー (${response.status} ${response.statusText}): ${errorText.substring(0, 100)}`);
+      }
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error('サーバー応答の解析に失敗しました。');
+      }
+            
+      // --- 3. AI応答データのチェック ---
+      if (!data.reply) {
+        throw new Error('AIからの応答データが空でした。');
+      }
 
       // ユーザーの手紙は保存せず、AIの返答だけ保存
       saveChatHistory(data.reply);
@@ -56,11 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     } catch (error) {
-      console.error(error);
-      aiReplyContainer.innerHTML = `<p style="color:red;">通信に失敗しました。</p>`;
+      console.error('通信処理中にエラー:', error);
+      aiReplyContainer.innerHTML = `<p style="color:red;">通信に失敗しました。${error.message ? ' (' + error.message + ')' : ''}</p>`;
+    } finally {
+      userMsg.value = '';
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
     }
-
-    userMsg.value = '';
   });
 
   function saveChatHistory(aiText) {
