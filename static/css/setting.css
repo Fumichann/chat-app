@@ -1,17 +1,33 @@
-  body {
-    margin: 0;
-    padding: 0;
-    background: #ddd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  background: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
 
-  .haikei{
+.haikei{
   background-image: url(/static/image/haikei/kari.PNG);
-  }
+}
+
+/*---------フェード--------------------------*/
+#fade {
+  position: fixed;
+  inset: 0;
+  background-color: #000000;
+  opacity: 1;
+  transition: opacity 3s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+#fade.hidden {
+  display: none;
+}
+
+/*---------本そのもの------------------------*/
 
   /* 本全体のラッパー */
   #book-wrapper {
@@ -67,6 +83,8 @@
     object-fit: contain;
     display: block;
   }
+
+  /*---------ページ中身------------------------*/
 
   .overlay {
   position: absolute;
@@ -126,14 +144,12 @@
   gap: 0.3em;
   cursor: pointer;
 }
-
 .dots span {
   width: 0.6em;
   height: 0.6em;
   background: #efcf85;
   transition: background 0.2s;
 }
-
 .dots span.active {
   background: #77ccf9;
 }
@@ -150,7 +166,6 @@
 #local{
   display: flex;
   align-items: center;
-
 }
 #local-btn{
   width: 1.5em;
@@ -180,14 +195,12 @@
   margin-top: 1.5em;
   cursor: pointer;
 }
-
 #back label {
   position: relative;
   z-index: 1;
   padding: 1em 0.3em;
   font-size: 1.4em;
 }
-
 /* 背景画像を label の後ろに出す */
 #back::before {
   content: "";
@@ -200,7 +213,6 @@
   z-index: 0;
   pointer-events: none;
 }
-
 
 #next{
   position: absolute;
@@ -235,6 +247,12 @@
   transition: transform 0.2s;
 }
 
+/*---------メッセージ------------------------*/
+
+
+
+
+/*---------turn中身------------------------*/
 
 .book-text{
   position: absolute;

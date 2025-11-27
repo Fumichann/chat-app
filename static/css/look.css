@@ -1,5 +1,5 @@
 .haikei{
-  background-image: url(../image/rireki/look14.PNG);
+  background-image: url(/static/image/haikei/look14.PNG);
 }
 
 body {
@@ -124,7 +124,7 @@ h1{
 }
 
 .letter-middle {
-  background: url('../image/rireki/binsen.png') repeat-y center;
+  background: url('/static/image/rireki/binsen.png') repeat-y center;
   background-size: 100% auto; /* 中央部分が縦に繰り返し */
   padding: 0 7%;
   flex-grow: 1;
