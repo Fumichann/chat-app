@@ -1,18 +1,38 @@
 window.dispatchEvent(new Event('resize'));
 
 // ストレージ種別読み込み（初回は local）
-let storageType = localStorage.getItem('volume-storage-type') ;
-
-// ストレージ種別読み込み（初回は local）
 if (!localStorage.getItem('volume-storage-type')) {
   localStorage.setItem('volume-storage-type', 'local');
 }
+let storageType = localStorage.getItem('volume-storage-type') ;
 
 // 実際の保存・読み込みで使う関数
 function getStorage() {
   return (storageType === 'local') ? localStorage : sessionStorage;
 }
 
+//-----------フェード-----------------------
+setTimeout(() => {
+  const fade = document.getElementById('fade');
+  if (fade) fade.style.opacity = 0 ;
+}, 1000); // 読み込みが安定したら外す
+
+//-----------メッセージ----------------------
+function showMessage(text,color = 'rgba(18, 17, 43, 1)') {
+  const message = document.getElementById('message');
+
+  if (!message) return;
+
+  message.textContent = text;
+  message.style.color = color;
+  message.classList.add('show');
+
+  setTimeout(() => {
+    message.classList.remove('show');
+  }, 2000);
+}
+
+//--------turn.js---------------------------------
 $(function() {
   const $flipbook = $('#flipbook');
 
@@ -32,18 +52,7 @@ $(function() {
   $('#previous').click(() => $flipbook.turn('previous'));
   $('#next').click(() => $flipbook.turn('next'));
 
-  // 背表紙クリックで左右判定
-  const cover = document.getElementById('cover');
-  cover.addEventListener('click', (e) => {
-    const rect = cover.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    if (clickX < rect.width / 2) {
-      alert('左背表紙クリック');
-    } else {
-      alert('右背表紙クリック');
-    }
-  });
-
+//----------本表示--------------------------------
 function resizeBook() {
   const wrapper = document.getElementById('book-wrapper');
   const cover = document.getElementById('cover');
@@ -94,7 +103,14 @@ if (scaleBook < 1) {
   pages.forEach(p => {
     p.style.fontSize = (32 * (width / 1600)) + 'px';
   });
-  
+
+  const message = document.getElementById('message');
+  if (message) {
+    message.style.fontSize = (25 * (width / 1600)) + 'px';
+    message.style.padding = (12 * (width / 1600)) + 'px ' + (24 * (width / 1600)) + 'px'; // パディングもスケール
+    // 高さも必要なら line-height も調整
+    message.style.lineHeight = (1.2 * (width / 1600)) + 'em';
+  }
 }
 
 // 初期とリサイズ時
@@ -110,7 +126,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
   let muted = false;
   
   // 保存された音量を読み込む（無ければ1）
-  let currentVolume = parseFloat(getStorage().getItem(audioId)) || 1;
+  let currentVolume = parseFloat(localStorage.getItem(audioId)) || 1;
   audio.volume = currentVolume;
 
   // ドット生成
@@ -140,7 +156,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
     audio.volume = ratio;
     muted = ratio === 0; // 0ならミュート扱い
     updateDots(ratio);
-    getStorage().setItem(audioId, ratio);
+    localStorage.setItem(audioId, ratio);
   });
 
   // ミュートボタン
@@ -155,7 +171,7 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
       muteBtn.src = (audioId.includes('bgm')) ? '/static/image/settei/mute1.PNG' : '/static/image/settei/mute3.PNG';
     }
     updateDots(audio.volume);
-    getStorage().setItem(audioId, audio.volume);
+    localStorage.setItem(audioId, audio.volume);
   });
 }
 
@@ -191,12 +207,13 @@ storageBtn.addEventListener('click', () => {
 
   //---------delete------------------------------
 
+
 document.addEventListener('DOMContentLoaded', () => {
   // 保存されてる手紙データ確認
   const storedLetter = getStorage().getItem('letters');
   const deleteBtn = document.getElementById('delete-btn');
 
-  // データが無い場合 → 最初から gomi2.PNG にしておく
+  // データが無い場合 → 最初から gomi2.png にしておく
   if (!storedLetter || storedLetter === '[]') {
     deleteBtn.src = '/static/image/settei/gomi2.PNG';
   } else {
@@ -204,21 +221,73 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 削除ボタンの動作
-  deleteBtn.addEventListener('click', () => {
-    const storedLetter = getStorage().getItem('letters');
+  let deleteConfirm = false;
+  let clickLocked = false;
+  let messageTimeout;
 
-    if (!storedLetter || storedLetter === '[]') {
-      alert('手紙はありません。');
-      return;
-    }
+  function showMessage(msg) {
+    const messageEl = document.getElementById('message');
 
-    const confirmDelete = confirm('保存した手紙を削除しますか？');
-    if (!confirmDelete) return;
+      if (messageEl.classList.contains('show')) {
+        // フェードアウトさせてから新しいメッセージをフェードイン
+        messageEl.classList.remove('show');
 
-    getStorage().removeItem('letters');
-    deleteBtn.src = '/static/image/settei/gomi2.PNG';
-    alert('保存した手紙を削除しました。');
-  });
+        setTimeout(() => {
+          messageEl.textContent = msg;
+          messageEl.classList.add('show');
+        }, 800); // CSS の transition と同じ時間
+      } else {
+        messageEl.textContent = msg;
+        messageEl.classList.add('show');
+      }
+
+    if (messageTimeout) clearTimeout(messageTimeout);
+
+    messageTimeout = setTimeout(() => {
+      messageEl.classList.remove('show');
+      messageTimeout = null;
+    }, 3000);
+  }
+
+deleteBtn.addEventListener('click', () => {
+  const storedLetter = getStorage().getItem('letters');
+  if (clickLocked) return;  // ロック中は無視する
+
+
+  // 手紙が無い場合
+  if (!storedLetter || storedLetter === '[]') {
+    clickLocked = true;
+    showMessage('手紙はないようだ');
+
+    setTimeout(() => {
+      clickLocked = false;
+    }, 4000);
+
+    return;
+  }
+
+  // まだ確認してなければ「本当に？」を出して終了
+  if (!deleteConfirm) {
+    deleteConfirm = true;   // ← 次のクリックで削除するモード
+    showMessage('本当に？');
+    
+    // 3秒以内に押されなかったらキャンセル
+    setTimeout(() => {
+      deleteConfirm = false;
+    }, 3000);
+
+    return;
+  }
+
+  // 2回目クリック（＝削除実行）
+  getStorage().removeItem('letters');
+  deleteBtn.src = '/static/image/settei/gomi2.PNG';
+  showMessage('手紙はなくなった');
+
+  deleteConfirm = false;  // 念のためリセット
+});
+
+});
 
   //--------- back -----------------------
 
@@ -227,5 +296,3 @@ document.addEventListener('DOMContentLoaded', () => {
   backBtn.addEventListener('click', () => {
     window.location.href = '/main'; 
   });
-
-});
