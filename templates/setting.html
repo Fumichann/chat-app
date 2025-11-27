@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../static/css/setting.css">
 </head>
 <body class="haikei">
+  <div id="fade"></div>
 
 <div id="book-wrapper">
   <!-- 背表紙 -->
@@ -19,7 +20,7 @@
 
     <div class="overlay-inner">
       <div id="1" class="page-text left">
-        <h2>設定</h2>
+        <h2 id="title">設定</h2>
         <div class="music-container">
           <label for="bgm-volume">BGM 音量</label>
           <img class="mute-btn" id="bgm-mute" src="/static/image/settei/mute1.PNG" >
@@ -28,7 +29,7 @@
         </div>
 
         <div class="music-container">
-          <label for="se-volume">SE 音量</label>
+          <label for="se-volume">SE 音量　</label>
           <img class="mute-btn" id="se-mute" src="/static/image/settei/mute3.PNG" >
           <div class="dots bgm" id="se-dots"></div>
           <audio id="se-audio" src="/static/audio/波.mp3" loop autoplay></audio>
@@ -39,8 +40,10 @@
             <img  id="local-btn" src="/static/image/settei/check1.PNG">
             <label for="">手紙を保存する</label>
           </div>
-          <p>遊び方に説明あり</p>
-          <p>チェックを外している間の手紙は保存されないよ</p>
+          <div id="coment">
+            <p>遊び方に説明あり</p>
+            <p>チェックを外している間の<br>手紙は保存されないよ</p>
+          </div>
         </div>
 
         <div id="delete">
