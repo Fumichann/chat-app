@@ -1,113 +1,136 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('history-container');
-  const logs = JSON.parse(getStorage().getItem('chatHistory') || '[]');
 
-  const previewModal = document.getElementById('preview-modal');
-  const previewImage = document.getElementById('preview-image');
-  const downloadConfirmBtn = document.getElementById('download-confirm-btn');
-  const previewCloseBtn = document.getElementById('preview-close-btn');
+  const storage = localStorage;
 
-  let currentCanvas = null;
-  let currentFileName = '';
+  // ----------リサイズ----------------------------------------------
+  function resizeShelf() {
+    const wrapper = document.querySelector('.shelf-wrapper');
+    const shelfImg = document.querySelector('.shelf-img');
+    const shelfGrid = document.querySelector('.shelf-grid');
+    const bottles = document.querySelectorAll('.bottle');
 
-  if (logs.length === 0) {
-    container.innerHTML = '<p>届いた漂流瓶はありません。</p>';
-    return;
-  }
+    // 基準サイズ（棚画像の元サイズ）
+    const baseWidth = 1055;
+    const baseHeight = 540;
 
-  //ローカルかセッション
-  function getStorage() {
-    return (storageType === 'local') ? localStorage : sessionStorage;
-  }
+    // 画面が小さい時だけ縮める
+    const maxWidth = window.innerWidth * 0.86;
+    const maxHeight = window.innerHeight * 0.9;
 
+    const scaleW = maxWidth / baseWidth;
+    const scaleH = maxHeight / baseHeight;
 
-  // 日時フォーマット関数
-  function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return '不明';
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'})}`;
-  }
+    // 大きくはしない（1が上限）
+    const scale = Math.min(scaleW, scaleH, 1);
 
-  // 安全に要素を作成する関数
-  function createParagraph(label, text) {
-    const p = document.createElement('p');
-    const strong = document.createElement('strong');
-    strong.textContent = label;
-    p.appendChild(strong);
-    p.appendChild(document.createTextNode(` ${text}`));
-    return p;
-  }
+    // wrapperサイズ
+    wrapper.style.width = baseWidth * scale + 'px';
+    wrapper.style.height = baseHeight * scale + 'px';
 
-  logs.slice().reverse().forEach((entry, index) => {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('historyItem');
+    // 棚画像
+    shelfImg.style.width = baseWidth * scale + 'px';
+    shelfImg.style.height = baseHeight * scale + 'px';
+    shelfImg.style.top = (33 * scale) + 'px';
+    shelfImg.style.left = '50%';
+    shelfImg.style.transform = 'translateX(-50%)';
 
-    const content = document.createElement('div');
-    content.classList.add('historyContent');
+    // 棚グリッド
+    shelfGrid.style.top = (47 * scale) + 'px';
+    shelfGrid.style.gridTemplateColumns = `repeat(10, ${75 * scale}px)`;
+    shelfGrid.style.gridAutoRows = `${233 * scale}px`;
+    shelfGrid.style.rowGap = `${45 * scale}px`;
+    shelfGrid.style.columnGap = `${21 * scale}px`;
 
-    const date = entry.date || '不明';
-
-    if (entry.ai !== undefined) {
-      content.appendChild(createParagraph('日時:',formatDate(date)));
-      content.appendChild(createParagraph('AI:', entry.ai));
-    } else if (entry.role && entry.text) {
-      content.appendChild(createParagraph(entry.role === 'user' ? 'あなた:' : 'AI:', entry.text));
-
-      const dateP = document.createElement('p');
-      dateP.style.fontSize = '0.8em';
-      dateP.style.color = 'gray';
-      dateP.appendChild(document.createElement('strong')).textContent = '日時:';
-      dateP.appendChild(document.createTextNode(` ${formatDate(date)}`));
-      content.appendChild(dateP);
-    }
-
-    const saveBtn = document.createElement('button');
-    saveBtn.textContent = '画像として保存';
-    saveBtn.classList.add('saveItemBtn');
-
-    saveBtn.addEventListener('click',() =>{
-      saveBtn.disabled = true;
-      saveBtn.style.display = 'none';
-
-      html2canvas(wrapper).then(canvas => {
-        currentCanvas = canvas;
-        currentFileName = `chat_item_${index + 1}.png`;
-        previewImage.src = canvas.toDataURL('image/png');
-        previewModal.style.display = 'flex';
-      }).finally(() => {
-        saveBtn.disabled = false;
-        saveBtn.style.display = 'block';
-      });
+    // 瓶サイズ
+    bottles.forEach(bottle => {
+      bottle.style.width = `${75 * scale}px`;
+      bottle.style.height = `${233 * scale}px`;
     });
 
-    wrapper.appendChild(content);
-    wrapper.appendChild(saveBtn);
-    container.appendChild(wrapper);
-  });
+  }
 
-  downloadConfirmBtn.addEventListener('click', () => {
-    if (currentCanvas) {
-      const link = document.createElement('a');
-      link.download = currentFileName;
-      link.href = currentCanvas.toDataURL('image/png');
-      link.click();
+  // 初期・リサイズ時に呼ぶ
+  window.addEventListener('resize', resizeShelf);
+
+
+  // ---------瓶生成-----------------------------------------
+  const letters = JSON.parse(storage.getItem('letters')) || [];
+
+  // 瓶追加関数
+  function addBottle(letter) {
+    const shelf = document.getElementById("shelf");
+
+      // 瓶コンテナ（中に瓶画像と文字を入れる）
+    const bottleWrapper = document.createElement("div");
+    bottleWrapper.className = "bottle";
+    bottleWrapper.dataset.id = letter.id;
+
+    const bottleImg = document.createElement("img");
+    bottleImg.src = "bottle.png";
+    bottleImg.className = "bottle-img";
+
+    // ラベル文字 (日付)
+    const label = document.createElement("div");
+    label.className = "bottle-label";
+
+    // --- 日付を「年/月/日」で改行 ---
+    const [y, m, d] = letter.date.split("-");
+    label.innerHTML = `${y}<br>${m}/${d}`;
+
+    // ← ここでクリックイベント！
+    bottleWrapper.addEventListener("click", () => {
+      openLetter(letter.id);
+    });
+
+    // 追加
+    bottleWrapper.appendChild(bottleImg);
+    bottleWrapper.appendChild(label);
+    shelf.appendChild(bottleWrapper);
+
+  }
+
+
+
+// ---------手紙表示-----------------------------------------
+
+
+  function openLetter(id) {
+    const letters = JSON.parse(localStorage.getItem("letters")) || [];
+    const letter = letters.find(l => l.id == id);
+
+    if (!letter) return;
+
+    // 手紙の内容をセット
+    document.getElementById("letter-text").textContent = letter.content;
+    document.getElementById("letter-date").textContent = letter.date;
+
+    // 表示
+    document.getElementById("letter-modal").classList.remove("hidden");
+
+  }
+
+  // 背景クリックで閉じる
+  document.getElementById("letter-modal").addEventListener("click", (e) => {
+    if (e.target.id === "letter-modal") {
+      e.target.classList.add("hidden");
     }
-    previewModal.style.display = 'none';
-    currentCanvas = null;
-    currentFileName = '';
-  });
+});
 
-  previewCloseBtn.addEventListener('click', () => {
-    previewModal.style.display = 'none';
-    currentCanvas = null;
-    currentFileName = '';
-  });
+  // 手紙の数だけ瓶を並べる
+  letters.forEach(letter => addBottle(letter));
 
-  previewModal.addEventListener('click', (event) => {
-    if (event.target === previewModal) {
-      previewModal.style.display = 'none';
-      currentCanvas = null;
-      currentFileName = '';
-    }
-  });
+  // 初回リサイズ適用
+  resizeShelf();
+
+
+//---------戻りボタン-----------------------------------------
+
+
+  // ★ 戻るボタン
+  const backBtn = document.getElementById('back');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  }
 });

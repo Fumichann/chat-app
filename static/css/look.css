@@ -1,110 +1,152 @@
-/* 履歴全体のスタイル */
-#history-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 10px;
-  max-height: 80vh;   
-  overflow-y: auto;   
-  overflow-x: hidden;
-  box-sizing: border-box;
+.haikei{
+  background-image: url(../image/rireki/look14.PNG);
 }
 
-h1 {
-  text-align: center;
+body {
+  margin: 0;
+  padding: 0;
+  background: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+h1{
+  position: absolute;
+  display: inline-block;
+  top: 5%;
 }
 
-
-.historyItem {
-  background-color: #fdfdfd;
-  border: 1px solid #ccc;
-  border-left: 4px solid #007BFF;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/*---------棚関連------------------------*/
+.shelf-wrapper {
   position: relative;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0; /*画面が小さくても縮まない*/
 }
 
-/* 日時行のスタイル */
-.historyItem p:first-child {
-  color: #555;
-  font-size: 0.9em;
-  margin-bottom: 4px;
+/* 棚画像（前面にくる） */
+.shelf-img {
+  position: absolute;
+  z-index: 2;
+  width: 1055px;
+  height: 540px;
+  top: 33px;
+  pointer-events: none;
 }
 
-/* 発言の表示スタイル */
-.historyItem p {
-  margin: 4px 0;
-  white-space: pre-wrap;
+/* 瓶を並べるグリッド（後ろに配置） */
+.shelf-grid {
+  position: absolute;
+  top: 47px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(10, 75px);/**/
+  grid-auto-rows: 233px; /*瓶の高さ*/
+  row-gap: 45px;      /*上下*/
+  column-gap: 21px;    /*左右*/
 }
 
-.historyItem button.saveItemBtn { 
-  margin-top: 8px;
-  padding: 6px 12px;
-  font-size: 14px;
-  background-color: #3c8dbc;
-  color: white;
-  border: none;
-  border-radius: 5px;
+/*---------瓶------------------------*/
+.bottle {
+  width: 75px;
+  height: 233px;
+  object-fit: contain;
+  display: block;
+  position: relative;
   cursor: pointer;
 }
 
-.historyItem button.saveItemBtn:hover {
-  background-color: #367fa9;
-}
-
-html,body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-y: hidden;   
-  overflow-x: hidden;
-}
-
-/* --- プレビュー用のスタイル --- */
-#preview-modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
+.bottle-img {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.7); /* 半透明の黒い背景 */
-  justify-content: center; /* 水平方向の中央揃え */
-  align-items: center; /* 垂直方向の中央揃え */
-  flex-direction: column; /* 要素を縦に並べる */
+  height: auto;
 }
 
-#preview-modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+/* ラベルの文字（瓶の前面に表示） */
+.bottle-label {
+  position: absolute;
+  bottom: 37%;   /* 好みで調整 */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3vw;
+  color: #222;
+  line-height: 1.3;
+  pointer-events: none;
+  text-align: center;
+  z-index: 5;
+}
+
+/*---------手紙------------------------*/
+.letter-modal {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
 }
 
-#preview-image {
-  max-width: 100%; /* 親要素の幅に合わせて最大幅100% */
-  height: auto; /* アスペクト比を保持 */
-  border: 1px solid #ccc; /* プレビュー画像のボーダー */
-  margin-bottom: 15px; /* 下マージン */
-}
-
-#preview-actions button {
-  padding: 10px 20px; /* 内側の余白 */
-  margin: 0 10px; /* ボタン間のマージン */
-  cursor: pointer; /* カーソルをポインターに */
-}
-
-#preview-actions {
+.letter-paper {
+  max-height: 100vh;
+  width: 70vw;
+  max-width: 900px;
+  overflow-y: auto;        /* 縦スクロール */
+  background: none;        /* 子要素で画像表示 */
   display: flex;
-  justify-content: center; /* ボタン群を水平方向で中央揃え */
+  flex-direction: column;
+  position: relative;
+  padding: 0;
+  overflow-y: auto;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE 10+ */
+}
+.letter-paper::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari, Edge */
+}
+.letter-top-container,
+.letter-bottom-container {
+  flex-shrink: 0;          /* サイズ固定 */
+}
+
+.letter-top,
+.letter-bottom {
   width: 100%;
+  display: block;
+}
+
+.letter-middle {
+  background: url('../image/rireki/binsen.png') repeat-y center;
+  background-size: 100% auto; /* 中央部分が縦に繰り返し */
+  padding: 0 7%;
+  flex-grow: 1;
+}
+
+#letter-date {
+  position: absolute;
+  top: 05%;
+  right: 0%;
+  transform: translateX(-50%);
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333; /* 好きな色に変更可 */
+  padding: 2px 6px;
+  border-radius: 4px;
+  overflow-y: auto;
+  flex: 1;  /* 紙の高さに合わせて伸縮 */
+}
+
+
+#letter-text {
+  font-size: 1.7vw; /* 好きなサイズに調整 */
+  line-height: 2; /* 読みやすくする */
+  white-space: pre-wrap; /* 改行を維持 */
 }
