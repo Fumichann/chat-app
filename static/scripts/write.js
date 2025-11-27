@@ -14,13 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiMessage = dataElem.dataset.ai;
     const saveSetting = getStorage().getItem("saveHistory");
     if (saveSetting === "true" && aiMessage) {
-      const history = JSON.parse(getStorage().getItem("chatHistory") || "[]");
+      const history = JSON.parse(getStorage().getItem("letters") || "[]");
       const now = new Date();
       history.push({
         ai: aiMessage,
         date: now.toISOString()
       });
-      getStorage().setItem("chatHistory", JSON.stringify(history));
+      getStorage().setItem("letters", JSON.stringify(history));
       console.log("履歴を保存しました（初回ロード時）");
     }
   }
@@ -92,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveChatHistory(aiText) {
     if (getStorage().getItem("saveHistory") !== "true") return;
 
-    const logs = JSON.parse(getStorage().getItem('chatHistory') || '[]');
+    const logs = JSON.parse(getStorage().getItem('letters') || '[]');
     logs.push({
       ai: aiText,
       date: new Date().toISOString()
     });
-    getStorage().setItem('chatHistory', JSON.stringify(logs));
+    getStorage().setItem('letters', JSON.stringify(logs));
   }
 });
 

@@ -56,7 +56,7 @@ generation_config = {
     "max_output_tokens": 300,
 }
 
-# 最新の安定版モデルを使用
+# 安定版モデルを使用
 gemini_model_name = 'gemini-2.5-flash-preview-09-2025'
 
 
@@ -79,7 +79,6 @@ def get_ai_response(user_message: str) -> str:
 
         # 1. 候補が一つでも存在するかチェック (AIが何も生成しなかった場合)
         if not response.candidates:
-            # 候補がない場合、プロンプトフィードバックを確認
             finish_reason = response.prompt_feedback.block_reason.name if response.prompt_feedback and response.prompt_feedback.block_reason else "UNKNOWN"
             if finish_reason != "UNKNOWN": # ブロックされた明確な理由がある場合
                  print(f"AI応答がプロンプトによりブロックされました。理由コード: {finish_reason}")
@@ -89,7 +88,6 @@ def get_ai_response(user_message: str) -> str:
         # 2. 応答が安全ポリシーによりブロックされていないか確認
         candidate = response.candidates[0]
         if candidate.finish_reason.name == 'SAFETY':
-            # 安全ポリシーによるブロック
             print(f"AI応答が安全ポリシーによりブロックされました。理由コード: {candidate.safety_ratings}")
             return "いただいたメッセージは、当サービスが定める安全基準に照らし、応答を生成できませんでした。内容を少し変えて、心に負担のない範囲でお送りください。"
         
@@ -103,10 +101,15 @@ def get_ai_response(user_message: str) -> str:
         # 429 (クォータ超過) エラーの場合
         if "429" in error_message or "Quota exceeded" in error_message:
             return "現在、AIの利用が集中しています。無料枠の制限を超過した可能性があります。しばらく時間をおいてから、再度お試しください。"
+            
+        if "Invalid operation: The `response.text`" in error_message:
+        # このエラーは、上記のステップ2でキャッチされるはずのブロックエラーが、
+        # 予期せぬAPIの挙動により例外として漏れた場合に対応します。
+             return "AI応答が安全基準によりブロックされました。内容を少し変えてお送りください。"
 
         # その他のAPIエラーの場合
         return f"AI応答生成中に予期せぬエラーが発生しました。"
-
+        
 
 # --- ルート定義 ---
 @app.route("/", methods=["GET"])
