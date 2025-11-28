@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const aiReplyContainer = document.getElementById('aiReplyContainer');
   let storageType = localStorage.getItem('volume-storage-type') || 'local';
 
-
   //ローカルかセッションかの取得
   function getStorage() {
     return (storageType === 'local') ? localStorage : sessionStorage;
