@@ -52,7 +52,6 @@ window.addEventListener('DOMContentLoaded', () => {
   // 初期・リサイズ時に呼ぶ
   window.addEventListener('resize', resizeShelf);
 
-
   // ---------瓶生成-----------------------------------------
   const letters = JSON.parse(storage.getItem('letters')) || [];
 
@@ -130,7 +129,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('back');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
-      window.location.href = 'index.html';
+      window.location.href = '/main';
     });
   }
 });

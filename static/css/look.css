@@ -1,5 +1,5 @@
 .haikei{
-  background-image: url(/static/image/haikei/look14.PNG);
+  background-image: url(/static/image/haikei/look.PNG);
 }
 
 body {
@@ -12,10 +12,37 @@ body {
   height: 100vh;
   width: 100vw;
 }
+
 h1{
   position: absolute;
   display: inline-block;
   top: 5%;
+}
+
+#back {
+  position: absolute;
+  display: inline-block;
+  left: 5vw;
+  top: -2vw;
+  cursor: pointer;
+  transform: rotate(-2deg);
+}
+#back p {
+  position: relative;
+  z-index: 2;
+  font-size: 2vw;
+  cursor: pointer;
+  margin: 0;
+}
+/* 背景画像を label の後ろに出す */
+#back img {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -45%;
+  width: 190%;
+  height: auto;
+  z-index: 1;
 }
 
 /*---------棚関連------------------------*/
