@@ -124,12 +124,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //---------戻りボタン-----------------------------------------
 
+// Howler.js の読み込み
+const backSound = new Howl({
+  src: ['/static/audio/open door.mp3'], // あなたのファイル名とパスに変更してください
+  volume: 0.2
+});
 
   // ★ 戻るボタン
   const backBtn = document.getElementById('back');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
-      window.location.href = '/main';
+
+      //効果音を再生
+      backSound.play();
+
+      setTimeout(() => {
+        window.location.href = '/main';
+      },1500);
     });
   }
 });
