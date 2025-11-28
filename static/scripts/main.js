@@ -82,7 +82,7 @@ function stopMainBGM(callback) {
 
 // 手紙を書くボタンと設定ボタン用の効果音
 const soundClickA = new Howl({
-  src: ["/static/audio/beach walk.mp3"],
+  src: ["/static/audio/walk beach.mp3"],
   volume: 0.5 
 });
 
