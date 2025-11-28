@@ -134,3 +134,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+//getStorageの追加
+function getStorage(){
+  const currentType = localStorage.getItem('volume-storage-type') || 'local';
+  return (currentType === 'local') ? localStorage : sessionStorage;
+}

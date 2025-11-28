@@ -91,13 +91,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveChatHistory(aiText) {
     if (getStorage().getItem("saveHistory") !== "true") return;
-
+    
     const logs = JSON.parse(getStorage().getItem('letters') || '[]');
+    
+    // 日付の形式を 'YYYY-MM-DD' に統一（時間情報を含めない）
+    const now = new Date();
+    const dateString = now.getFullYear() + '-' + 
+      String(now.getMonth() + 1).padStart(2, '0') + '-' + // 月は 0 から始まるため +1
+      String(now.getDate()).padStart(2, '0');
+
     logs.push({
-      ai: aiText,
-      date: new Date().toISOString()
+      content: aiText,
+      date: dateString,
+      id: Date.now() + Math.random().toString(36).substring(2, 9) // 衝突防止のため乱数を追加
     });
+
     getStorage().setItem('letters', JSON.stringify(logs));
+    console.log("AI返信履歴を保存しました:", dateString);
   }
 });
 
