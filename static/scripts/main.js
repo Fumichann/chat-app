@@ -83,13 +83,13 @@ function stopMainBGM(callback) {
 // 手紙を書くボタンと設定ボタン用の効果音
 const soundClickA = new Howl({
   src: ["/static/audio/walk beach.mp3"],
-  volume: 0.5 
+  volume: 0.2
 });
 
 // 手紙を見るボタン用の効果音
 const soundClickB = new Howl({
-  src: ["/static/audio/click_b.mp3"],
-  volume: 0.5 
+  src: ["/static/audio/open door.mp3"],
+  volume: 0.1
 });
 
 // localstorageでチュートリアル制限
@@ -308,9 +308,7 @@ function showMainScreen() {
           window.location.href = url;
         };
         // stopMainBGM()を呼び出し、完了後に navigate 関数を実行させる
-        // 修正した stopMainBGM 関数
         stopMainBGM(navigate);
-
         // BGMが再生されていない場合は、stopMainBGM 内で navigate が即座に実行される
         
       });
