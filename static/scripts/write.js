@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
   const aiReplyContainer = document.getElementById('aiReplyContainer');
-  const storageType = 'local'; 
+  let storageType = localStorage.getItem('volume-storage-type') || 'local';
+
 
   //ローカルかセッションかの取得
   function getStorage() {
