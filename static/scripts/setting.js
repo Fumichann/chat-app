@@ -200,7 +200,7 @@ storageBtn.addEventListener('click', () => {
   storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
 
   // 保存
-  getStorage().setItem('volume-storage-type', storageType);
+  localStorage.setItem('volume-storage-type', storageType);
 
   console.log("切り替え後:", storageType);
 });
