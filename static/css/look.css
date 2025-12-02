@@ -169,7 +169,6 @@ body {
 
 .letter-middle {
   background: url('/static/image/rireki/binsen.PNG') repeat-y center;
-  background-size: 100% 100%; /* 中央部分が縦に繰り返し */
   padding: 0 7%;
   flex-grow: 1;
 }
