@@ -52,6 +52,16 @@ $(function() {
   $('#previous').click(() => $flipbook.turn('previous'));
   $('#next').click(() => $flipbook.turn('next'));
 
+  //ページめくり効果音の再生
+  $flipbook.on('turning', (event, page, view) => {
+    const turnAudio = document.getElementById('turn-audio');
+    if (turnAudio) {
+      turnAudio.volume = 1.0;
+      turnAudio.currentTime = 0;
+      turnAudio.play().catch(e => console.log("Audio play prevented:", e));
+    }
+  });
+
 //----------本表示--------------------------------
 function resizeBook() {
   const wrapper = document.getElementById('book-wrapper');
