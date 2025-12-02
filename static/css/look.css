@@ -13,12 +13,31 @@ body {
   width: 100vw;
 }
 
-h1{
+.shelf-wrapper h1{
   position: absolute;
   display: inline-block;
-  top: 5%;
+  top: -7%;
+  margin: 0;
+  padding: 0;
+  font-size: 2.7vw;
+  letter-spacing: 0.04em;
 }
 
+/*---------フェード--------------------------*/
+#fade {
+  position: fixed;
+  inset: 0;
+  background-color: #000000;
+  opacity: 1;
+  transition: opacity 3s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+#fade.hidden {
+  display: none; /* クリックも透過させるなら display:none がベスト */
+}
+
+/*---------メイン戻り------------------------*/
 #back {
   position: absolute;
   display: inline-block;
@@ -112,25 +131,23 @@ h1{
   left: 0;
   width: 100vw;
   height: 100vh;
-
   display: flex;
   justify-content: center;
   align-items: center;
   overflow-y: auto;
-
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
+  background: rgba(0,0,0,0.6); /* 背景を暗く */
+  z-index: 10; /* 一番上 */
 }
 
 .letter-paper {
-  max-height: 100vh;
-  width: 70vw;
-  max-width: 900px;
+  width: 855px;
+  height: 690px; /*背景ぴった*/
+  margin: auto;
   overflow-y: auto;        /* 縦スクロール */
   background: none;        /* 子要素で画像表示 */
   display: flex;
   flex-direction: column;
-  position: relative;
+  position:absolute;
   padding: 0;
   overflow-y: auto;
   scrollbar-width: none;      /* Firefox */
@@ -152,28 +169,22 @@ h1{
 
 .letter-middle {
   background: url('/static/image/rireki/binsen.png') repeat-y center;
-  background-size: 100% auto; /* 中央部分が縦に繰り返し */
+  background-size: 100% 100%; /* 中央部分が縦に繰り返し */
   padding: 0 7%;
   flex-grow: 1;
 }
 
 #letter-date {
   position: absolute;
-  top: 05%;
-  right: 0%;
-  transform: translateX(-50%);
-  font-size: 1.2em;
+  top: 5%;
+  right:10%;
+  font-size: 1.6vw;
   font-weight: bold;
-  color: #333; /* 好きな色に変更可 */
-  padding: 2px 6px;
-  border-radius: 4px;
-  overflow-y: auto;
-  flex: 1;  /* 紙の高さに合わせて伸縮 */
+  color: #333;
 }
 
-
 #letter-text {
-  font-size: 1.7vw; /* 好きなサイズに調整 */
+  font-size: 1.7vw;
   line-height: 2; /* 読みやすくする */
   white-space: pre-wrap; /* 改行を維持 */
 }

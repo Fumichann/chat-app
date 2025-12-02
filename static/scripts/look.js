@@ -2,12 +2,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const storage = localStorage;
 
+  //-----------フェード-----------------------
+  setTimeout(() => {
+    const fade = document.getElementById('fade');
+    if (fade) fade.style.opacity = 0 ;
+  }, 1000); // 読み込みが安定したら外す
+
   // ----------リサイズ----------------------------------------------
   function resizeShelf() {
     const wrapper = document.querySelector('.shelf-wrapper');
     const shelfImg = document.querySelector('.shelf-img');
     const shelfGrid = document.querySelector('.shelf-grid');
     const bottles = document.querySelectorAll('.bottle');
+    const papers = document.querySelectorAll('.letter-paper')
 
     // 基準サイズ（棚画像の元サイズ）
     const baseWidth = 1055;
@@ -45,6 +52,12 @@ window.addEventListener('DOMContentLoaded', () => {
     bottles.forEach(bottle => {
       bottle.style.width = `${75 * scale}px`;
       bottle.style.height = `${233 * scale}px`;
+    });
+
+    // 手紙サイズ
+    papers.forEach(paper => {
+      paper.style.width = `${855 * scale}px`;
+      paper.style.height = `${720 * scale}px`;
     });
 
   }
@@ -88,7 +101,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   }
 
+  // 手紙の数だけ瓶を並べる
+  letters.forEach(letter => addBottle(letter));
 
+  // 初回リサイズ適用
+  resizeShelf();
 
 // ---------手紙表示-----------------------------------------
 
@@ -114,13 +131,6 @@ window.addEventListener('DOMContentLoaded', () => {
       e.target.classList.add("hidden");
     }
 });
-
-  // 手紙の数だけ瓶を並べる
-  letters.forEach(letter => addBottle(letter));
-
-  // 初回リサイズ適用
-  resizeShelf();
-
 
 //---------戻りボタン-----------------------------------------
 
