@@ -52,16 +52,6 @@ $(function() {
   $('#previous').click(() => $flipbook.turn('previous'));
   $('#next').click(() => $flipbook.turn('next'));
 
-  //ページめくり効果音の再生
-  $flipbook.on('turning', (event, page, view) => {
-    const turnAudio = document.getElementById('turn-audio');
-    if (turnAudio) {
-      turnAudio.volume = 1.0;
-      turnAudio.currentTime = 0;
-      turnAudio.play().catch(e => console.log("Audio play prevented:", e));
-    }
-  });
-
 //----------本表示--------------------------------
 function resizeBook() {
   const wrapper = document.getElementById('book-wrapper');
@@ -165,7 +155,14 @@ function setupVolume(audioId, dotsId, muteId, numDots = 10) {
     currentVolume = ratio;
     audio.volume = ratio;
     muted = ratio === 0; // 0ならミュート扱い
-    updateDots(ratio);
+
+    if (muted) { 
+      muteBtn.src = (audioId.includes('bgm')) ? '/static/image/settei/mute2.PNG' : '/static/image/settei/mute4.PNG'; 
+    } else { 
+      muteBtn.src = (audioId.includes('bgm')) ? '/static/image/settei/mute1.PNG' : '/static/image/settei/mute3.PNG'; 
+    }
+
+    updateDots(audio.volume);
     localStorage.setItem(audioId, ratio);
   });
 
