@@ -16,6 +16,15 @@ maeoki.addEventListener("click", () => {
   console.log("maeoki clicked!");
 });
 
+//LocalStorageから音量を読み込む
+function getVolume(key, defaultValue) {
+  const savedVolume = localStorage.getItem(key);
+  if (savedVolume !== null) {
+    return parseFloat(savedVolume);
+  }
+  return defaultValue;
+}
+
 //  (Howler.js)用のBGM変数
 let maeokiBGM;
 let mainBGM;
@@ -23,6 +32,7 @@ let mainBGM;
 //前置きBGMの再生
 function startMaeokiBGM() {
   if (!maeokiBGM) {
+    const targetVolume = getVolume('bgm-audio', 0.4);
     maeokiBGM = new Howl({
       src: ["/static/audio/deep bubble.mp3"],
       loop: true,//ループ再生
@@ -30,8 +40,7 @@ function startMaeokiBGM() {
     });
     maeokiBGM.play();
     //ゆっくりフェードイン（4秒かけて）
-    maeokiBGM.fade(0, 0.4, 4000);
-    
+    maeokiBGM.fade(0, targetVolume, 4000);
     console.log("Maeoki BGM started");
   }
 }
@@ -51,17 +60,18 @@ function stopMaeokiBGM() {
 
 //メインBGMの再生
 function startMainBGM() {
-    if (!mainBGM) {
-        mainBGM = new Howl({
-            src: ["/static/audio/main beach2.mp3"],
-            loop: true, // ループ再生
-            volume: 0,
-        });
-        mainBGM.play();
-        // ゆっくりフェードイン（4秒かけて）
-        mainBGM.fade(0, 0.4, 4000); 
-        console.log("Main BGM started");
-    }
+  if (!mainBGM) {
+    const targetVolume = getVolume('bgm-audio', 0.4);
+    mainBGM = new Howl({
+      src: ["/static/audio/main beach2.mp3"],
+      loop: true, // ループ再生
+      volume: 0,
+    });
+    mainBGM.play();
+    // ゆっくりフェードイン（4秒かけて）
+    mainBGM.fade(0, targetVolume, 4000); 
+    console.log("Main BGM started");
+  }
 }
 
 // メインBGMの停止
@@ -83,13 +93,13 @@ function stopMainBGM(callback) {
 // 手紙を書くボタンと設定ボタン用の効果音
 const soundClickA = new Howl({
   src: ["/static/audio/walk beach.mp3"],
-  volume: 0.2
+  volume: getVolume('se-audio', 0.2)
 });
 
 // 手紙を見るボタン用の効果音
 const soundClickB = new Howl({
   src: ["/static/audio/open door.mp3"],
-  volume: 0.1
+  volume: getVolume('se-audio', 0.1)
 });
 
 // localstorageでチュートリアル制限

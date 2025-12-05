@@ -3,13 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const bottle = document.getElementById('bottle');
   let closed = false;
 
-// 泡のBGM設定
+  // 泡のBGM設定
   const bubbleSound = new Howl({
     src: ["/static/audio/deep bubbles.mp3"],
     volume: 0.6,
     loop: true, // ループ再生
   });
-
 
   function updateBottlePosition() {
     const rect = logo.getBoundingClientRect(); // logo の位置とサイズ
@@ -58,7 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (closed) return;
     closed = true;
 
-    //泡のBGM再生開始（ループON）
+    //localStorageからの音量取得
+    const savedVolume = localStorage.getItem('bgm-audio');
+    let volumeToApply = 0;
+    if(savedVolume !== null) {
+      volumeToApply = parseFloat(savedVolume);
+    }
+      bubbleSound.volume(volumeToApply);
+
+    //泡のBGM再生開始（ループ）
     bubbleSound.play();
 
     setTimeout(() => {
@@ -68,9 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const distance = window.innerWidth * 0.03; // 画面の3%分上に移動
     animateBottleFadeUp(2500, distance);
 
-    //秒後から音をゆっくりフェードアウト（秒かけて）
+    //音をゆっくりフェードアウト（3秒かけて）
     setTimeout(() => {
-      bubbleSound.fade(0.3, 0, 3000);
+      const currentVolume = bubbleSound.volume(); // 現在設定されている音量を取得
+      bubbleSound.fade(currentVolume, 0, 3000);
     }, 1000);
 
     setTimeout(() => {
