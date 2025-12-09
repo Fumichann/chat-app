@@ -93,6 +93,46 @@ body {
   display: none;              /* Chrome, Safari, Edge */
 }
 
+/*---------警告------------------------*/
+
+.message {
+  width: 146px;
+  height: 22px;
+  right: 0;
+  bottom: 50%;
+  padding: 5px 5px;
+  border-radius: 8px;
+  font-size: 1.0em;
+  opacity: 0;
+  transition: all 0.8s ease-in-out;
+  z-index: 1000;
+  display: inline-block;
+  position: fixed; 
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  word-wrap: none;
+  pointer-events: none; 
+}
+
+/* 背景画像 */
+.message::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/static/image/settei/messe.PNG");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+
+  z-index: -1; /* ← メッセージ文字より後ろへ */
+}
+
+.message.show {
+  bottom: 53%;
+  opacity: 1;
+}
+
 /*---------送信ボタン（ボトル）------------------------*/
 
 .bot{
@@ -153,4 +193,15 @@ body {
 #aiReplyContainer p.sending::after {
   content: "送信中";
   animation: blinkDots 1s infinite steps(1);
+}
+
+/*---------戻りボタン------------------------*/
+
+#back {
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  bottom: 75px;
+  width: 300px;
+  cursor: pointer;
 }

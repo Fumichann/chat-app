@@ -214,7 +214,6 @@ storageBtn.addEventListener('click', () => {
 
   //---------delete------------------------------
 
-
 document.addEventListener('DOMContentLoaded', () => {
   // 保存されてる手紙データ確認
   const storedLetter = getStorage().getItem('letters');

@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const bottle = document.querySelector('.bot');
   const submit = document.getElementById('submit');
   const light = document.getElementById('light');
+  const backBtn = document.getElementById('back');
+
 
   let storageType = localStorage.getItem('volume-storage-type') || 'local';
 
@@ -67,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bottle.style.height = 900 * scale + 'px';
       submit.style.width = 157 * scale + 'px';
       submit.style.height = 260 * scale + 'px';
+      backBtn.style.width = 180 * scale + 'px';
 
     autoResize();
   }
@@ -77,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
   autoResize();
   resizeLetter();
 
+
+  
 const submitArea = document.getElementById("submit");
 
 submitArea.addEventListener("click", (e) => {
@@ -91,9 +96,16 @@ submitArea.addEventListener("click", (e) => {
 
     const userMessage = userMsg.value.trim();
     const submitButton = document.getElementById("submit");
+    const msgBox = document.getElementById("message");
 
-    if (!userMessage) {
-      aiReplyContainer.innerHTML = '<p style="color:red;">メッセージを入力してください。</p>';
+    // ここで送信ブロック（required の代わり）
+    if (userMessage === "") {
+      msgBox.textContent = "手紙は白紙だ";
+      msgBox.classList.add("show");
+
+      setTimeout(() => {
+        msgBox.classList.remove("show");
+      }, 2500);
       return;
     }
 
@@ -106,10 +118,10 @@ submitArea.addEventListener("click", (e) => {
     // フォーム非表示
     form.style.display = 'none';
     light.style.display = 'none';
+    backBtn.style.display = 'none';
 
     aiReplyContainer.innerHTML = `<p class="sending"></p>`;
     haikei.style.backgroundImage = 'url("/static/image/haikei/kari.PNG")'; 
-
 
 
     try {
@@ -176,5 +188,11 @@ submitArea.addEventListener("click", (e) => {
     getStorage().setItem('letters', JSON.stringify(logs));
     console.log("AI返信履歴を保存しました:", dateString);
   }
+
+  //--------- back -----------------------
+
+  backBtn.addEventListener('click', () => {
+    window.location.href = '/main'; 
+  });
 
 });

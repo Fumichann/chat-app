@@ -10,6 +10,9 @@
 <body class="haikei">
 
   <img id="light" src="/static/image/tegami/yuu.PNG">
+  <img id="back" src="/static/image/tegami/back.PNG" >
+  <div id="message" class="message"></div>
+
 
   <form method="POST" id="msgForm" class="letter-paper">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -20,7 +23,7 @@
         <p id="letter-date"></p>
 
         <div class="paper-middle">
-          <textarea class="paper-text" id="userMsg" name="message" placeholder="ここに書いてね" required></textarea>
+          <textarea class="paper-text" id="userMsg" name="message" placeholder="ここに書いてね"></textarea>
         </div>
 
       </div>
