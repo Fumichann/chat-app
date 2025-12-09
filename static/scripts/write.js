@@ -2,6 +2,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
   const aiReplyContainer = document.getElementById('aiReplyContainer');
+
+  const haikei = document.querySelector(".haikei");
+  const textarea = document.querySelector(".paper-text");
+  const middle = document.querySelector(".paper-middle");
+  const papers = document.querySelector('.letter-paper');
+  const bottle = document.querySelector('.bot');
+  const submit = document.getElementById('submit');
+  const light = document.getElementById('light');
+
   let storageType = localStorage.getItem('volume-storage-type') || 'local';
 
   //ローカルかセッションかの取得
@@ -25,25 +34,83 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // 基準サイズ（棚画像の元サイズ）
+  const baseWidth = 855;
+  const baseHeight = 585;
+
+  function autoResize() {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+
+    // 中央部分の高さを textarea に追従させる
+    middle.style.height = textarea.scrollHeight + "px";
+  }
+
+  function resizeLetter() {
+
+    // 画面が小さい時だけ縮める
+    const maxWidth = window.innerWidth * 0.7;
+    const maxHeight = window.innerHeight * 0.9;
+
+    const scaleW = maxWidth / baseWidth;
+    const scaleH = maxHeight / baseHeight;
+
+    // 大きくはしない（1が上限）
+    const scale = Math.min(scaleW, scaleH, 1);
+    
+      // まずリサイズ処理を全部終わらせる
+      papers.style.width = baseWidth * scale + 'px';
+      papers.style.maxHeight = `${690 * scale}px`
+      middle.style.minHeight = `${baseHeight * scale}px`; 
+      
+      bottle.style.width = 175 * scale + 'px';
+      bottle.style.height = 900 * scale + 'px';
+      submit.style.width = 157 * scale + 'px';
+      submit.style.height = 260 * scale + 'px';
+
+    autoResize();
+  }
+
+  textarea.addEventListener("input", autoResize);
+  window.addEventListener("resize",resizeLetter);
+
+  autoResize();
+  resizeLetter();
+
+const submitArea = document.getElementById("submit");
+
+submitArea.addEventListener("click", (e) => {
+  // ボタンなので本来 preventDefault しなくてもいいが、
+  // 自前 submit 処理を優先させるなら残してOK
+  e.preventDefault();
+  form.requestSubmit();
+});
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const userMessage = userMsg.value.trim();
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById("submit");
 
     if (!userMessage) {
       aiReplyContainer.innerHTML = '<p style="color:red;">メッセージを入力してください。</p>';
       return;
     }
-    
+
+
     // --- 1. ボタンの無効化とローディング表示 ---
     let originalButtonText = submitButton.textContent;
     submitButton.disabled = true;
     submitButton.textContent = '海に投げる (送信中...)';
 
     // フォーム非表示
-    userMsg.style.display = 'none';
-    submitButton.style.display = 'none';
+    form.style.display = 'none';
+    light.style.display = 'none';
+
     aiReplyContainer.innerHTML = `<p class="sending"></p>`;
+    haikei.style.backgroundImage = 'url("/static/image/haikei/kari.PNG")'; 
+
+
 
     try {
       const response = await fetch('/api/reply', {
@@ -109,6 +176,5 @@ document.addEventListener('DOMContentLoaded', () => {
     getStorage().setItem('letters', JSON.stringify(logs));
     console.log("AI返信履歴を保存しました:", dateString);
   }
+
 });
-
-

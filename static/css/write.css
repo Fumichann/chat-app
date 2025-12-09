@@ -1,61 +1,129 @@
 /* ページ全体の縦横中央寄せ */
 body {
-  display: flex;
-  flex-direction: column;   /* 上下に並べる */
-  justify-content: center;  /* 縦方向中央 */
-  align-items: center;      /* 横方向中央 */
-  min-height: 100vh;        /* 画面高さいっぱい */
+  background: #f4f4f4;
   margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: sans-serif;
-  background-color: #f9f9f9; /* 任意で背景色 */
 }
 
-/* タイトル */
-h1 {
-  font-size: 2em;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
+#light{
+  position: fixed;
+  opacity: 0.2;
+  margin: 0 auto;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 1000;
+  pointer-events: none;
+}
+.haikei{
+  background-image: url(/static/image/haikei/table.JPG);
 }
 
-/* フォーム全体を中央に */
-form {
+/*---------フォーム（手紙）------------------------*/
+
+.letter-paper {
+  width: 855px;
+  height: auto;
+  max-height: 690px;
+  margin: auto;
+  overflow-y: auto;        /* 縦スクロール */
+  background: none;        /* 子要素で画像表示 */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 80%;
-  max-width: 600px;
-  margin: 0 auto;
+  position:absolute;
+  padding: 0;
+  overflow-y: auto;
+  }
+
+  .paper-inner {
+  display: flex;
+  flex-direction: column;
+  }
+
+  .paper-top {
+    width: 100%;
+    display: block;
+  }
+
+  #letter-date {
+  position: absolute;
+  width: 2vw;
+  top: 5%;
+  right:10%;
+  font-size: 1.6vw;
+  font-weight: bold;
+  color: #333;
 }
 
-/* テキストエリア */
-textarea#userMsg {
+.paper-middle {
+  background: url(/static/image/rireki/binsen.PNG) repeat-y center;
+  padding: 0 7% 1%;
+  background-size: 100% auto;
+  flex-grow: 1;
+  min-height: 690px;
+}
+
+/* textarea */
+.paper-text {
   width: 100%;
-  height: 150px;
-  padding: 12px;
-  font-size: 1.1em;
-  margin-bottom: 20px;
-  resize: vertical;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-/* 送信ボタン */
-button[type="submit"] {
-  width: 50%;
-  padding: 12px;
-  font-size: 1.1em;
-  cursor: pointer;
+  min-height: 200px;
+  background: transparent;
   border: none;
-  border-radius: 8px;
-  background-color: #4CAF50;
-  color: white;
-  transition: background-color 0.3s ease;
+  outline: none;
+  resize: none;
+  font-size: 1.7vw;
+  line-height: 2;
+  white-space: pre-wrap;
+  box-sizing: border-box;
 }
 
-button[type="submit"]:hover {
-  background-color: #45a049;
+.letter-paper,
+.paper-text{
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE 10+ */
+}
+.letter-paper::-webkit-scrollbar,
+.paper-text::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari, Edge */
+}
+
+/*---------送信ボタン（ボトル）------------------------*/
+
+.bot{
+  position: fixed;
+  display: inline-block;
+  width: 175px;
+  height: 900px;
+  right: 0;
+  transform-origin: top right;
+}
+
+#bottle{
+  position: absolute;
+  display: block;
+  z-index: 100;
+  width: 100%;
+  height: auto;
+}
+
+#submit{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 157px;
+  height: 260px;
+  cursor: pointer;
+  z-index: 100;
+
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
 /* AI返信表示 */

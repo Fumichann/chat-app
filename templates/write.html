@@ -3,19 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>海で手紙を書こう</title>
-  <link rel="stylesheet" href="../static/css/write.css">
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/write.css">
 </head>
 
-<body>
-  <p><a href="/main">← 戻る</a></p>
+<body class="haikei">
 
-  <h1>漂流瓶を送る</h1>
-  <form method="POST" id="msgForm">
+  <img id="light" src="/static/image/tegami/yuu.PNG">
+
+  <form method="POST" id="msgForm" class="letter-paper">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <textarea id="userMsg" name="message" placeholder="漂流瓶に入れる手紙を書こう" required></textarea>
-    <br>
-    <button type="submit">海に投げる</button>
+
+      <div class="paper-inner">
+
+        <img class="letter-top" src="/static/image/rireki/top.PNG">
+        <p id="letter-date"></p>
+
+        <div class="paper-middle">
+          <textarea class="paper-text" id="userMsg" name="message" placeholder="ここに書いてね" required></textarea>
+        </div>
+
+      </div>
+
+      <div class="bot">
+        <img id="bottle" src="/static/image/tegami/b_yuu.PNG">
+        <button id="submit" type="button"></button>
+      </div>
+
   </form>
+
   
   <div id="aiReplyContainer">
     {% if ai_message %}
