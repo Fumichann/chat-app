@@ -10,6 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
     loop: true, // ループ再生
   });
 
+  // setting.jsで保存された音量を読み込み、適用する
+  const savedVolume = localStorage.getItem('bgm-volume');
+  let volumeToApply = 0.6; // デフォルト値
+
+  if (savedVolume !== null) {
+    volumeToApply = parseFloat(savedVolume);// localStorageの値があればそれを適用
+  }
+  bubbleSound.volume(volumeToApply);
+
+
   function updateBottlePosition() {
     const rect = logo.getBoundingClientRect(); // logo の位置とサイズ
     bottle.style.top = rect.top + 'px';
@@ -56,14 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", () => {
     if (closed) return;
     closed = true;
-
-    //localStorageからの音量取得
-    const savedVolume = localStorage.getItem('bgm-audio');
-    let volumeToApply = 0;
-    if(savedVolume !== null) {
-      volumeToApply = parseFloat(savedVolume);
-    }
-      bubbleSound.volume(volumeToApply);
 
     //泡のBGM再生開始（ループ）
     bubbleSound.play();

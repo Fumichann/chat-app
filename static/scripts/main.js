@@ -32,7 +32,7 @@ let mainBGM;
 //前置きBGMの再生
 function startMaeokiBGM() {
   if (!maeokiBGM) {
-    const targetVolume = getVolume('bgm-audio', 0.4);
+    const targetVolume = getVolume('bgm-volume', 0.4);
     maeokiBGM = new Howl({
       src: ["/static/audio/deep bubble.mp3"],
       loop: true,//ループ再生
@@ -61,7 +61,7 @@ function stopMaeokiBGM() {
 //メインBGMの再生
 function startMainBGM() {
   if (!mainBGM) {
-    const targetVolume = getVolume('bgm-audio', 0.4);
+    const targetVolume = getVolume('bgm-volume', 0.4);
     mainBGM = new Howl({
       src: ["/static/audio/main beach2.mp3"],
       loop: true, // ループ再生
@@ -87,19 +87,21 @@ function stopMainBGM(callback) {
               callback();
             }
         }, 2000);
-    }
-}
+      } else if (callback) {
+        callback();
+      }
+  }
 
 // 手紙を書くボタンと設定ボタン用の効果音
 const soundClickA = new Howl({
   src: ["/static/audio/walk beach.mp3"],
-  volume: getVolume('se-audio', 0.2)
+  volume: getVolume('se-volume', 0.2)
 });
 
 // 手紙を見るボタン用の効果音
 const soundClickB = new Howl({
   src: ["/static/audio/open door.mp3"],
-  volume: getVolume('se-audio', 0.1)
+  volume: getVolume('se-volume', 0.1)
 });
 
 // localstorageでチュートリアル制限

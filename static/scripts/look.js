@@ -1,12 +1,62 @@
+function getStorage(){
+  const currentType = localStorage.getItem('volume-storage-type') || 'local';
+  return (currentType === 'local') ? localStorage : sessionStorage;
+}
+
+// -----Howler.jsの設定
+const bgmSound = new Howl({
+  src: ['/static/audio/main beach2.mp3'],  
+  html5: true,
+  loop: true,
+  volume: 1.0
+});
+
+const closeSound = new Howl({
+  src: ['/static/audio/open door.mp3'],
+  html5: true,
+  volume: 1.0
+});
+
+//bgmフェードイン
+function startBgmWithFadeIn(duration = 2000) {
+  const targetVolume = parseFloat(localStorage.getItem('bgm-volume')) || 1.0;
+  if (!bgmSound.playing()) {
+    bgmSound.volume(0);// 音量を0に設定して再生開始
+    bgmSound.play();// 0から目標音量までフェードイン
+    
+    if (targetVolume > 0) {
+      bgmSound.fade(0, targetVolume, duration);
+    }
+  } else {
+    bgmSound.volume(targetVolume);
+  }
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
 
   const storage = localStorage;
+
+  // localStorageから保存されたBGM音量を読み込み、適用する
+  const savedBgmVolume = parseFloat(storage.getItem('bgm-volume')) ;
+  if (!isNaN(savedBgmVolume)) {
+    bgmSound.volume(savedBgmVolume);
+  }
+
+  // localStorageから保存されたSE音量を読み込み、適用する
+  const savedSeVolume = parseFloat(storage.getItem('se-volume')) ;
+  if (!isNaN(savedSeVolume)) {
+    closeSound.volume(savedSeVolume);
+  }
 
   //-----------フェード-----------------------
   setTimeout(() => {
     const fade = document.getElementById('fade');
     if (fade) fade.style.opacity = 0 ;
   }, 1000); // 読み込みが安定したら外す
+
+  //BGM フェードイン再生
+  startBgmWithFadeIn(2000);
 
   // ----------リサイズ----------------------------------------------
   function resizeShelf() {
@@ -150,23 +200,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //---------戻りボタン-----------------------------------------
 
-// Howler.js の読み込み
-const backSound = new Howl({
-  src: ['/static/audio/open door.mp3'], // あなたのファイル名とパスに変更してください
-  volume: 0.2
-});
-
-  // ★ 戻るボタン
   const backBtn = document.getElementById('back');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
 
-      //効果音を再生
-      backSound.play();
+      // SE再生を追加
+      closeSound.play();
 
-      setTimeout(() => {
+      //BGM フェードアウト
+      if (bgmSound.playing()) {
+        const currentVolume = bgmSound.volume();
+        bgmSound.fade(currentVolume, 0, 1000);// 1秒でフェードアウト
+
+        setTimeout(() => {
+          bgmSound.stop();
+          window.location.href = '/main';
+        }, 1000);// フェード時間と合わせて遷移
+      } else {
         window.location.href = '/main';
-      },1500);
+      }
     });
   }
 });
