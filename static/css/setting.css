@@ -10,7 +10,7 @@ body {
 }
 
 .haikei{
-  background-image: url(/static/image/haikei/kari.PNG);
+  background-image: url(/static/image/haikei/main.JPG);
 }
 
 /*---------フェード--------------------------*/
@@ -307,7 +307,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("/static/image/settei/messe.PNG");
+  background-image: url("/static/image/messe.PNG");
   background-size: cover;
   background-position: center;
   opacity: 0.5;

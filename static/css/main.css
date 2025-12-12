@@ -58,7 +58,7 @@
 .haikei.main{
   transition: opacity 2s ease;
   position: fixed;
-  background-image: url("../image/haikei/kari.PNG");
+  background-image: url("../image/haikei/main.JPG");
   z-index: -1;
 }
 
