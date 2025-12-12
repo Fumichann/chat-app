@@ -11,6 +11,20 @@ body {
   font-family: sans-serif;
 }
 
+/*---------フェード--------------------------*/
+#fade {
+  position: fixed;
+  inset: 0;
+  background-color: #000000;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+#fade.hidden {
+  display: none;
+}
+
 #light{
   position: fixed;
   opacity: 0.2;
@@ -18,11 +32,21 @@ body {
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center center;
-  z-index: 1000;
+  z-index: 10;
   pointer-events: none;
 }
 .haikei{
   background-image: url(/static/image/haikei/table.JPG);
+}
+
+/*---------戻りボタン------------------------*/
+
+#back {
+  position: fixed;
+  left: 0%;
+  width: 15%;
+  margin-top: 33%;
+  cursor: pointer;
 }
 
 /*---------フォーム（手紙）------------------------*/
@@ -93,46 +117,6 @@ body {
   display: none;              /* Chrome, Safari, Edge */
 }
 
-/*---------警告------------------------*/
-
-.message {
-  width: 146px;
-  height: 22px;
-  right: 0;
-  bottom: 50%;
-  padding: 5px 5px;
-  border-radius: 8px;
-  font-size: 1.0em;
-  opacity: 0;
-  transition: all 0.8s ease-in-out;
-  z-index: 1000;
-  display: inline-block;
-  position: fixed; 
-  text-align: center;
-  align-items: center;
-  justify-items: center;
-  word-wrap: none;
-  pointer-events: none; 
-}
-
-/* 背景画像 */
-.message::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("/static/image/settei/messe.PNG");
-  background-size: cover;
-  background-position: center;
-  opacity: 0.5;
-
-  z-index: -1; /* ← メッセージ文字より後ろへ */
-}
-
-.message.show {
-  bottom: 53%;
-  opacity: 1;
-}
-
 /*---------送信ボタン（ボトル）------------------------*/
 
 .bot{
@@ -166,42 +150,111 @@ body {
   outline: none;
 }
 
-/* AI返信表示 */
-#aiReplyContainer {
-  margin-top: 20px;
-  width: 80%;
-  max-width: 600px;
-  text-align: center;
+/*---------流れボトル------------------------*/
+
+#nagare{
+  position: fixed;
+  left: 50%;
+  bottom: 48%; /* 縦中央近く */
+  transform: translate(-50%, 50%); /* 横中央 + 好みで縦調整 */
+  width: auto; 
+  height: auto;
+  pointer-events: none;
+  z-index: 10;
 }
 
-/* 送信中アニメーション */
-#aiReplyContainer p.sending {
-  color: #666;
-  font-style: italic;
-  text-align: center;
-  margin: 20px 0;
-  font-size: 1.2em;
+.nagare1{
+    position: absolute;
+    bottom: 23%;
+    right: 45%;
+    width: 7%;
+    opacity: 0;
+    transition: opacity 0.9s ease;
 }
 
-@keyframes blinkDots {
-  0% { content: "送信中"; }
-  33% { content: "送信中."; }
-  66% { content: "送信中.."; }
-  100% { content: "送信中..."; }
+.nagare2{
+    position: absolute;
+    bottom: 42%;
+    right: 35%;
+    width: 3%;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    
 }
 
-#aiReplyContainer p.sending::after {
-  content: "送信中";
-  animation: blinkDots 1s infinite steps(1);
+.nagare3{
+    position: absolute;
+    bottom: 45%;
+    right: 65%;
+    width: 1.5%;
+    opacity: 0;
+    transition: opacity 0.9s ease;
 }
 
-/*---------戻りボタン------------------------*/
+/*---------メッセージ------------------------*/
 
-#back {
-  position: absolute;
+.message {
+  z-index: 5;
   display: inline-block;
-  left: 0;
-  bottom: 75px;
-  width: 300px;
-  cursor: pointer;
+  position: fixed; 
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  word-wrap: none;
+  pointer-events: none; 
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+/* 背景画像 */
+.message::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/static/image/messe.PNG");
+  background-size: cover;
+  background-position: center;
+  z-index: -1; /* ← メッセージ文字より後ろへ */
+}
+.message.show {
+  opacity: 1;
+}
+
+.alert{
+  width: 155px;
+  height: 25px;
+  right: 0%;
+  padding: 5px 10px;
+  font-size: 18px;
+  margin-bottom: 100px;
+}
+.alert::before{
+  opacity: 0.5;
+}
+
+.success{
+  width: 190px;
+  height: 30px;
+  bottom: 45%;
+  padding: 8px 20px;
+  font-size: 22px;
+  left: 50%;             
+  transform: translate(-50%, 50%);
+
+}
+.error{
+    width: 230px;
+    height: 30px;
+    bottom: 46%;
+    padding: 8px 20px;
+    font-size: 20px;
+    left: 50%;             
+   transform: translate(-50%, 50%);
+}
+.success::before,
+.error::before{
+  opacity: 0.4;
+}
+.success.show,
+.error.show {
+  opacity: 1;
 }

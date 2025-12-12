@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
-  const aiReplyContainer = document.getElementById('aiReplyContainer');
 
   const haikei = document.querySelector(".haikei");
   const textarea = document.querySelector(".paper-text");
@@ -11,6 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const submit = document.getElementById('submit');
   const light = document.getElementById('light');
   const backBtn = document.getElementById('back');
+  const fade = document.getElementById('fade');
+
+  const malert = document.getElementById('m-a');
+  const msuccess = document.getElementById('m-s');
+  const merror = document.getElementById('m-e');
+
+  const nagare = document.getElementById('nagare')
+  const n1 = document.querySelector('.nagare1');
+  const n2 = document.querySelector('.nagare2');
+  const n3 = document.querySelector('.nagare3');
 
 
   let storageType = localStorage.getItem('volume-storage-type') || 'local';
@@ -36,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
   // 基準サイズ（棚画像の元サイズ）
   const baseWidth = 855;
   const baseHeight = 585;
@@ -47,6 +57,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // 中央部分の高さを textarea に追従させる
     middle.style.height = textarea.scrollHeight + "px";
   }
+
+  function resizemessage() {
+    // 画面が小さい時だけ縮める
+    const maxWidth = window.innerWidth * 0.8;
+    const maxHeight = window.innerHeight * 0.8;
+
+    const scaleW = maxWidth / baseWidth;
+    const scaleH = maxHeight / baseHeight;
+
+    // 大きくはしない（1が上限）
+    const scale = Math.min(scaleW, scaleH, 1);
+
+    malert.style.width = 155 * scale + 'px';
+    malert.style.height = 25 * scale + 'px';
+    malert.style.fontSize = 18 * scale + 'px';
+    malert.style.padding = `${5 * scale}px ${10 * scale}px`;
+    malert.style.marginBottom = 100 * scale + 'px'
+
+    msuccess.style.width = 190 * scale + 'px';
+    msuccess.style.height = 30 * scale + 'px';
+    msuccess.style.fontSize = 22 * scale + 'px';
+    msuccess.style.padding = `${8 * scale}px ${20 * scale}px`;
+    msuccess.style.marginTop = 100 * scale + 'px';
+
+    merror.style.width = 230 * scale + 'px';
+    merror.style.height = 30 * scale + 'px';
+    merror.style.fontSize = 20 * scale + 'px';
+    merror.style.padding = `${8 * scale}px ${20 * scale}px`;
+    merror.style.marginTop = 100 * scale + 'px';
+
+  }
+
 
   function resizeLetter() {
 
@@ -69,63 +111,120 @@ document.addEventListener('DOMContentLoaded', () => {
       bottle.style.height = 900 * scale + 'px';
       submit.style.width = 157 * scale + 'px';
       submit.style.height = 260 * scale + 'px';
-      backBtn.style.width = 180 * scale + 'px';
+      backBtn.style.width = 175 * scale + 'px';
+      backBtn.style.height = 205 * scale + 'px';
+      nagare.style.width = baseWidth * scale + 'px';
+      nagare.style.height = baseHeight * scale + 'px';
 
     autoResize();
+    resizemessage();
   }
 
   textarea.addEventListener("input", autoResize);
   window.addEventListener("resize",resizeLetter);
+  window.addEventListener("resize",resizemessage)
 
   autoResize();
+  resizemessage();
   resizeLetter();
-
-
   
-const submitArea = document.getElementById("submit");
 
-submitArea.addEventListener("click", (e) => {
-  // ボタンなので本来 preventDefault しなくてもいいが、
-  // 自前 submit 処理を優先させるなら残してOK
-  e.preventDefault();
-  form.requestSubmit();
-});
+
+
+// 関数一覧
+
+  // --- settimeoutの代わり ---
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // --- ボトル流し ---
+  async function showBottle() {
+
+    // --- フェード ---
+    fade.classList.remove("hidden");
+    await sleep(500);
+    fade.style.opacity = 1;    
+    await sleep(800);
+    // フォーム非表示
+    form.style.display = 'none';
+    light.style.display = 'none';
+    backBtn.style.display = 'none';
+    haikei.style.backgroundImage = 'url("/static/image/haikei/main.JPG")'
+
+    // --- ボトル ---
+    n1.style.opacity = 1 ;
+    await sleep(500);
+    fade.style.opacity = 0;   
+    await sleep(1500);
+    n1.style.opacity = 0;
+    n2.style.opacity = 1;
+    await sleep(1500);
+    n2.style.opacity = 0;
+    n3.style.opacity = 0.8;
+    await sleep(1300);
+    n3.style.opacity = 0;
+  }
+
+  // --- メイン画面へ ---
+  async function fadeOutAndGoMain() {
+    fade.classList.remove("hidden");
+    await sleep(3000);
+    fade.style.opacity = 1;
+    await sleep(3030);
+    window.location.href = '/main';
+  }
+
+
+// -------- submitボタン ------------------------- 
+
+  // -----発火用---------
+  const submitArea = document.getElementById("submit");
+  submitArea.addEventListener("click", (e) => {
+    e.preventDefault();
+    form.requestSubmit();
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const userMessage = userMsg.value.trim();
     const submitButton = document.getElementById("submit");
-    const msgBox = document.getElementById("message");
 
-    // ここで送信ブロック（required の代わり）
+    // ここで送信ブロック（requiredの代わり）
     if (userMessage === "") {
-      msgBox.textContent = "手紙は白紙だ";
-      msgBox.classList.add("show");
-
-      setTimeout(() => {
-        msgBox.classList.remove("show");
-      }, 2500);
+      malert.classList.add("show");
+      setTimeout(() =>{
+      malert.classList.remove("show");
+      },2000)
       return;
     }
 
 
-    // --- 1. ボタンの無効化とローディング表示 ---
-    let originalButtonText = submitButton.textContent;
+    // --- 画面切り替え ---------------------
+    
     submitButton.disabled = true;
-    submitButton.textContent = '海に投げる (送信中...)';
-
-    // フォーム非表示
-    form.style.display = 'none';
-    light.style.display = 'none';
-    backBtn.style.display = 'none';
-
-    aiReplyContainer.innerHTML = `<p class="sending"></p>`;
-    haikei.style.backgroundImage = 'url("/static/image/haikei/kari.PNG")'; 
-
 
     try {
-      const response = await fetch('/api/reply', {
+      await showBottle();
+    } catch (error) {
+      console.error("showBottle 内でエラー:", error);
+      // ここで強制的に続行する
+    }
+
+    // -------fetch強行(6秒以内に届かないとエラー)----------------
+    function fetchWithTimeout(url, options, timeout = 6000) {
+      return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("タイムアウトしました")), timeout)
+        )
+      ]);
+    }
+
+    // --- API送信 ----------------------
+    try {
+      const response = await fetchWithTimeout('/api/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage }),
@@ -151,20 +250,27 @@ submitArea.addEventListener("click", (e) => {
       // ユーザーの手紙は保存せず、AIの返答だけ保存
       saveChatHistory(data.reply);
 
-      // 画面にAI返信を表示
-      aiReplyContainer.innerHTML = `
-        <div class="response">
-          <strong>届いた漂流瓶</strong>
-          <p>${data.reply}</p>
-        </div>
-      `;
+      // --- 成功メッセージ ---
+      msuccess.classList.add("show");
+      setTimeout(() =>{
+      msuccess.classList.remove("show");
+      },3000)
+
     } catch (error) {
-      console.error('通信処理中にエラー:', error);
-      aiReplyContainer.innerHTML = `<p style="color:red;">通信に失敗しました。${error.message ? ' (' + error.message + ')' : ''}</p>`;
+
+      console.error("fetch エラー:", error);
+
+      // --- 失敗メッセージ ---
+      merror.classList.add("show");
+      setTimeout(() =>{
+      //merror.classList.remove("show");
+      },3000)
+
     } finally {
       userMsg.value = '';
       submitButton.disabled = false;
-      submitButton.textContent = originalButtonText;
+
+      await fadeOutAndGoMain();
     }
   });
 

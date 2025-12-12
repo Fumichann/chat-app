@@ -9,9 +9,14 @@
 
 <body class="haikei">
 
+  <div id="fade" class="hidden"></div>
+
   <img id="light" src="/static/image/tegami/yuu.PNG">
-  <img id="back" src="/static/image/tegami/back.PNG" >
-  <div id="message" class="message"></div>
+  <img id="back" src="/static/image/tegami/back.PNG">
+
+  <div id="m-a" class="message alert">手紙は白紙だ</div>
+  <div id="m-s" class="message success">手紙を見送った</div>
+  <div id="m-e" class="message error">誰にも届かない気がした</div>
 
 
   <form method="POST" id="msgForm" class="letter-paper">
@@ -35,22 +40,11 @@
 
   </form>
 
-  
-  <div id="aiReplyContainer">
-    {% if ai_message %}
-      <div class="response">
-        <strong>届いた漂流瓶</strong>
-        <p>{{ ai_message }}</p>
-      </div>
-    {% endif %}
+  <div id="nagare">
+    <img class="nagare1" src="/static/image/tegami/nagare.PNG" >
+    <img class="nagare2" src="/static/image/tegami/nagare2.PNG" >
+    <img class="nagare3" src="/static/image/tegami/nagare3.PNG" >
   </div>
-
-  {% if request.form.get("message") and ai_message %}
-    <div id="history-data"
-         data-user="{{ request.form.get('message') | e }}"
-         data-ai="{{ ai_message | e }}"
-         style="display: none;"></div>
-  {% endif %}
 
   <script src="../static/scripts/write.js"></script>
 </body>
