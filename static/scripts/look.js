@@ -17,6 +17,12 @@ const closeSound = new Howl({
   volume: 1.0
 });
 
+const openBottleSound = new Howl({
+  src: ['/static/audio/bottle-open.mp3'], 
+  html5: true,
+  volume: 1.0
+});
+
 //bgmフェードイン
 function startBgmWithFadeIn(duration = 2000) {
   const targetVolume = parseFloat(localStorage.getItem('bgm-volume')) || 1.0;
@@ -47,6 +53,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedSeVolume = parseFloat(storage.getItem('se-volume')) ;
   if (!isNaN(savedSeVolume)) {
     closeSound.volume(savedSeVolume);
+    openBottleSound.volume(savedSeVolume);
   }
 
   //-----------フェード-----------------------
@@ -157,6 +164,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // ← ここでクリックイベント！
     bottleWrapper.addEventListener("click", () => {
+      openBottleSound.play();
       openLetter(letter.id);
     });
 
