@@ -62,11 +62,10 @@ window.addEventListener('DOMContentLoaded', () => {
   
   startRoomBGM();//BGMのフェードイン再生開始
 
-  //-----------フェード-----------------------
   setTimeout(() => {
-    const fade = document.getElementById('fade');
+    const fade = document.getElementById('fade');//フェード
     if (fade) fade.style.opacity = 0 ;
-  }, 1000); // 読み込みが安定したら外す
+  }, 1000);
 
   // ----------リサイズ----------------------------------------------
   function resizeShelf() {
@@ -148,7 +147,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function addBottle(letter) {
     const shelf = document.getElementById("shelf");
 
-      // 瓶コンテナ（中に瓶画像と文字を入れる）
+    // 瓶コンテナ（中に瓶画像と文字を入れる）
     const bottleWrapper = document.createElement("div");
     bottleWrapper.className = "bottle";
     bottleWrapper.dataset.id = letter.id;
@@ -214,7 +213,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (backBtn) {
     backBtn.addEventListener('click', () => {
 
-      // SE再生を追加
+      // SE再生
       closeSound.play();
       
       stopRoomBGM(() => { 
