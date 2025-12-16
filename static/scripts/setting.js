@@ -19,7 +19,7 @@ const pageFlipSound = new Howl({
 });
 
 const bookCloseSound = new Howl({
-    src: ['/static/audio/paper.mp3'], // 本を閉じる音
+    src: ['/static/audio/close book.mp3'], // 本を閉じる音
     html5: true,
     volume: 1.0 
 });
