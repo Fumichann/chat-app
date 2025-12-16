@@ -1,3 +1,62 @@
+//音量を読み込む
+function getVolume(key, defaultValue) {
+  const savedVolume = localStorage.getItem(key);
+  if (savedVolume !== null) {
+    return parseFloat(savedVolume);
+  }
+  return defaultValue;
+}
+
+//Howler.js用のBGM変数
+let mainBGM = null;
+
+//Main bgm再生
+function startMainBGM() {
+  if (!mainBGM) {
+    const targetVolume = getVolume('bgm-volume', 0.4);//bgm-volume がない時の音量　0.4
+    mainBGM = new Howl({
+      src: ['/static/audio/main beach2.mp3'],  
+      loop: true,
+      volume: 0,//0から開始
+    });
+    mainBGM.play();
+    mainBGM.fade(0, targetVolume, 4000);//4秒かけてフェードイン
+    console.log("Main BGM started in look.js");
+  } else {
+    const targetVolume = getVolume('bgm-volume', 0.4);//すでに再生中は音量を更新
+    mainBGM.volume(targetVolume);
+  }
+}
+
+// Main BGMの停止
+function stopMainBGM(callback) {
+  if (mainBGM) {
+    mainBGM.fade(mainBGM.volume(), 0, 1000); // 1秒でフェードアウト
+    setTimeout(() => {
+      mainBGM.stop();
+      mainBGM = null;      
+      console.log("Main BGM stopped in look.js");
+      if(callback){
+        callback();
+      }
+    },1000);
+  } else if (callback) {
+    callback();
+  }
+}
+
+// 戻るボタン
+const closeSound = new Howl({
+  src: ['/static/audio/walk beach.mp3'],
+  volume: getVolume('se-volume', 0.3)//デフォルト0.3
+});
+
+// 送るボタン
+const submitSound = new Howl({
+  src: ['/static/audio/bottle-open.mp3'], 
+  volume: getVolume('se-volume', 0.5)//デフォルト0.5
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
@@ -28,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function getStorage() {
     return (storageType === 'local') ? localStorage : sessionStorage;
   }
+  
+  startMainBGM();//BGMのフェードイン再生開始
 
   const dataElem = document.getElementById('history-data');
   if (dataElem) {
@@ -140,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- ボトル流し ---
   async function showBottle() {
+    //SE再生
+    submitSound.play();
 
     // --- フェード ---
     fade.classList.remove("hidden");
@@ -170,8 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function fadeOutAndGoMain() {
     fade.classList.remove("hidden");
     await sleep(3000);
-    fade.style.opacity = 1;
+
+    stopMainBGM(() => {
+      fade.style.opacity = 1;
+    });
+
     await sleep(3030);
+    
     window.location.href = '/main';
   }
 
@@ -298,7 +366,10 @@ document.addEventListener('DOMContentLoaded', () => {
   //--------- back -----------------------
 
   backBtn.addEventListener('click', () => {
-    window.location.href = '/main'; 
+    //se再生
+    closeSound.play();
+    stopMainBGM(() => {
+      window.location.href = '/main';
+    });
   });
-
 });
