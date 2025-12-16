@@ -8,34 +8,34 @@ function getVolume(key, defaultValue) {
 }
 
 //Howler.js用のBGM変数
-let mainBGM = null;
+let roomBGM = null;
 
-//Room bgmの再生
-function startMainBGM() {
-  if (!mainBGM) {
+//Room bgm再生
+function startRoomBGM() {
+  if (!roomBGM) {
     const targetVolume = getVolume('bgm-volume', 0.4);//bgm-volume がない時の音量　0.4
-    mainBGM = new Howl({
+    roomBGM = new Howl({
       src: ['/static/audio/main beach2.mp3'],  
       loop: true,
       volume: 0,//0から開始
     });
-    mainBGM.play();
-    mainBGM.fade(0, targetVolume, 4000);//4秒かけてフェードイン
+    roomBGM.play();
+    roomBGM.fade(0, targetVolume, 4000);//4秒かけてフェードイン
     console.log("Room BGM started in look.js");
   } else {
     const targetVolume = getVolume('bgm-volume', 0.4);//すでに再生中は音量を更新
-    mainBGM.volume(targetVolume);
+    roomBGM.volume(targetVolume);
   }
 }
 
 // Room BGMの停止
-function stopMainBGM(callback) {
-  if (mainBGM) {
-    mainBGM.fade(mainBGM.volume(), 0, 1000); // 1秒でフェードアウト
+function stopRoomBGM(callback) {
+  if (roomBGM) {
+    roomBGM.fade(roomBGM.volume(), 0, 1000); // 1秒でフェードアウト
     setTimeout(() => {
-      mainBGM.stop();
-      mainBGM = null;      
-      console.log("Main BGM stopped in look.js");
+      roomBGM.stop();
+      roomBGM = null;      
+      console.log("Room BGM stopped in look.js");
       if(callback){
         callback();
       }
@@ -60,7 +60,7 @@ const soundOpen = new Howl({
 
 window.addEventListener('DOMContentLoaded', () => {
   
-  startMainBGM();//BGMのフェードイン再生開始
+  startRoomBGM();//BGMのフェードイン再生開始
 
   //-----------フェード-----------------------
   setTimeout(() => {
@@ -217,7 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
       // SE再生を追加
       closeSound.play();
       
-      stopMainBGM(() => { 
+      stopRoomBGM(() => { 
         window.location.href = '/main';
       });
     });
