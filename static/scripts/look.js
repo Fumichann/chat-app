@@ -1,69 +1,72 @@
-function getStorage(){
-  const currentType = localStorage.getItem('volume-storage-type') || 'local';
-  return (currentType === 'local') ? localStorage : sessionStorage;
+//音量を読み込む
+function getVolume(key, defaultValue) {
+  const savedVolume = localStorage.getItem(key);
+  if (savedVolume !== null) {
+    return parseFloat(savedVolume);
+  }
+  return defaultValue;
 }
 
-// -----Howler.jsの設定
-const bgmSound = new Howl({
-  src: ['/static/audio/main beach2.mp3'],  
-  html5: true,
-  loop: true,
-  volume: 1.0
-});
+//Howler.js用のBGM変数
+let mainBGM = null;
 
-const closeSound = new Howl({
-  src: ['/static/audio/open door.mp3'],
-  html5: true,
-  volume: 1.0
-});
-
-const openBottleSound = new Howl({
-  src: ['/static/audio/bottle-open.mp3'], 
-  html5: true,
-  volume: 1.0
-});
-
-//bgmフェードイン
-function startBgmWithFadeIn(duration = 2000) {
-  const targetVolume = parseFloat(localStorage.getItem('bgm-volume')) || 1.0;
-  if (!bgmSound.playing()) {
-    bgmSound.volume(0);// 音量を0に設定して再生開始
-    bgmSound.play();// 0から目標音量までフェードイン
-    
-    if (targetVolume > 0) {
-      bgmSound.fade(0, targetVolume, duration);
-    }
+//Room bgmの再生
+function startMainBGM() {
+  if (!mainBGM) {
+    const targetVolume = getVolume('bgm-volume', 0.4);//bgm-volume がない時の音量　0.4
+    mainBGM = new Howl({
+      src: ['/static/audio/main beach2.mp3'],  
+      loop: true,
+      volume: 0,//0から開始
+    });
+    mainBGM.play();
+    mainBGM.fade(0, targetVolume, 4000);//4秒かけてフェードイン
+    console.log("Room BGM started in look.js");
   } else {
-    bgmSound.volume(targetVolume);
+    const targetVolume = getVolume('bgm-volume', 0.4);//すでに再生中は音量を更新
+    mainBGM.volume(targetVolume);
   }
 }
+
+// Room BGMの停止
+function stopMainBGM(callback) {
+  if (mainBGM) {
+    mainBGM.fade(mainBGM.volume(), 0, 1000); // 1秒でフェードアウト
+    setTimeout(() => {
+      mainBGM.stop();
+      mainBGM = null;      
+      console.log("Main BGM stopped in look.js");
+      if(callback){
+        callback();
+      }
+    },1000);
+  } else if (callback) {
+    callback();
+  }
+}
+
+// 戻るボタン
+const closeSound = new Howl({
+  src: ['/static/audio/open door.mp3'],
+  volume: getVolume('se-volume', 0.3)//デフォルト0.3
+});
+
+// 瓶を開けるボタン用の効果音
+const soundOpen = new Howl({
+  src: ['/static/audio/bottle-open.mp3'], 
+  volume: getVolume('se-volume', 0.2)//デフォルト0.2
+});
 
 
 window.addEventListener('DOMContentLoaded', () => {
-
-  const storage = localStorage;
-
-  // localStorageから保存されたBGM音量を読み込み、適用する
-  const savedBgmVolume = parseFloat(storage.getItem('bgm-volume')) ;
-  if (!isNaN(savedBgmVolume)) {
-    bgmSound.volume(savedBgmVolume);
-  }
-
-  // localStorageから保存されたSE音量を読み込み、適用する
-  const savedSeVolume = parseFloat(storage.getItem('se-volume')) ;
-  if (!isNaN(savedSeVolume)) {
-    closeSound.volume(savedSeVolume);
-    openBottleSound.volume(savedSeVolume);
-  }
+  
+  startMainBGM();//BGMのフェードイン再生開始
 
   //-----------フェード-----------------------
   setTimeout(() => {
     const fade = document.getElementById('fade');
     if (fade) fade.style.opacity = 0 ;
   }, 1000); // 読み込みが安定したら外す
-
-  //BGM フェードイン再生
-  startBgmWithFadeIn(2000);
 
   // ----------リサイズ----------------------------------------------
   function resizeShelf() {
@@ -139,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resizeShelf);
 
   // ---------瓶生成-----------------------------------------
-  const letters = JSON.parse(storage.getItem('letters')) || [];
+  const letters = JSON.parse(localStorage.getItem('letters')) || [];
 
   // 瓶追加関数
   function addBottle(letter) {
@@ -164,7 +167,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // ← ここでクリックイベント！
     bottleWrapper.addEventListener("click", () => {
-      openBottleSound.play();
+      soundOpen.play();
       openLetter(letter.id);
     });
 
@@ -182,7 +185,6 @@ window.addEventListener('DOMContentLoaded', () => {
   resizeShelf();
 
 // ---------手紙表示-----------------------------------------
-
 
   function openLetter(id) {
     const letters = JSON.parse(localStorage.getItem("letters")) || [];
@@ -214,25 +216,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // SE再生を追加
       closeSound.play();
-
-      //BGM フェードアウト
-      if (bgmSound.playing()) {
-        const currentVolume = bgmSound.volume();
-        bgmSound.fade(currentVolume, 0, 1000);// 1秒でフェードアウト
-
-        setTimeout(() => {
-          bgmSound.stop();
-          window.location.href = '/main';
-        }, 1000);// フェード時間と合わせて遷移
-      } else {
+      
+      stopMainBGM(() => { 
         window.location.href = '/main';
-      }
+      });
     });
   }
 });
-
-//getStorageの追加
-function getStorage(){
-  const currentType = localStorage.getItem('volume-storage-type') || 'local';
-  return (currentType === 'local') ? localStorage : sessionStorage;
-}
