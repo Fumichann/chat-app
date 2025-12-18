@@ -343,9 +343,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function saveChatHistory(aiText) {
-    if (getStorage().getItem("saveHistory") !== "true") return;
-    
-    const logs = JSON.parse(getStorage().getItem('letters') || '[]');
+    // 現在の設定（local か session か）を取得
+    const storageType = localStorage.getItem('volume-storage-type') || 'local';
+
+    // もし 'session' (保存しない) なら、ここで処理を終了する
+    if (storageType === 'session') {
+      console.log("設定が『保存しない』のため、履歴は保存しません。");
+      return;
+    }
+
+    // --- 以下、'local' (保存する) の時だけ実行される ---
+    const storage = localStorage;
+    const logs = JSON.parse(storage.getItem('letters') || '[]');
     
     // 日付の形式を 'YYYY-MM-DD' に統一（時間情報を含めない）
     const now = new Date();
@@ -359,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: Date.now() + Math.random().toString(36).substring(2, 9) // 衝突防止のため乱数を追加
     });
 
-    getStorage().setItem('letters', JSON.stringify(logs));
+    storage.setItem('letters', JSON.stringify(logs));
     console.log("AI返信履歴を保存しました:", dateString);
   }
 

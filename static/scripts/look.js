@@ -59,7 +59,11 @@ const soundOpen = new Howl({
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  
+
+  // --- ストレージ判定ロジックを追加 ---
+  const storageType = localStorage.getItem('volume-storage-type') || 'local';
+  const currentStorage = (storageType === 'local') ? localStorage : sessionStorage;
+
   startRoomBGM();//BGMのフェードイン再生開始
 
   setTimeout(() => {
@@ -141,7 +145,9 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resizeShelf);
 
   // ---------瓶生成-----------------------------------------
-  const letters = JSON.parse(localStorage.getItem('letters')) || [];
+  const letters = (storageType === 'local')
+                  ? (JSON.parse(localStorage.getItem('letters')) || [])
+                  : [];
 
   // 瓶追加関数
   function addBottle(letter) {
@@ -186,8 +192,11 @@ window.addEventListener('DOMContentLoaded', () => {
 // ---------手紙表示-----------------------------------------
 
   function openLetter(id) {
-    const letters = JSON.parse(localStorage.getItem("letters")) || [];
-    const letter = letters.find(l => l.id == id);
+    const lettersData = (storageType === 'local')
+                        ? (JSON.parse(localStorage.getItem("letters")) || [])
+                        : [];
+
+    const letter = lettersData.find(l => l.id == id);
 
     if (!letter) return;
 
