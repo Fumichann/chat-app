@@ -1,4 +1,50 @@
-window.dispatchEvent(new Event('resize'));
+//音量を読み込む
+function getVolume(key, defaultValue) {
+  const savedVolume = localStorage.getItem(key);
+  if (savedVolume !== null) {
+    return parseFloat(savedVolume);
+  }
+  return defaultValue;
+}
+
+// BGM/SE のデフォルト音量を定義
+const DEFAULT_BGM_VOLUME = 0.4;
+const DEFAULT_SE_VOLUME = 0.3;
+
+
+// Howler.js設定
+const pageFlipSound = new Howl({
+  src: ['/static/audio/paper.mp3'],//ページめくり音
+  html5:true,
+  volume: getVolume('se-volume', DEFAULT_SE_VOLUME)
+});
+
+const bookCloseSound = new Howl({
+    src: ['/static/audio/close book.mp3'], // 本を閉じる音
+    html5: true,
+    volume: getVolume('se-volume', DEFAULT_SE_VOLUME)
+});
+
+const bgmSound = new Howl({
+  src: ['/static/audio/main beach2.mp3'],
+  html5: true,
+  loop: true,
+  volume: getVolume('bgm-volume', DEFAULT_BGM_VOLUME)
+});
+
+// BGM フェードイン再生
+function startBgmWithFadeIn(duration = 2000) {
+  const targetVolume = bgmSound.volume();
+  if (!bgmSound.playing()) {
+    bgmSound.volume(0);
+    bgmSound.play();
+    if (targetVolume > 0) {
+      bgmSound.fade(0, targetVolume, duration);
+    }
+  } else {
+    bgmSound.volume(targetVolume);//すでに再生中の場合の音量
+  }
+}
 
 // ストレージ種別読み込み（初回は local）
 if (!localStorage.getItem('volume-storage-type')) {
@@ -11,31 +57,7 @@ function getStorage() {
   return (storageType === 'local') ? localStorage : sessionStorage;
 }
 
-//-----Howler.js設定-------
-const pageFlipSound = new Howl({
-  src: ['/static/audio/paper.mp3'],//ページめくり音
-  html5:true,
-  volume:1.0// 初期音量
-});
-
-const bookCloseSound = new Howl({
-    src: ['/static/audio/close book.mp3'], // 本を閉じる音
-    html5: true,
-    volume: 1.0 
-});
-
-const bgmSound = new Howl({
-  src: ['/static/audio/main beach2.mp3'],
-  html5: true,
-  loop: true,
-  volume: 1.0 
-});
-
-//-----------フェード-----------------------
-setTimeout(() => {
-  const fade = document.getElementById('fade');
-  if (fade) fade.style.opacity = 0 ;
-}, 1000); // 読み込みが安定したら外す
+window.dispatchEvent(new Event('resize'));
 
 //-----------メッセージ----------------------
 function showMessage(text,color = 'rgba(18, 17, 43, 1)') {
@@ -52,8 +74,132 @@ function showMessage(text,color = 'rgba(18, 17, 43, 1)') {
   }, 2000);
 }
 
+// BGM/SE の音量をまとめて設定するヘルパー関数
+function setAllSEVolume(volume) {
+  pageFlipSound.volume(volume);
+  bookCloseSound.volume(volume);
+}
+
+//-------- BGM -------------------------------
+
+function setupVolume(howlerObject, storageKey, dotsId, muteId, numDots = 10) {
+  const dotsContainer = document.getElementById(dotsId);
+  const muteBtn = document.getElementById(muteId);
+
+  if (!dotsContainer|| !muteBtn) {
+      console.error(`Error: Missing element for ${storageKey}.`);
+      return; 
+  }
+
+  // 保存された音量を読み込む（無ければ1）
+  let currentVolume = howlerObject.volume();
+  let prevVolume = currentVolume > 0 ? currentVolume : 1; // 0ならミュートからの復帰用に1を初期値とする
+  let isBGM = (storageKey === 'bgm-volume');// BGM/SEでミュートボタン画像を変えるため
+  let muted = currentVolume === 0;
+
+  // BGMとSEの音量を一度に設定するヘルパー関数
+  function applyVolume(volume) {
+    howlerObject.volume(volume);// 渡されたHowlerオブジェクトの音量を設定
+
+     // SEの場合、関連する全てのSEの音量も一緒に設定
+    if (!isBGM) { 
+      setAllSEVolume(volume);
+    }
+    if (isBGM && howlerObject.playing()) {
+      howlerObject.volume(volume);
+    }
+
+    // localStorageに保存
+    localStorage.setItem(storageKey, volume);
+
+    if (isBGM) {
+    } else {
+    }
+  }
+
+  // ミュートボタンの初期画像設定
+  function updateMuteBtnImage() {
+    const base = isBGM ? 'mute' : 'mute';
+    if (muted) {
+      muteBtn.src = isBGM ? '/static/image/settei/mute2.PNG' : '/static/image/settei/mute4.PNG';
+    } else {
+      muteBtn.src = isBGM ? '/static/image/settei/mute1.PNG' : '/static/image/settei/mute3.PNG';
+    }
+  }
+
+  updateMuteBtnImage();
+
+  // ドット生成
+  for (let i = 0; i < numDots; i++) {
+    const dot = document.createElement('span');
+    dotsContainer.appendChild(dot);
+  }
+
+  // ドット更新
+  function updateDots(volume) {
+    const dots = dotsContainer.querySelectorAll('span');
+    const activeCount = Math.ceil(volume * numDots);
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i < activeCount);
+    });
+  }
+
+  updateDots(currentVolume);
+
+  // ドットクリック
+  dotsContainer.addEventListener('click', e => {
+    const rect = dotsContainer.getBoundingClientRect();
+    let ratio = (e.clientX - rect.left) / rect.width;
+    ratio = Math.min(Math.max(ratio, 0), 1);
+    ratio = Math.ceil(ratio * numDots) / numDots;
+
+    currentVolume = ratio;
+    applyVolume(ratio);
+    
+    muted = ratio === 0; // 0ならミュート扱い
+    if (!muted) {
+      prevVolume = ratio;
+    }
+    updateDots(currentVolume);
+    updateMuteBtnImage();// ミュートボタン画像を更新
+  });
+
+  // ミュートボタン
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    let newVolume;
+
+    if (muted) {
+      prevVolume = currentVolume > 0 ? currentVolume : 1; // 0でない音量を prevVolume に保存
+      newVolume = 0;
+      currentVolume = 0;
+    } else {
+      newVolume = prevVolume;
+      currentVolume = newVolume;
+    }
+    
+    applyVolume(newVolume);
+    updateMuteBtnImage(); // ミュートボタン画像を更新
+    updateDots(currentVolume);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // BGM と SE をそれぞれセットアップ
+  setupVolume(bgmSound, 'bgm-volume', 'bgm-dots', 'bgm-mute');
+  setupVolume(pageFlipSound, 'se-volume', 'se-dots', 'se-mute');
+
+  startBgmWithFadeIn(2000);
+
+  //-----------フェード-----------------------  
+  setTimeout(() => {
+    const fade = document.getElementById('fade');
+    if (fade) fade.style.opacity = 0;
+  }, 1000);
+
+
+
 //--------turn.js---------------------------------
-$(function() {
   const $flipbook = $('#flipbook');
   let isPageTurning = false;
 
@@ -176,129 +322,6 @@ if (scaleBook < 1) {
 window.addEventListener('resize', resizeBook);
 resizeBook();
 
-//-------- BGM -------------------------------
-
-function setupVolume(howlerObject, storageKey, dotsId, muteId, numDots = 10) {
-  const dotsContainer = document.getElementById(dotsId);
-  const muteBtn = document.getElementById(muteId);
-
-  if (!dotsContainer|| !muteBtn) {
-      console.error(`Error: Missing element for ${storageKey}.`);
-      return; 
-  }
-
-  // 保存された音量を読み込む（無ければ1）
-  let currentVolume = parseFloat(localStorage.getItem(storageKey)) || 1;
-  let prevVolume = currentVolume;
-  let isBGM = (storageKey === 'bgm-volume');// BGM/SEでミュートボタン画像を変えるため
-
-  // BGMとSEの音量を一度に設定するヘルパー関数
-  function setSoundVolume(volume) {
-    howlerObject.volume(volume);// 渡されたHowlerオブジェクトの音量を設定
-
-     // SEの場合、関連する全てのSEの音量も一緒に設定
-    if (!isBGM) { 
-      pageFlipSound.volume(volume); 
-      bookCloseSound.volume(volume);
-    }
-  }
-  
-  // 初期音量適用
-  setSoundVolume(currentVolume);
-  let muted = currentVolume === 0;
-
-  // ミュートボタンの初期画像設定
-  function updateMuteBtnImage() {
-    if (muted) {
-      muteBtn.src = isBGM ? '/static/image/settei/mute2.PNG' : '/static/image/settei/mute4.PNG';
-    } else {
-      muteBtn.src = isBGM ? '/static/image/settei/mute1.PNG' : '/static/image/settei/mute3.PNG';
-    }
-  }
-
-  updateMuteBtnImage();
-
-  // ドット生成
-  for (let i = 0; i < numDots; i++) {
-    const dot = document.createElement('span');
-    dotsContainer.appendChild(dot);
-  }
-
-  // ドット更新
-  function updateDots(volume) {
-    const dots = dotsContainer.querySelectorAll('span');
-    const activeCount = Math.ceil(volume * numDots);
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i < activeCount);
-    });
-  }
-
-  updateDots(howlerObject.volume()); // Howlerから現在の音量を取得
-
-  // ドットクリック
-  dotsContainer.addEventListener('click', e => {
-    const rect = dotsContainer.getBoundingClientRect();
-    let ratio = (e.clientX - rect.left) / rect.width;
-    ratio = Math.min(Math.max(ratio, 0), 1);
-    ratio = Math.ceil(ratio * numDots) / numDots;
-
-    currentVolume = ratio;
-    setSoundVolume(ratio);
-    
-    muted = ratio === 0; // 0ならミュート扱い
-    if (!muted) {
-      prevVolume = ratio;
-    }
-    updateDots(howlerObject.volume());
-    updateMuteBtnImage(); // ミュートボタン画像を更新
-    localStorage.setItem(storageKey, ratio);//localstorageのキーも修正  
-  });
-
-  // ミュートボタン
-  muteBtn.addEventListener('click', () => {
-    muted = !muted;
-    let newVolume;
-
-    if (muted) {
-      prevVolume = howlerObject.volume();// Howlerから現在の音量を取得
-      newVolume = 0;
-    } else {
-      newVolume = prevVolume || 1;
-    }
-    
-    setSoundVolume(newVolume);
-    updateMuteBtnImage(); // ミュートボタン画像を更新
-    updateDots(howlerObject.volume());
-    localStorage.setItem(storageKey, howlerObject.volume());
-  });
-}
-
-// BGM と SE をそれぞれセットアップ
-setupVolume(bgmSound, 'bgm-volume', 'bgm-dots', 'bgm-mute');
-setupVolume(pageFlipSound, 'se-volume', 'se-dots', 'se-mute');
-
-startBgmWithFadeIn(2000);
-
-});
-
-// BGM フェードイン再生
-function startBgmWithFadeIn(duration = 2000) {
-  const targetVolume = parseFloat(localStorage.getItem('bgm-volume')) || 1.0;// 保存されている音量を取得 (なければ1.0)
-  // BGMがすでに再生中ではないことを確認
-  if (!bgmSound.playing()) {
-    bgmSound.volume(0);// 音量を0に設定して再生開始
-    bgmSound.play();
-    
-    // 0から目標音量までフェードイン
-    if (targetVolume > 0) {
-      bgmSound.fade(0, targetVolume, duration);
-    }
-  }
-  else {
-    bgmSound.volume(targetVolume);// すでに再生中の場合は、目標音量に設定し直す
-  }
-}
-
 //--------- SAVE -----------------------
 
 // ボタン取得
@@ -324,8 +347,6 @@ storageBtn.addEventListener('click', () => {
 });
 
   //---------delete------------------------------
-
-document.addEventListener('DOMContentLoaded', () => {
   // 保存されてる手紙データ確認
   const storedLetter = getStorage().getItem('letters');
   const deleteBtn = document.getElementById('delete-btn');
@@ -342,31 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let clickLocked = false;
   let messageTimeout;
 
-  function showMessage(msg) {
-    const messageEl = document.getElementById('message');
-
-      if (messageEl.classList.contains('show')) {
-        // フェードアウトさせてから新しいメッセージをフェードイン
-        messageEl.classList.remove('show');
-
-        setTimeout(() => {
-          messageEl.textContent = msg;
-          messageEl.classList.add('show');
-        }, 800); // CSS の transition と同じ時間
-      } else {
-        messageEl.textContent = msg;
-        messageEl.classList.add('show');
-      }
-
-    if (messageTimeout) clearTimeout(messageTimeout);
-
-    messageTimeout = setTimeout(() => {
-      messageEl.classList.remove('show');
-      messageTimeout = null;
-    }, 3000);
-  }
-
-deleteBtn.addEventListener('click', () => {
+  deleteBtn.addEventListener('click', () => {
+    
   const storedLetter = getStorage().getItem('letters');
   if (clickLocked) return;  // ロック中は無視する
 
@@ -400,10 +398,7 @@ deleteBtn.addEventListener('click', () => {
   getStorage().removeItem('letters');
   deleteBtn.src = '/static/image/settei/gomi2.PNG';
   showMessage('手紙はなくなった');
-
   deleteConfirm = false;  // 念のためリセット
-});
-
 });
 
   //--------- back -----------------------
@@ -427,3 +422,4 @@ deleteBtn.addEventListener('click', () => {
        window.location.href = '/main'; // BGMが再生されていなければ、すぐに遷移
     }
   });
+});
