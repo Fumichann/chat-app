@@ -57,8 +57,10 @@ const soundOpen = new Howl({
   volume: getVolume('se-volume', 0.2)//デフォルト0.2
 });
 
+import { showLetter, setupLetterModal } from './letter.js';
 
 window.addEventListener('DOMContentLoaded', () => {
+    setupLetterModal();
 
   // --- ストレージ判定ロジックを追加 ---
   const storageType = localStorage.getItem('volume-storage-type') || 'local';
@@ -77,7 +79,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const shelfImg = document.querySelector('.shelf-img');
     const shelfGrid = document.querySelector('.shelf-grid');
     const bottles = document.querySelectorAll('.bottle');
-    const papers = document.querySelectorAll('.letter-paper')
 
     // 基準サイズ（棚画像の元サイズ）
     const baseWidth = 1055;
@@ -116,29 +117,6 @@ window.addEventListener('DOMContentLoaded', () => {
       bottle.style.width = `${75 * scale}px`;
       bottle.style.height = `${233 * scale}px`;
     });
-
-    // 手紙サイズ
-    papers.forEach(paper => {
-    const middle = paper.querySelector('.letter-middle');
-    const text = paper.querySelector('#letter-text');
-
-    // まずリサイズ処理を全部終わらせる
-    paper.style.width = `${855 * scale}px`;
-    paper.style.maxHeight = `${690 * scale}px`;
-    paper.style.height = "auto"; 
-
-    // テキストの高さを取得
-    const textHeight = text.scrollHeight;
-
-    // 「短文」と判定する境界（調整可能）
-    const threshold = 200 * scale;
-
-    if (textHeight < threshold) {
-      middle.style.backgroundSize = "100% auto";   // 短文 → ボケない
-    } else {
-      middle.style.backgroundSize = "100% 100%";    // 長文 → ずれない
-    }
-  });
   }
 
   // 初期・リサイズ時に呼ぶ
@@ -192,29 +170,16 @@ window.addEventListener('DOMContentLoaded', () => {
 // ---------手紙表示-----------------------------------------
 
   function openLetter(id) {
-    const lettersData = (storageType === 'local')
-                        ? (JSON.parse(localStorage.getItem("letters")) || [])
-                        : [];
+  const lettersData =
+    (storageType === 'local')
+      ? (JSON.parse(localStorage.getItem("letters")) || [])
+      : [];
 
-    const letter = lettersData.find(l => l.id == id);
+  const letter = lettersData.find(l => l.id == id);
+  if (!letter) return;
 
-    if (!letter) return;
-
-    // 手紙の内容をセット
-    document.getElementById("letter-text").textContent = letter.content;
-    document.getElementById("letter-date").textContent = letter.date;
-
-    // 表示
-    document.getElementById("letter-modal").classList.remove("hidden");
-
-  }
-
-  // 背景クリックで閉じる
-  document.getElementById("letter-modal").addEventListener("click", (e) => {
-    if (e.target.id === "letter-modal") {
-      e.target.classList.add("hidden");
-    }
-});
+  showLetter(letter);
+}
 
 //---------戻りボタン-----------------------------------------
 

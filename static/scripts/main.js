@@ -1,4 +1,7 @@
+import { showLetter, setupLetterModal } from './letter.js';
+
 document.addEventListener('DOMContentLoaded', () => {
+  setupLetterModal();
 
 //デバッグ用：毎回前置きを表示（確認が終わったら削除！）
 //localStorage.removeItem('hasSeenTutorial');
@@ -105,7 +108,6 @@ const soundClickB = new Howl({
 });
 
 
-
 //----------リサイズ--------------------
 function resizeLinkButtons() {
   const scale = Math.min(window.innerWidth / 1100, 1);
@@ -126,7 +128,6 @@ function resizeLinkButtons() {
 
 window.addEventListener('resize', resizeLinkButtons);
 resizeLinkButtons();
-
 
 
 // localstorageでチュートリアル制限
@@ -320,6 +321,18 @@ function showMainScreen() {
   main.classList.remove("hidden");
   requestAnimationFrame(() => {
     main.style.opacity = 1;
+
+    const storage = getStorage();
+    const pending = storage.getItem("pendingReply");
+
+    if (pending) {
+      const letter = JSON.parse(getStorage().getItem("pendingReply"));
+      
+      showLetter(letter);
+
+      // 一度きりなので削除（local / session 共通）
+      storage.removeItem("pendingReply");
+    }
 
     //メインBGMの再生開始
     startMainBGM();

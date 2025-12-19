@@ -136,7 +136,7 @@ body {
   align-items: center;
   overflow-y: auto;
   background: rgba(0,0,0,0.6); /* 背景を暗く */
-  z-index: 10; /* 一番上 */
+  z-index: 1000; /* 一番上 */
 }
 
 .letter-paper {
@@ -154,6 +154,9 @@ body {
   -ms-overflow-style: none;   /* IE 10+ */
 }
 .letter-paper::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  scrollbar-color: transparent transparent;
   display: none;              /* Chrome, Safari, Edge */
 }
 .letter-top-container,
@@ -182,7 +185,7 @@ body {
   color: #333;
 }
 
-#letter-text {
+.letter-text {
   font-size: 1.7vw;
   line-height: 2; /* 読みやすくする */
   white-space: pre-wrap; /* 改行を維持 */

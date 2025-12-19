@@ -150,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   }
 
-
   function resizeLetter() {
 
     // 画面が小さい時だけ縮める
@@ -314,6 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!data.reply) {
         throw new Error('AIからの応答データが空でした。');
       }
+      // ここで一時保存（画面遷移用）
+      const storage = getStorage();
+
+      storage.setItem("pendingReply", JSON.stringify({
+        content: data.reply,
+        date: dateString,
+        createdAt: Date.now()
+      }));
 
       // ユーザーの手紙は保存せず、AIの返答だけ保存
       saveChatHistory(data.reply);
@@ -331,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // --- 失敗メッセージ ---
       merror.classList.add("show");
       setTimeout(() =>{
-      //merror.classList.remove("show");
+      merror.classList.remove("show");
       },3000)
 
     } finally {
@@ -365,7 +372,8 @@ document.addEventListener('DOMContentLoaded', () => {
     logs.push({
       content: aiText,
       date: dateString,
-      id: Date.now() + Math.random().toString(36).substring(2, 9) // 衝突防止のため乱数を追加
+      createdAt: Date.now(),
+      id: Date.now() + Math.random().toString(36).substring(2, 9)
     });
 
     storage.setItem('letters', JSON.stringify(logs));
