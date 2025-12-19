@@ -11,8 +11,6 @@ const haikei = document.querySelector('.haikei')
 const maeoki = document.getElementById('maeoki');
 const maeokiText = document.getElementById('maeoki-text');
 const textImage = document.getElementById('text-img')
-const tutorial = document.getElementById('tutorial')
-const tutorialImage = document.getElementById('tutorial-img');
 const main = document.getElementById('main-screen');
 
 maeoki.addEventListener("click", () => {
@@ -142,10 +140,10 @@ resizeLinkButtons();
 
 // localstorageでチュートリアル制限
 window.onload = function() {
-  const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+  const hasSeenMain = localStorage.getItem('hasSeenMain');
 
-  if (hasSeenTutorial === 'true') {
-    // maeoki と tutorial を完全にスキップ
+  if (hasSeenMain === 'true') {
+    // maeoki を完全にスキップ
     maeoki.remove();
     //メインBGMの再生開始
     startMainBGM();
@@ -260,6 +258,9 @@ function showMaeoki() {
         maeoki.remove();
         MAnimating = false;
         showhaikei();
+
+        // ここで一度見たことを記録
+        localStorage.setItem('hasSeenMain', 'true');
       });
     }, 800);
   }

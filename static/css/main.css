@@ -78,7 +78,7 @@
 #link-buttons {  
   display: flex; 
   position: fixed; 
-  bottom: 9%; 
+  margin-top: 35%; 
   gap: 50px; 
 } 
 .link-button { 
