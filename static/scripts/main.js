@@ -104,6 +104,31 @@ const soundClickB = new Howl({
   volume: getVolume('se-volume', 0.1)
 });
 
+
+
+//----------リサイズ--------------------
+function resizeLinkButtons() {
+  const scale = Math.min(window.innerWidth / 1100, 1);
+
+  const btns = document.querySelectorAll('.link-button');
+  const container = document.getElementById('link-buttons');
+
+  btns.forEach(btn => {
+    btn.style.width  = Math.round(285 * scale) + 'px';
+    btn.style.height = Math.round(70 * scale) + 'px';
+    btn.style.fontSize = Math.round(17 * scale) + 'px';
+  });
+
+  if (container) {
+    container.style.gap = Math.round(50 * scale) + 'px';
+  }
+}
+
+window.addEventListener('resize', resizeLinkButtons);
+resizeLinkButtons();
+
+
+
 // localstorageでチュートリアル制限
 window.onload = function() {
   const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');

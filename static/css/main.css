@@ -88,21 +88,24 @@
   opacity: 0;
 }
 
-#link-buttons {
-  display: flex;
-  gap: 20px;
-  margin-top: 30px;
+#link-buttons {  
+  display: flex; 
+  position: fixed; 
+  bottom: 9%; 
+  gap: 50px; 
+} 
+.link-button { 
+  background-image: url("/static/image/main/sentaku.PNG");
+  background-size: contain; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  opacity: 0.9; 
+  width: 285px; 
+  height: 70px; 
+  font-size: 17px; 
+  color: #000000; 
+  cursor: pointer; 
+  border: none; 
+  background-color: transparent; 
 }
 
-.link-button {
-  background-color: #fff;
-  color: #0066cc;
-  padding: 20px 30px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.link-button:hover {
-  background-color: #eee;
-}
