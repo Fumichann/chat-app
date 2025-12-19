@@ -265,53 +265,9 @@ function showhaikei() {
 
   fadeOut(fade, 2.5, 1.3, () => {
     setTimeout(() => {
-      showTutorial(); // 初回だけここに来る
+      showMainScreen(); // 初回だけここに来る
     }, 1000);
   });
-}
-
-// ---------------- チュートリアル ---------------
-const tutorialImages = [
-  "../static/image/tutorial/kkri.png",
-  "../static/image/tutorial/kkri2.png",
-  "../static/image/tutorial/kkri3.png"
-]; // 何枚でも追加可能
-
-let imageIndex = 0;
-tutorialImage.src = tutorialImages[imageIndex];
-
-let TAnimating = false; // フェード中クリックを無効化
-
-tutorial.addEventListener('click', showTutorial);
-function showTutorial() {
-  if (TAnimating) return;
-
-  if (imageIndex < tutorialImages.length) {
-    TAnimating = true;
-    tutorial.classList.remove("hidden");
-    tutorial.style.opacity = 1;
-
-    // 画像切り替え
-    tutorialImage.style.opacity = 0;
-    setTimeout(() => {
-      tutorialImage.src = tutorialImages[imageIndex];
-      tutorialImage.style.opacity = 1;
-      imageIndex++;
-
-      // アニメーション終了後にクリックを再び有効化
-      setTimeout(() => { TAnimating = false; }, 500);
-    },900);
-
-  } else {
-    // 最後
-    tutorialImage.style.opacity = 0;
-    localStorage.setItem('hasSeenTutorial', 'true');
-
-    setTimeout(() => {
-      tutorial.remove();
-      showMainScreen();
-    },900);
-  }
 }
 
 // ---------------- メイン ----------------
