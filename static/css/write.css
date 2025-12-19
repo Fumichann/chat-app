@@ -86,7 +86,7 @@ body {
 }
 
 .paper-middle {
-  background: url(/static/image/rireki/binsen.PNG) repeat-y center;
+  background: url(/static/image/binsen/binsen.PNG) repeat-y center;
   padding: 0 7% 1%;
   background-size: 100% auto;
   flex-grow: 1;

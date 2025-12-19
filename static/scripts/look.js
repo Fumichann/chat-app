@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
     bottleWrapper.dataset.id = letter.id;
 
     const bottleImg = document.createElement("img");
-    bottleImg.src = "/static/image/rireki/bottle.PNG";
+    bottleImg.src = "/static/image/binsen/bottle.PNG";
     bottleImg.className = "bottle-img";
 
     // ラベル文字 (日付)
