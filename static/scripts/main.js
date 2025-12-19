@@ -107,6 +107,16 @@ const soundClickB = new Howl({
   volume: getVolume('se-volume', 0.1)
 });
 
+// ストレージ種別読み込み（初回は local）
+if (!localStorage.getItem('volume-storage-type')) {
+  localStorage.setItem('volume-storage-type', 'local');
+}
+let storageType = localStorage.getItem('volume-storage-type') ;
+
+// 実際の保存・読み込みで使う関数
+function getStorage() {
+  return (storageType === 'local') ? localStorage : sessionStorage;
+}
 
 //----------リサイズ--------------------
 function resizeLinkButtons() {
@@ -137,7 +147,6 @@ window.onload = function() {
   if (hasSeenTutorial === 'true') {
     // maeoki と tutorial を完全にスキップ
     maeoki.remove();
-    tutorial.remove();
     //メインBGMの再生開始
     startMainBGM();
     switchToMainBackground();
@@ -274,52 +283,55 @@ function showhaikei() {
 main.addEventListener('click', showMainScreen);
 function showMainScreen() {
   setTimeout(() => {
-  main.classList.remove("hidden");
-  requestAnimationFrame(() => {
-    main.style.opacity = 1;
+    if (!main) return; // main が存在しない場合は処理中断
+    main.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      main.style.opacity = 1;
 
-    const storage = getStorage();
-    const pending = storage.getItem("pendingReply");
+      const storage = getStorage();
+      const pending = storage.getItem("pendingReply");
 
-    if (pending) {
-      const letter = JSON.parse(getStorage().getItem("pendingReply"));
-      
-      showLetter(letter);
+      if (pending) {
+        const letter = JSON.parse(getStorage().getItem("pendingReply"));
+        showLetter(letter);
 
-      // 一度きりなので削除（local / session 共通）
+        // 一度きりなので削除（local / session 共通）
       storage.removeItem("pendingReply");
+    } else {
+        // pendingReply がない場合はボトルは流さない
+        console.log("通信失敗または手紙なし → ボトルなし");
     }
 
     //メインBGMの再生開始
     startMainBGM();
 
     // メイン画面が出たときにリンクボタンのイベントを登録
-    document.querySelectorAll(".link-button").forEach(button => {
-      console.log("showMainScreen 実行 at", new Error().stack);
-      console.log("found button:", button);
-      button.addEventListener("click", function (event) {
-        event.stopPropagation(); // 背景のクリックイベントを無効化
-        const url = this.dataset.link;
-        console.log("clicked:", url);
-        
-        // data-link の値でボタンを判別
-        if (url === '/look') {
-          soundClickB.play(); 
-        } else {
-          soundClickA.play();
-        }
+      const buttons = document.querySelectorAll(".link-button");
+      if (buttons) {
+        buttons.forEach(button => {
+          if (!button) return; // 念のため null チェック
+          console.log("showMainScreen 実行 at", new Error().stack);
+          console.log("found button:", button);
 
-        // ページ遷移処理を関数として定義
-        const navigate = () => {
-          window.location.href = url;
-        };
-        // stopMainBGM()を呼び出し、完了後に navigate 関数を実行させる
-        stopMainBGM(navigate);
-        // BGMが再生されていない場合は、stopMainBGM 内で navigate が即座に実行される
-        
-      });
+          button.addEventListener("click", function (event) {
+            event.stopPropagation(); // 背景のクリックイベントを無効化
+            const url = this.dataset.link;
+
+            if (url === '/look') {
+              soundClickB.play();
+            } else {
+              soundClickA.play();
+            }
+
+            const navigate = () => {
+              window.location.href = url;
+            };
+
+            stopMainBGM(navigate); // BGM停止後にページ遷移
+          });
+        });
+      }
     });
-  });
-  },1500); //メイン出すまでの間
+  }, 1500); // メイン表示までの遅延
 }
 });

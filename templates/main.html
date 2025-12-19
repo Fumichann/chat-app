@@ -21,10 +21,6 @@
       <img id="text-img" src="../static/image/awa.webp">
     </div>
 
-    <div id="tutorial" class="hidden">
-      <img id="tutorial-img" src="../static/image/tutorial/kkri.png">
-    </div>
-
     <div id="main-screen" class="screen hidden">
       <div id="link-buttons">
         <button class="link-button" data-link="/write">手紙を書く</button>
@@ -32,6 +28,25 @@
         <button class="link-button" data-link="/setting">設定・遊び方</button>
       </div>
     </div>
+
+
+    <div id="letter-modal" class="letter-modal hidden">
+    <div class="letter-paper">
+      <div class="letter-top-container">
+        <img class="letter-top" src="/static/image/binsen/top.PNG" alt="手紙上端">
+        <p id="letter-date"></p>
+      </div>
+
+      <div class="letter-middle">
+        <div class="letter-text"></div>
+      </div>
+    
+      <div class="letter-bottom-container">
+        <img class="letter-bottom" src="/static/image/binsen/bottom.PNG" alt="手紙下端">
+      </div>
+    </div>
+  </div>
+  
     
   <script type="module" src="../static/scripts/main.js"></script>
 </body>
