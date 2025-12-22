@@ -173,8 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
       submit.style.height = 260 * scale + 'px';
       backBtn.style.width = 175 * scale + 'px';
       backBtn.style.height = 205 * scale + 'px';
-      nagare.style.width = baseWidth * scale + 'px';
-      nagare.style.height = baseHeight * scale + 'px';
+
+      nagare.style.width = 1000 * scale + 'px';
+      nagare.style.height = 200 * scale + 'px';
 
     autoResize();
     resizemessage();
@@ -187,8 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
   autoResize();
   resizemessage();
   resizeLetter();
-  
-
 
 
 // 関数一覧
@@ -216,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ボトル ---
     n1.style.opacity = 1 ;
-    await sleep(500);
+    await sleep(600);
     fade.style.opacity = 0;   
     await sleep(1500);
     n1.style.opacity = 0;

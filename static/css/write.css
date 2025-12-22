@@ -151,41 +151,48 @@ body {
 }
 
 /*---------流れボトル------------------------*/
-
-#nagare{
+#box {
   position: fixed;
   left: 50%;
-  bottom: 48%; /* 縦中央近く */
-  transform: translate(-50%, 50%); /* 横中央 + 好みで縦調整 */
-  width: auto; 
-  height: auto;
+  top: 50%;
+  transform: translate(-50%, -10%);
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
   pointer-events: none;
   z-index: 10;
 }
 
+#nagare {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
 .nagare1{
-    position: absolute;
-    bottom: 23%;
-    right: 45%;
-    width: 7%;
-    opacity: 0;
-    transition: opacity 0.9s ease;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+  width: 9%;
+  opacity: 0;
+  transition: opacity 0.9s ease;
 }
 
 .nagare2{
     position: absolute;
-    bottom: 42%;
+    bottom: 62%;
     right: 35%;
     width: 3%;
     opacity: 0;
     transition: opacity 0.9s ease;
-    
 }
 
 .nagare3{
     position: absolute;
-    bottom: 45%;
-    right: 65%;
+    bottom: 75%;
+    left: 35%;
     width: 1.5%;
     opacity: 0;
     transition: opacity 0.9s ease;

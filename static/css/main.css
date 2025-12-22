@@ -75,10 +75,11 @@
   opacity: 0;
 }
 
+/*---------ボタン------------------------*/
 #link-buttons {  
   display: flex; 
   position: fixed; 
-  margin-top: 35%; 
+  margin-top: 40%; 
   gap: 50px; 
 } 
 .link-button { 
@@ -162,4 +163,53 @@
   font-size: 1.7vw;
   line-height: 2; /* 読みやすくする */
   white-space: pre-wrap; /* 改行を維持 */
+}
+
+/*---------流れボトル------------------------*/
+#box {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -10%);
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#nagare {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+.nagare1{
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+  width: 9%;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.nagare2{
+    position: absolute;
+    bottom: 62%;
+    right: 35%;
+    width: 3%;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    
+}
+
+.nagare3{
+    position: absolute;
+    bottom: 75%;
+    left: 35%;
+    width: 1.5%;
+    opacity: 0;
+    transition: opacity 0.9s ease;
 }

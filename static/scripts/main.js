@@ -13,6 +13,12 @@ const maeokiText = document.getElementById('maeoki-text');
 const textImage = document.getElementById('text-img')
 const main = document.getElementById('main-screen');
 
+const btns = document.querySelectorAll('.link-button');
+const container = document.getElementById('link-buttons');
+
+const nagare = document.getElementById('nagare')
+
+
 maeoki.addEventListener("click", () => {
   console.log("maeoki clicked!");
 });
@@ -120,8 +126,8 @@ function getStorage() {
 function resizeLinkButtons() {
   const scale = Math.min(window.innerWidth / 1100, 1);
 
-  const btns = document.querySelectorAll('.link-button');
-  const container = document.getElementById('link-buttons');
+  nagare.style.height = Math.round(200 * scale) + 'px';
+  nagare.style.width  = Math.round(1000 * scale) + 'px';
 
   btns.forEach(btn => {
     btn.style.width  = Math.round(285 * scale) + 'px';
@@ -280,28 +286,69 @@ function showhaikei() {
   });
 }
 
+
+// --- settimeoutの代わり ---
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// --------------ボトル瓶--------------------
+async function showBottle() {
+
+  const n1 = document.querySelector('.nagare1');
+  const n2 = document.querySelector('.nagare2');
+  const n3 = document.querySelector('.nagare3');
+
+
+  // --- ボトル ---
+  n3.style.opacity = 1 ;
+  await sleep(1200);
+  fade.style.opacity = 0;   
+  await sleep(1200);
+  n3.style.opacity = 0;
+  n2.style.opacity = 1;
+  await sleep(1200);
+  n2.style.opacity = 0;
+  n1.style.opacity = 0.8;
+  n1.style.pointerEvents = "auto";
+  }
+
+// ----------- 乱数 -------------------
+function randomDelay(min, max) {
+  const delay = Math.random() * (max - min) + min;
+  return sleep(delay);
+}
+
 // ---------------- メイン ----------------
 main.addEventListener('click', showMainScreen);
-function showMainScreen() {
+async function showMainScreen() {
   setTimeout(() => {
     if (!main) return; // main が存在しない場合は処理中断
     main.classList.remove("hidden");
-    requestAnimationFrame(() => {
+    requestAnimationFrame(async () => {
       main.style.opacity = 1;
 
       const storage = getStorage();
       const pending = storage.getItem("pendingReply");
 
       if (pending) {
-        const letter = JSON.parse(getStorage().getItem("pendingReply"));
+        const letter = JSON.parse(storage.getItem("pendingReply"));
+
+        isBottleActive = true;
+        disableMainButtons();
+
+        await showBottle();   // ← 演出完了待ち
         showLetter(letter);
 
+        enableMainButtons();
+        isBottleActive = false;
+
         // 一度きりなので削除（local / session 共通）
-      storage.removeItem("pendingReply");
-    } else {
+        storage.removeItem("pendingReply");
+      } else {
         // pendingReply がない場合はボトルは流さない
         console.log("通信失敗または手紙なし → ボトルなし");
-    }
+      }
 
     //メインBGMの再生開始
     startMainBGM();
@@ -315,6 +362,8 @@ function showMainScreen() {
           console.log("found button:", button);
 
           button.addEventListener("click", function (event) {
+            if (isBottleActive) return;
+
             event.stopPropagation(); // 背景のクリックイベントを無効化
             const url = this.dataset.link;
 
