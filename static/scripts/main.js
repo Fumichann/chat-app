@@ -15,8 +15,14 @@ const main = document.getElementById('main-screen');
 
 const btns = document.querySelectorAll('.link-button');
 const container = document.getElementById('link-buttons');
+const btnWrite = document.getElementById('wr');
+const btnSetting = document.getElementById('se');
+const btnLook = document.getElementById('lo');
 
 const nagare = document.getElementById('nagare')
+const n1 = document.querySelector('.nagare1');
+const n2 = document.querySelector('.nagare2');
+const n3 = document.querySelector('.nagare3');
 
 
 maeoki.addEventListener("click", () => {
@@ -292,13 +298,31 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// ----------- 乱数 -------------------
+function randomDelay(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// ---------------- 状態 ----------------
+let isBottleActive = false;
+let bottleTimerId = null;
+
+
+// ------------ ボタン止め ---------------------
+function blockWriteButton() {
+  btnWrite.disabled = true;
+}
+
+function disableMainButtons() {
+  btns.forEach(btn => btn.disabled = true);
+}
+
+function enableMainButtons() {
+  btns.forEach(btn => btn.disabled = false);
+}
+
 // --------------ボトル瓶--------------------
 async function showBottle() {
-
-  const n1 = document.querySelector('.nagare1');
-  const n2 = document.querySelector('.nagare2');
-  const n3 = document.querySelector('.nagare3');
-
 
   // --- ボトル ---
   n3.style.opacity = 1 ;
@@ -313,75 +337,117 @@ async function showBottle() {
   n1.style.pointerEvents = "auto";
   }
 
-// ----------- 乱数 -------------------
-function randomDelay(min, max) {
-  const delay = Math.random() * (max - min) + min;
-  return sleep(delay);
+// ---------------- ボトル処理 ----------------
+async function startBottleSequence() {
+  isBottleActive = true;
+  disableMainButtons();
+
+  const storage = getStorage();
+  const data = storage.getItem("pendingReply");
+  if (!data) return;
+
+  const letter = JSON.parse(data);
+
+  // ボトルが流れてくる演出
+  await showBottle();   
+
+  // ここから「触るまで待ち」
+  await waitForBottleClick(n1);
+  showLetter(letter);
 }
 
-// ---------------- メイン ----------------
+function waitForBottleClick(n1) {
+  return new Promise(resolve => {
+    const handler = (e) => {
+      e.stopPropagation();
+
+      if (!isBottleActive) return;
+
+      isBottleActive = false;
+      enableMainButtons();
+      getStorage().removeItem("pendingReply");
+
+      n1.style.opacity = 0;
+      n1.style.pointerEvents = "none";
+      n1.removeEventListener("click", handler);
+      resolve();
+    };
+
+    n1.addEventListener("click", handler, { once: true });
+  });
+}
+
+
+
+
+
+// ---------------- ここからメイン！！！！！！！！！！！！ -----------------------------
 main.addEventListener('click', showMainScreen);
+
 async function showMainScreen() {
   setTimeout(() => {
     if (!main) return; // main が存在しない場合は処理中断
+
     main.classList.remove("hidden");
+
     requestAnimationFrame(async () => {
       main.style.opacity = 1;
+      enableMainButtons();
+
+      if (bottleTimerId) {
+        clearTimeout(bottleTimerId);
+        bottleTimerId = null;
+      }
 
       const storage = getStorage();
       const pending = storage.getItem("pendingReply");
 
       if (pending) {
-        const letter = JSON.parse(storage.getItem("pendingReply"));
+        // writeだけロックした状態で待つ
+        blockWriteButton();
 
-        isBottleActive = true;
-        disableMainButtons();
+        const delay = randomDelay(1000,10000);
 
-        await showBottle();   // ← 演出完了待ち
-        showLetter(letter);
+        bottleTimerId = setTimeout(() => {
+          startBottleSequence();
+        }, delay);
 
-        enableMainButtons();
-        isBottleActive = false;
-
-        // 一度きりなので削除（local / session 共通）
-        storage.removeItem("pendingReply");
       } else {
         // pendingReply がない場合はボトルは流さない
-        console.log("通信失敗または手紙なし → ボトルなし");
+        console.log("ボトルなし");
       }
 
-    //メインBGMの再生開始
-    startMainBGM();
-
-    // メイン画面が出たときにリンクボタンのイベントを登録
-      const buttons = document.querySelectorAll(".link-button");
-      if (buttons) {
-        buttons.forEach(button => {
-          if (!button) return; // 念のため null チェック
-          console.log("showMainScreen 実行 at", new Error().stack);
-          console.log("found button:", button);
-
-          button.addEventListener("click", function (event) {
-            if (isBottleActive) return;
-
-            event.stopPropagation(); // 背景のクリックイベントを無効化
-            const url = this.dataset.link;
-
-            if (url === '/look') {
-              soundClickB.play();
-            } else {
-              soundClickA.play();
-            }
-
-            const navigate = () => {
-              window.location.href = url;
-            };
-
-            stopMainBGM(navigate); // BGM停止後にページ遷移
-          });
-        });
-      }
+      //メインBGMの再生開始
+      startMainBGM();
     });
-  }, 1500); // メイン表示までの遅延
+  }, 1500);
 }
+
+// ---------------- ボタンイベント ----------------
+btns.forEach(button => {
+  button.addEventListener("click", (event) => {
+    if (isBottleActive) return;
+
+    event.stopPropagation();
+
+    const url = button.dataset.link;
+
+    if (url === '/look') {
+      soundClickB.play();
+    } else {
+      soundClickA.play();
+    }
+
+    // ページ遷移前にタイマー止める
+    if (bottleTimerId) {
+      clearTimeout(bottleTimerId);
+      bottleTimerId = null;
+    }
+
+    stopMainBGM(() => {
+      window.location.href = url;
+    });
+  });
+});
+
 });

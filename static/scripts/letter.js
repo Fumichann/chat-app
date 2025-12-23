@@ -51,7 +51,7 @@
 
 
 export function showLetter({ content, date }) {
-  document.getElementById("letter-text").textContent = content;
+  document.querySelector(".letter-text").textContent = content;
   document.getElementById("letter-date").textContent = date;
 
   const modal = document.getElementById("letter-modal");

@@ -175,8 +175,7 @@
 
   display: flex;
   justify-content: center;
-  pointer-events: none;
-  z-index: 10;
+  z-index: 500;
 }
 
 #nagare {
@@ -193,6 +192,8 @@
   width: 9%;
   opacity: 0;
   transition: opacity 0.9s ease;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .nagare2{
@@ -202,7 +203,7 @@
     width: 3%;
     opacity: 0;
     transition: opacity 0.9s ease;
-    
+    pointer-events: none;
 }
 
 .nagare3{
@@ -212,4 +213,5 @@
     width: 1.5%;
     opacity: 0;
     transition: opacity 0.9s ease;
+    pointer-events: none;
 }
