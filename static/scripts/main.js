@@ -399,13 +399,17 @@ function waitForBottleClick(n1) {
 main.addEventListener('click', showMainScreen);
 
 async function showMainScreen() {
+  
+  main.classList.remove("hidden");
+
   setTimeout(() => {
     if (!main) return; // main が存在しない場合は処理中断
 
-    main.classList.remove("hidden");
+    setTimeout(() => {
+      main.style.opacity = 1;
+    }, 100);
 
     requestAnimationFrame(async () => {
-      main.style.opacity = 1;
       enableMainButtons();
 
       if (bottleTimerId) {
