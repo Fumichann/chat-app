@@ -2,7 +2,6 @@
   position: fixed;
   inset: 0;
   background-color: #000000;
-  /*background-color: aqua;*/
   opacity: 1;
   transition: opacity 3s ease;
   z-index: 100;

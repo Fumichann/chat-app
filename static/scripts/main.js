@@ -225,8 +225,9 @@ function fadeOut(element, duration = 0, delay = 0, callback) {
 
 // --------- 背景画像切り替え ------------------
 function switchToMainBackground(){
-  haikei.classList.remove('maeoki');
-  haikei.classList.add('time-bg');
+  haikei.remove();
+  document.body.classList.add('haikei');
+  document.body.classList.add('time-bg');
   applyTimeBackground('main');
 };
 
