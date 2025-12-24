@@ -20,17 +20,19 @@ export function getTimeKey2() {
 
 // 背景切り替え
 export function applyTimeBackground(pageKey) {
-  const time = getTimeKey1();
-
-  document.body.classList.remove("hiru","yuu","yoru");
-  document.body.classList.add(time);
-
+  // 背景要素を取得
   const bg = document.querySelector(".time-bg");
   if (!bg) return;
 
-  bg.style.backgroundImage =
-    `url(/static/image/haikei/${pageKey}-${time}.webp)`;
+    const time = getTimeKey1();
+
+  // 現在の時間帯クラスを追加
+  bg.classList.add(time);
+
+  // 背景画像を切り替え
+  bg.style.backgroundImage = `url(/static/image/haikei/${pageKey}-${time}.webp)`;
 }
+
 
 
 export function applyTimeImage(imgEl, folder, baseName, ext = "PNG") {
