@@ -34,7 +34,7 @@
         </div>
 
         <div class="music-container">
-          <label for="se-volume">SE 音量　</label>
+          <label for="se-volume">SE　音量</label>
           <img class="mute-btn" id="se-mute" src="/static/image/settei/mute3.PNG" >
           <div class="dots se" id="se-dots"></div>
         </div>
@@ -45,8 +45,8 @@
             <label for="">手紙を保存する</label>
           </div>
           <div id="coment">
-            <p>遊び方に説明あり</p>
-            <p>チェックを外している間の<br>手紙は保存されないよ</p>
+            <p>チェックを外している間に<br>もらった手紙は１回だけ見れる</p>
+            <p>保存はされないよ</p>
           </div>
         </div>
 
@@ -67,6 +67,7 @@
       
 
       <div id="4" class="page-text right">
+        <br>
         <h2>--- 手紙を見る ---</h2>
         <p>届いた手紙を見ることができる</p>
         <p>・残しておけるのは最大20通まで</p>
@@ -74,10 +75,8 @@
         <h2>--- 設定・遊び方 ---</h2>
         <p>・音量調節はドットをクリック</p>
         <p>　音符を押すとミュートになるよ</p>
-        <p>・チェックを外している間に</p>
-        <p>　もらった手紙は保存されないよ</p>
         <p>・水色の瓶を２回クリックすると</p>
-        <p>　もらった手紙と全部お別れできるよ</p>
+        <p>　もらった手紙全部とお別れできるよ</p>
 
         <div id="previous">
           <label>前のページ！</label>
@@ -92,14 +91,17 @@
     <div class="page">
       <div class="page-inner">
         <img src="/static/image/settei/333.webp" alt="2ページ">
-        <div class="book-text">
-          <h2>クレジット</h2>
+        <div class="book-text right">
+          <h2 id="title2">クレジット</h2>
           <p>制作：みゆ（目に見えるところ）</p>
           <p>　　　ふみか（目に見えないところ）</p>
-          <p>音楽素材：魔王魂、DOVA-SYNDROME</p>
-          <p>フォント：</p>
-          <p>開発環境：Flask,HTML/CSS/JavaScript</p>
-          <p>Special Thanks：これを見ているみんな</p>
+          <p>音楽素材：Sound Dino、タダノオト</p>
+          <p>　　　　　Springin' Sound Stock</p>
+          <p>フォント：Best10-FONT</p>
+          <p>開発環境：HTML,CSS,JavaScript,Flask</p>
+          <p>API：Fetch API,Gemini API</p>
+          <p>インフラ：Render</p>
+          <p id="thanx">Special Thanks：これを見ているみんな</p>
         </div>
       </div>
     </div>
@@ -107,12 +109,13 @@
     <div class="page">
       <div class="page-inner">
       <img src="/static/image/settei/222.webp" alt="3ページ">
-        <div class="book-text">
-          <p>AIに手紙を送ることで内緒で相談できるよ。</p>
-          <p>あなたの手紙は保存されない。</p>
-          <p>もらった手紙はあなたしか見れない。</p>
-          <p>海を眺めてゆっくり過ごしてね。</p>
-          <br>
+        <div class="book-text left">
+          <div id="story">   
+            <p>AIに手紙を送ることで内緒で相談できるよ。</p>
+            <p>あなたの手紙は保存されない。</p>
+            <p>もらった手紙はあなたしか見れない。</p>
+            <p>海を眺めてゆっくり過ごしてね。</p>
+          </div>
 
           <h2>--- 手紙を書く ---</h2>
           <p>真ん中のびんせんに手紙を書こう</p>
@@ -120,8 +123,6 @@
           <p>・右上のボトルで手紙を海に流す</p>
           <p>・海にボトルが届いたら</p>
           <p>　クリックして返信を読もう</p>
-
-
         </div>
       </div>
     </div>

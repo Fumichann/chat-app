@@ -365,7 +365,6 @@ storageBtn.addEventListener('click', () => {
   // 削除ボタンの動作
   let deleteConfirm = false;
   let clickLocked = false;
-  let messageTimeout;
 
   deleteBtn.addEventListener('click', () => {
     

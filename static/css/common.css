@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'BestTen';
+  src: url('/static/font/Best10-FONT/BestTen-CRT.otf') format('opentype');
+  font-style: normal;
+  font-display: swap;
+}
+
+*{
+  font-family: "BestTen", sans-serif;
+}
+
 body{
     max-width: 1200px;
     overflow: hidden;

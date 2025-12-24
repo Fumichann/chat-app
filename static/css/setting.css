@@ -84,7 +84,7 @@ body {
 
   .overlay {
   position: absolute;
-  top: 71.5%;
+  top: 71%;
   left: 51%;
   width: 100%;
   max-width: 1600px;
@@ -115,12 +115,13 @@ body {
 }
 
 .page-text.left {
+  margin-top: 1%;
   left: 5%;
   text-align: left;
 }
 
 .page-text.right {
-  top: 80%;
+  margin-top: 3%;
   right: 5%;
   text-align: left;
 }
@@ -129,6 +130,10 @@ body {
 
 #title{
   margin-bottom: 1.2em;
+}
+
+#title2{
+  margin-bottom: 1.4em;
 }
 
 /*--------- BGM ------------------------*/
@@ -187,14 +192,14 @@ body {
 
 #coment{
   position: relative;
-  margin-bottom: 1em;
   margin-left: auto;
   flex-direction: column;
   align-items: start;
+  margin-top: 2%;
 }
 #coment p{
-  font-size: 0.8em !important;
-  margin: 0;
+  font-size: 0.7em !important;
+  margin: 0.5em 0;
 }
 
 /*--------- 手紙削除 ------------------------*/
@@ -218,7 +223,7 @@ body {
   display: inline-block;
   overflow: visible; /* ← はみ出しを許可 */
   left: 2%;
-  top: 132%;
+  top: 133%;
   cursor: pointer;
 }
 #back label {
@@ -232,9 +237,9 @@ body {
   content: "";
   position: absolute;
   top: -20%;
-  left: -32%;
-  width: 170%;
-  height: 170%;
+  left: -50%;
+  width: 210%;
+  height: 210%;
   background: url(/static/image/settei/back.webp) no-repeat center / contain;
   z-index: 0;
   pointer-events: none;
@@ -249,7 +254,7 @@ body {
   align-items: end;
   right: 0;
   margin-left: auto;
-  margin-top: 1.2em;
+  margin-top: 0.8em;
   transform: rotate(-10deg);
   cursor: pointer;
 }
@@ -266,9 +271,8 @@ body {
   flex-direction: column;
   justify-content: end;
   align-items: start;
-  margin-top: 0.8em;
-  bottom: 1em;
-  transform: rotate(-10deg);
+  margin-top: 0.4em;
+  transform: rotate(-6deg);
   cursor: pointer;
 }
 #prev-btn {
@@ -323,7 +327,6 @@ body {
 
 .book-text{
   position: absolute;
-  top: 39%;
   left: 9%;
   margin: 0;
   transform: translateY(-50%);
@@ -331,4 +334,24 @@ body {
   font-size: 32px;
   color: #222;
   text-align: left;
+}
+
+.book-text.right{
+  top: 49%;
+}
+
+.book-text.left{
+  top: 49%;
+  left: 14%;
+}
+
+#thanx{
+  margin-top: 1.5em;
+}
+
+#story{
+  margin-bottom: 7%;
+}
+#story p{
+  margin: 0.6em 0em;
 }
