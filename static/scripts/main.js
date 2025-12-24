@@ -1,4 +1,5 @@
 import { showLetter, setupLetterModal } from './letter.js';
+import { applyTimeBackground,applyTimeImage,applyTimeBtn } from './time.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   setupLetterModal();
@@ -23,6 +24,13 @@ const nagare = document.getElementById('nagare')
 const n1 = document.querySelector('.nagare1');
 const n2 = document.querySelector('.nagare2');
 const n3 = document.querySelector('.nagare3');
+
+  // 時間帯に応じた背景設定
+  applyTimeBtn("link-button", "main", "sentaku");
+
+  applyTimeImage(n1, "binsen", "nagare1");
+  applyTimeImage(n2, "binsen", "nagare2");
+  applyTimeImage(n3, "binsen", "nagare3");
 
 
 maeoki.addEventListener("click", () => {
@@ -150,7 +158,7 @@ window.addEventListener('resize', resizeLinkButtons);
 resizeLinkButtons();
 
 
-// localstorageでチュートリアル制限
+// localstorageで前置き制限
 window.onload = function() {
   const hasSeenMain = localStorage.getItem('hasSeenMain');
 
@@ -215,10 +223,11 @@ function fadeOut(element, duration = 0, delay = 0, callback) {
   }, delay * 1000);
 }
 
-// 背景画像切り替え
+// --------- 背景画像切り替え ------------------
 function switchToMainBackground(){
   haikei.classList.remove('maeoki');
-  haikei.classList.add('main');
+  haikei.classList.add('time-bg');
+  applyTimeBackground('main');
 };
 
 // ---------------- 前置き ----------------
@@ -235,7 +244,6 @@ maeokiText.innerHTML = maeokiTexts[currentIndex];
 
 let MAnimating = false; // フェード中クリックを無効化
 
-maeoki.addEventListener('click', showMaeoki);
 function showMaeoki() {
   if (MAnimating) return; // フェード中は無視
 
@@ -273,10 +281,16 @@ function showMaeoki() {
 
         // ここで一度見たことを記録
         localStorage.setItem('hasSeenMain', 'true');
+
+        // 前置き終了後は document のクリックイベントを解除
+        document.removeEventListener('click', showMaeoki);
       });
     }, 800);
   }
 }
+
+// 画面全体でクリック判定
+document.addEventListener('click', showMaeoki);
 
 // ------------------ 背景見せ ----------------
 function showhaikei() {

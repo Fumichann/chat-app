@@ -64,7 +64,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // --- ストレージ判定ロジックを追加 ---
   const storageType = localStorage.getItem('volume-storage-type') || 'local';
-  const currentStorage = (storageType === 'local') ? localStorage : sessionStorage;
+  // const currentStorage = (storageType === 'local') ? localStorage : sessionStorage;
 
   startRoomBGM();//BGMのフェードイン再生開始
 

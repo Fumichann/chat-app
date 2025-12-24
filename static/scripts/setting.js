@@ -1,3 +1,5 @@
+import { applyTimeBackground, applyTimeMesse } from './time.js';
+
 //音量を読み込む
 function getVolume(key, defaultValue) {
   const savedVolume = localStorage.getItem(key);
@@ -60,8 +62,8 @@ function getStorage() {
 window.dispatchEvent(new Event('resize'));
 
 //-----------メッセージ----------------------
+const message = document.querySelector('.message');
 function showMessage(text,color = 'rgba(18, 17, 43, 1)') {
-  const message = document.getElementById('message');
 
   if (!message) return;
 
@@ -185,6 +187,10 @@ function setupVolume(howlerObject, storageKey, dotsId, muteId, numDots = 10) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 時間帯に応じた背景設定
+  applyTimeBackground("main");
+  applyTimeMesse("message", "messe");
+
   // BGM と SE をそれぞれセットアップ
   setupVolume(bgmSound, 'bgm-volume', 'bgm-dots', 'bgm-mute');
   setupVolume(pageFlipSound, 'se-volume', 'se-dots', 'se-mute');
@@ -262,7 +268,6 @@ function resizeBook() {
   const wrapper = document.getElementById('book-wrapper');
   const cover = document.getElementById('cover');
   const overlays = document.querySelectorAll('.overlay');
-  const aspect = 1600 / 1200;
 
   // 幅優先で計算
   let width = 1600;
@@ -309,7 +314,6 @@ if (scaleBook < 1) {
     p.style.fontSize = (32 * (width / 1600)) + 'px';
   });
 
-  const message = document.getElementById('message');
   if (message) {
     message.style.fontSize = (25 * (width / 1600)) + 'px';
     message.style.padding = (12 * (width / 1600)) + 'px ' + (24 * (width / 1600)) + 'px'; // パディングもスケール

@@ -9,10 +9,6 @@ body {
   width: 100vw;
 }
 
-.haikei{
-  background-image: url(/static/image/haikei/main.JPG);
-}
-
 /*---------フェード--------------------------*/
 #fade {
   position: fixed;
@@ -124,6 +120,7 @@ body {
 }
 
 .page-text.right {
+  top: 80%;
   right: 5%;
   text-align: left;
 }
@@ -264,11 +261,13 @@ body {
 }
 
 #previous{
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: end;
   align-items: start;
-  margin-top: 3em;
+  margin-top: 0.8em;
+  bottom: 1em;
   transform: rotate(-10deg);
   cursor: pointer;
 }
@@ -307,7 +306,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("/static/image/messe.PNG");
+  background-image: var(--bg-image, none);
   background-size: cover;
   background-position: center;
   opacity: 0.5;

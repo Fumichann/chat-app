@@ -16,8 +16,8 @@ body {
   position: fixed;
   inset: 0;
   background-color: #000000;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+  opacity: 1;
+  transition: opacity 3s ease;
   z-index: 100;
   pointer-events: none;
 }
@@ -25,6 +25,7 @@ body {
   display: none;
 }
 
+/*---------装飾--------------------------*/
 #light{
   position: fixed;
   opacity: 0.2;
@@ -35,8 +36,8 @@ body {
   z-index: 10;
   pointer-events: none;
 }
-.haikei{
-  background-image: url(/static/image/haikei/table.JPG);
+.haikei.table{
+  background-image: url(/static/image/haikei/table.webp);
 }
 
 /*---------戻りボタン------------------------*/
@@ -217,7 +218,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("/static/image/messe.PNG");
+  background-image: var(--bg-image, none);
   background-size: cover;
   background-position: center;
   z-index: -1; /* ← メッセージ文字より後ろへ */

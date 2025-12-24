@@ -1,3 +1,5 @@
+import { applyTimeBackground,applyTimeImage,applyTimeMesse } from './time.js';
+
 //音量を読み込む
 function getVolume(key, defaultValue) {
   const savedVolume = localStorage.getItem(key);
@@ -58,6 +60,7 @@ const submitSound = new Howl({
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+
   const form = document.getElementById('msgForm');
   const userMsg = document.getElementById('userMsg');
 
@@ -65,12 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const textarea = document.querySelector(".paper-text");
   const middle = document.querySelector(".paper-middle");
   const papers = document.querySelector('.letter-paper');
-  const bottle = document.querySelector('.bot');
+  const boxcontainer = document.querySelector('.bot');
+  const bottle = document.getElementById('bottle');
   const submit = document.getElementById('submit');
   const light = document.getElementById('light');
   const backBtn = document.getElementById('back');
   const fade = document.getElementById('fade');
 
+  const message = document.querySelector('.message');
   const malert = document.getElementById('m-a');
   const msuccess = document.getElementById('m-s');
   const merror = document.getElementById('m-e');
@@ -79,6 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const n1 = document.querySelector('.nagare1');
   const n2 = document.querySelector('.nagare2');
   const n3 = document.querySelector('.nagare3');
+
+  // 時間帯に応じた背景設定
+  applyTimeMesse("message", "messe");
+  applyTimeImage(bottle, "tegami", "bottle");
+  applyTimeImage(light, "tegami", "light");
+  applyTimeImage(n1, "binsen", "nagare1");
+  applyTimeImage(n2, "binsen", "nagare2");
+  applyTimeImage(n3, "binsen", "nagare3");
 
 
   let storageType = localStorage.getItem('volume-storage-type') || 'local';
@@ -106,6 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
+
+  setTimeout(() => {
+    if (fade) fade.style.opacity = 0 ;
+  }, 1000);
 
   // 基準サイズ（棚画像の元サイズ）
   const baseWidth = 855;
@@ -147,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     merror.style.fontSize = 20 * scale + 'px';
     merror.style.padding = `${8 * scale}px ${20 * scale}px`;
     merror.style.marginTop = 100 * scale + 'px';
-
   }
 
   function resizeLetter() {
@@ -167,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
       papers.style.maxHeight = `${690 * scale}px`
       middle.style.minHeight = `${baseHeight * scale}px`; 
       
-      bottle.style.width = 175 * scale + 'px';
-      bottle.style.height = 900 * scale + 'px';
+      boxcontainer.style.width = 175 * scale + 'px';
+      boxcontainer.style.height = 900 * scale + 'px';
       submit.style.width = 157 * scale + 'px';
       submit.style.height = 260 * scale + 'px';
       backBtn.style.width = 175 * scale + 'px';
@@ -203,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitSound.play();
 
     // --- フェード ---
-    fade.classList.remove("hidden");
+    fade.style.transition = "opacity 0.8s ease";
     await sleep(500);
     fade.style.opacity = 1;    
     await sleep(800);
@@ -211,7 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     form.style.display = 'none';
     light.style.display = 'none';
     backBtn.style.display = 'none';
-    haikei.style.backgroundImage = 'url("/static/image/haikei/main.JPG")'
+    haikei.classList.remove("table");
+    haikei.classList.add("time-bg");
+    applyTimeBackground("main");
+
 
     // --- ボトル ---
     n1.style.opacity = 1 ;

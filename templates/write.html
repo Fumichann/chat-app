@@ -2,7 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>海で手紙を書こう</title>
+  <title>手紙</title>
+  <link rel="icon" href="/static/image/fav.PNG" type="image/png">
+  
   <link rel="stylesheet" href="/static/css/common.css">
   <link rel="stylesheet" href="/static/css/write.css">
 
@@ -10,11 +12,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
 </head>
 
-<body class="haikei">
+<body class="haikei table">
 
-  <div id="fade" class="hidden"></div>
+  <div id="fade"></div>
 
-  <img id="light" src="/static/image/tegami/yuu.PNG">
+  <img id="light" src="">
   <img id="back" src="/static/image/tegami/back.PNG">
 
   <div id="m-a" class="message alert">手紙は白紙だ</div>
@@ -37,7 +39,7 @@
       </div>
 
       <div class="bot">
-        <img id="bottle" src="/static/image/tegami/b_yuu.PNG">
+        <img id="bottle" src="">
         <button id="submit" type="button"></button>
       </div>
 
@@ -45,13 +47,13 @@
 
   <div id="box">
     <div id="nagare">
-      <img class="nagare1" src="/static/image/tegami/nagare.PNG" >
-      <img class="nagare2" src="/static/image/tegami/nagare2.PNG" >
-      <img class="nagare3" src="/static/image/tegami/nagare3.PNG" >
+      <img class="nagare1" src="" >
+      <img class="nagare2" src="" >
+      <img class="nagare3" src="" >
     </div>
   </div>
 
 
-  <script src="/static/scripts/write.js"></script>
+  <script type="module" src="/static/scripts/write.js"></script>
 </body>
 </html>

@@ -9,14 +9,14 @@
   pointer-events: none;
 }
 #fade-overlay.hidden {
-  display: none; /* クリックも透過させるなら display:none がベスト */
+  display: none;
 }
 
 .haikei.maeoki{
   transition: opacity 2s ease;
   position: fixed;
   max-width: 1050px;
-  background-image: url("../image/haikei/road.webp");
+  background-image: url("/static/image/haikei/road.webp");
   z-index: 2;
 }
 
@@ -58,7 +58,6 @@
 .haikei.main{
   transition: opacity 2s ease;
   position: fixed;
-  background-image: url("../image/haikei/main.JPG");
   z-index: -1;
 }
 
@@ -83,7 +82,6 @@
   gap: 50px; 
 } 
 .link-button { 
-  background-image: url("/static/image/main/sentaku.PNG");
   background-size: contain; 
   background-position: center; 
   background-repeat: no-repeat; 
@@ -95,6 +93,7 @@
   cursor: pointer; 
   border: none; 
   background-color: transparent; 
+  transition: opacity 0.3s ease;
 }
 
 

@@ -10,7 +10,7 @@
 }
 
 .haikei{
-  background-image: url(../image/haikei/start.JPG) ;
+  background-image: url(/static/image/haikei/start.webp) ;
   background-color: #000000;
   z-index: -1;
 }
