@@ -37,6 +37,18 @@ body {
   display: none; /* クリックも透過させるなら display:none がベスト */
 }
 
+/*---------装飾--------------------------*/
+#kage{
+  position: fixed;
+  opacity: 0.8;
+  margin: 0 auto;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 90;
+  pointer-events: none;
+}
+
 /*---------メイン戻り------------------------*/
 #back {
   position: absolute;
@@ -171,7 +183,7 @@ body {
 }
 
 .letter-middle {
-  background: url('/static/image/binsen/binsen.PNG') repeat-y center;
+  background: url('/static/image/binsen/binsen.webp') repeat-y center;
   padding: 0 7%;
   flex-grow: 1;
 }

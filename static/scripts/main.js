@@ -339,7 +339,6 @@ function enableMainButtons() {
 // --------------ボトル瓶--------------------
 async function showBottle() {
 
-  // --- ボトル ---
   n3.style.opacity = 1 ;
   await sleep(1200);
   fade.style.opacity = 0;   

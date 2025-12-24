@@ -34,15 +34,14 @@ export function applyTimeBackground(pageKey) {
 }
 
 
-
-export function applyTimeImage(imgEl, folder, baseName, ext = "PNG") {
+export function applyTimeImage(imgEl, folder, baseName, ext = "webp") {
   if (!imgEl) return;
   const time = getTimeKey1();
   imgEl.src = `/static/image/${folder}/${baseName}-${time}.${ext}`;
 }
 
 
-export function applyTimeBtn(className, folder = "", baseName, ext = "PNG") {
+export function applyTimeBtn(className, folder = "", baseName, ext = "webp") {
     // クラスで複数要素取得
     const btns = document.querySelectorAll(`.${className}`);
     if (!btns.length) return;
@@ -57,7 +56,7 @@ export function applyTimeBtn(className, folder = "", baseName, ext = "PNG") {
 }
 
 
-export function applyTimeMesse(className, baseName, ext = "PNG") {
+export function applyTimeMesse(className, baseName, ext = "webp") {
     // クラスで複数要素取得
     const elems = document.querySelectorAll(`.${className}`);
     if (!elems.length) return;

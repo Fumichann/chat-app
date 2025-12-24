@@ -332,7 +332,7 @@ resizeBook();
 const storageBtn = document.getElementById('local-btn');
 
 // アイコン反映
-storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
+storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.webp' : '/static/image/settei/check2.webp';
 
 console.log("現在のストレージタイプ:", storageType);
 
@@ -342,7 +342,7 @@ storageBtn.addEventListener('click', () => {
   storageType = (storageType === 'local') ? 'session' : 'local';
 
   // アイコン更新
-  storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.PNG' : '/static/image/settei/check2.PNG';
+  storageBtn.src = (storageType === 'local') ? '/static/image/settei/check1.webp' : '/static/image/settei/check2.webp';
 
   // 保存
   localStorage.setItem('volume-storage-type', storageType);
