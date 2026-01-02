@@ -321,20 +321,21 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`通信エラー (${response.status} ${response.statusText}): ${errorText.substring(0, 100)}`);
       }
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (jsonError) {
-        throw new Error('サーバー応答の解析に失敗しました。');
-      }
+      const data = await response.json();
             
-      // --- 3. AI応答データのチェック ---
+      // --- AI応答データのチェック ---
       if (!data.reply) {
         throw new Error('AIからの応答データが空でした。');
       }
       // ここで一時保存（画面遷移用）
-      const storage = getStorage();
+    
+      const now = new Date();
+      const dateString = now.getFullYear() + '-' + 
+        String(now.getMonth() + 1).padStart(2, '0') + '-' + // 月は 0 から始まるため +1
+        String(now.getDate()).padStart(2, '0');
 
+      const storage = getStorage();
+      
       storage.setItem("pendingReply", JSON.stringify({
         content: data.reply,
         date: dateString,
@@ -342,23 +343,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }));
 
       // ユーザーの手紙は保存せず、AIの返答だけ保存
-      saveChatHistory(data.reply);
+      saveChatHistory(data.reply, dateString);
 
       // --- 成功メッセージ ---
       msuccess.classList.add("show");
-      setTimeout(() =>{
-      msuccess.classList.remove("show");
-      },3000)
+      setTimeout(() => msuccess.classList.remove("show") ,3000);
 
     } catch (error) {
-
       console.error("fetch エラー:", error);
 
       // --- 失敗メッセージ ---
       merror.classList.add("show");
-      setTimeout(() =>{
-      merror.classList.remove("show");
-      },3000)
+      setTimeout(() => merror.classList.remove("show"),3000);
 
     } finally {
       userMsg.value = '';
@@ -368,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function saveChatHistory(aiText) {
+  function saveChatHistory(aiText,dateString) {
     // 現在の設定（local か session か）を取得
     const storageType = localStorage.getItem('volume-storage-type') || 'local';
 
@@ -382,12 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const storage = localStorage;
     const logs = JSON.parse(storage.getItem('letters') || '[]');
     
-    // 日付の形式を 'YYYY-MM-DD' に統一（時間情報を含めない）
-    const now = new Date();
-    const dateString = now.getFullYear() + '-' + 
-      String(now.getMonth() + 1).padStart(2, '0') + '-' + // 月は 0 から始まるため +1
-      String(now.getDate()).padStart(2, '0');
-
     logs.push({
       content: aiText,
       date: dateString,
