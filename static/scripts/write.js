@@ -55,7 +55,7 @@ const closeSound = new Howl({
 
 // 送るボタン
 const submitSound = new Howl({
-  src: ['/static/audio/trimmed_bottle.mp3'], 
+  src: ['/static/audio/bottle_close.mp3'], 
   volume: getVolume('se-volume', 0.5)//デフォルト0.5
 });
 
